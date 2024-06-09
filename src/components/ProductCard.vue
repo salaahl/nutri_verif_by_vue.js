@@ -21,7 +21,7 @@ defineProps({
     required: false
   },
   nova: {
-    type: String,
+    type: Number,
     required: false
   }
 })

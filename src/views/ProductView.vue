@@ -43,7 +43,9 @@ fetch(route)
 </script>
 
 <template>
-  <div class="flex flex-wrap justify-between md:flex-nowrap flex-col md:flex-row">
+  <div
+    class="md:h-[calc(100vh-190px)] flex flex-wrap justify-between md:flex-nowrap flex-col md:flex-row"
+  >
     <section
       id="product-images-container"
       class="w-full md:w-2/4 flex items-center justify-center bg-stone-200"
@@ -52,7 +54,7 @@ fetch(route)
         <img id="product-img" src="#" alt="..." class="h-auto w-auto m-auto md:object-none" />
       </div>
     </section>
-    <section id="product-details-container" class="w-full md:w-2/4 md:pl-6">
+    <section id="product-details-container" class="w-full md:w-2/4 max-md:mt-[15px] md:pl-6">
       <div id="product-detail" class="h-full">
         <div class="h-full flex flex-col justify-evently">
           <div>
@@ -97,13 +99,4 @@ fetch(route)
   </div>
 </template>
 
-<style scoped>
-@media (min-width: 1024px) {
-  header {
-    height: fit-content;
-    display: flex;
-    justify-content: center;
-    align-items: center;
-  }
-}
-</style>
+<style scoped></style>

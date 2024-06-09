@@ -1,10 +1,13 @@
-<script setup lang="ts">
-import { reactive } from 'vue'
-import ProductCard from '../components/ProductCard.vue'
+<script setup>
+import { onMounted, reactive } from 'vue'
+import { mapStores } from 'pinia'
+import { useProductsStore } from '../stores/products.ts'
+import ProductCard from '/src/components/ProductCard.vue'
 
-let results = reactive([])
+const productsStore = useProductsStore()
+let products = []
 
-window.addEventListener('load', function () {
+onMounted(() => {
   let $ = (id) => {
     return document.querySelector(id)
   }
@@ -26,13 +29,13 @@ window.addEventListener('load', function () {
           page +
           '&search_simple=1&action=process&json=1'
 
-        results.length = 0
+        products.length = 0
 
         fetch(route)
           .then((response) => response.json())
           .then((data) => {
             data.products.forEach((product) => {
-              results.push({
+              products.push({
                 id: product.id,
                 image: product.image_front_small_url || '/src/assets/logo.svg',
                 brand: product.brands || 'Fiche non finalisée',
@@ -42,6 +45,8 @@ window.addEventListener('load', function () {
               })
             })
 
+            productsStore.updateProducts(products)
+
             counter = data.count
             pages = 1
 
@@ -49,18 +54,24 @@ window.addEventListener('load', function () {
               pages++
             }
 
-            $('#pagination').innerHTML = ''
+            productsStore.updatePages(pages)
 
-            for (let i = 1; i < pages; i++) {
-              $('#pagination').innerHTML += '<button>' + i + '</button>'
-            }
-
-            document.querySelectorAll('#pagination button').forEach((button) => {
-              button.addEventListener('click', function () {
-                page = parseInt(button.textContent)
-                search()
-              })
-            })
+            setTimeout(() => {
+              if (document.querySelector('#pagination button')) {
+                document.querySelectorAll('#pagination button').forEach((button) => {
+                  button.addEventListener('click', function () {
+                    if (button.textContent == 'Prev') {
+                      page > 1 ? page-- : page = 1
+                    } else {
+                      page++
+                    }
+                    console.log(button.textContent)
+                    console.log(page)
+                    search()
+                  })
+                })
+              }
+            }, 1000)
             y++
           })
           .catch((error) => {
@@ -80,7 +91,7 @@ window.addEventListener('load', function () {
     setTimeout(() => {
       $('#search-results').style.filter = 'blur(0px)'
       hourglass.style.display = 'none'
-    }, 2000)
+    }, 400)
   }
 
   $('#search-input').addEventListener('input', function () {
@@ -89,15 +100,24 @@ window.addEventListener('load', function () {
       if ($('#search-input').value.length > 1) {
         searchTerm = $('#search-input').value
         page = 1
-
+        productsStore.updatePage(page)
         search()
       } else {
-        results.length = 0
-        $('#pagination').innerHTML = ''
+        products.length = 0
+        productsStore.updateProducts(products)
       }
     }, 600)
   })
 })
+</script>
+
+<script>
+export default {
+  computed: {
+    // Store accessible via l'objet this.ProductsStore
+    ...mapStores(useProductsStore)
+  }
+}
 </script>
 
 <template>
@@ -105,7 +125,7 @@ window.addEventListener('load', function () {
     <div class="relative">
       <div class="absolute inset-y-0 start-0 flex items-center z-20 ps-3 pointer-events-none">
         <svg
-          class="w-4 h-4 text-gray-500 dark:text-gray-400"
+          class="w-4 h-4 text-gray-500"
           aria-hidden="true"
           xmlns="http://www.w3.org/2000/svg"
           fill="none"
@@ -123,24 +143,46 @@ window.addEventListener('load', function () {
       <input
         type="search"
         id="search-input"
-        class="block w-full mt-5 p-4 ps-10 text-sm text-gray-900 border border-gray-300 rounded-lg bg-gray-50 focus:ring-blue-500 focus:border-blue-500 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500"
+        class="block w-full mt-5 p-4 ps-10 text-sm text-gray-900 border border-gray-300 rounded-lg bg-gray-50 focus:ring-blue-500 focus:border-blue-500"
         placeholder="Rechercher selon le nom du produit, la marque, une catégorie, une origine ou un code-barres"
       />
     </div>
     <div id="search-results" class="mt-12">
       <ProductCard
-        v-for="result in results"
+        v-for="result in productsStore.getProducts"
         :id="result.id"
         :image="result.image"
         :brand="result.brand"
         :name="result.name"
         :nutriscore="result.nutriscore"
         :nova="result.nova"
-        onclick="document.getElementById('search-input').value = ''"
       />
     </div>
     <div class="lds-hourglass"></div>
-    <div id="pagination"></div>
+    <div id="pagination">
+      <div v-if="productsStore.getPages > 1" class="flex flex-col items-center">
+        <!-- Help text -->
+        <span class="text-sm text-gray-700">
+          Page <span class="font-semibold text-gray-900">{{ productsStore.getPage }}</span> sur
+          <span class="font-semibold text-gray-900">{{ productsStore.getPages }}</span>
+        </span>
+        <!-- Buttons -->
+        <div class="inline-flex mt-2 xs:mt-0">
+          <button
+            v-if="productsStore.getPage > 1"
+            class="flex items-center justify-center px-4 h-10 text-base font-medium text-white bg-gray-800 rounded-s hover:bg-gray-900"
+          >
+            Prev
+          </button>
+          <button
+            v-if="productsStore.getPage < productsStore.getPages"
+            class="flex items-center justify-center px-4 h-10 text-base font-medium text-white bg-gray-800 border-0 border-s border-gray-700 rounded-e hover:bg-gray-900"
+          >
+            Next
+          </button>
+        </div>
+      </div>
+    </div>
   </div>
 </template>
 

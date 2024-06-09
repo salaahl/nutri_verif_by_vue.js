@@ -1,23 +1,24 @@
 <script setup lang="ts">
-import { useRouter } from 'vue-router';
-import { reactive } from 'vue'
+import { computed } from 'vue'
+import { useRouter } from 'vue-router'
 
 const router = useRouter()
-let homepage = reactive([])
 
-homepage.push(router.currentRoute.value.path);
+const currentRoute = computed(() => {
+  return router.currentRoute.value.name
+})
 </script>
 
 <template>
   <header>
-    <div v-if="homepage !== '/'" class="flex items-center mb-4">
+    <div v-if="currentRoute !== 'home'" class="flex items-center mb-4">
       <RouterLink :to="'/'" class="flex"
         ><svg class="h-[20px]" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 448 512">
           <path
             d="M9.4 233.4c-12.5 12.5-12.5 32.8 0 45.3l160 160c12.5 12.5 32.8 12.5 45.3 0s12.5-32.8 0-45.3L109.2 288 416 288c17.7 0 32-14.3 32-32s-14.3-32-32-32l-306.7 0L214.6 118.6c12.5-12.5 12.5-32.8 0-45.3s-32.8-12.5-45.3 0l-160 160z"
           />
         </svg>
-        <span class="ml-2">Page d'accueil</span></RouterLink
+        <span class="ml-2">Retour vers les résultats de recherche</span></RouterLink
       >
     </div>
     <RouterLink to="/">
@@ -54,11 +55,32 @@ homepage.push(router.currentRoute.value.path);
 }
 
 header {
+  position: relative;
+  height: 190px;
+  width: 100%;
+  padding: 20px 0;
+}
+
+header > div {
+  position: absolute;
+  bottom: 50%;
+  top: 50%;
+  left: 0%;
+}
+
+header h1 {
   width: fit-content;
+  margin-top: 10px;
   margin-left: auto;
   margin-right: auto;
   font-family: 'Sacramento', cursive;
   font-weight: 400;
   font-style: normal;
+}
+
+@media (max-width: 1023px) {
+  header span {
+    display: none;
+  }
 }
 </style>
