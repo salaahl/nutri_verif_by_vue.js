@@ -31,8 +31,8 @@ defineProps({
   <article class="product">
     <RouterLink :to="'/product/' + id" class="h-full w-full flex flex-col justify-between">
       <div>
-        <div class="thumbnail flex justify-center items-center aspect-square">
-          <img :src="image" class="object-contain" />
+        <div class="thumbnail flex justify-center items-center aspect-square border-4">
+          <img :src="image" :alt="brand + ' : ' + name" class="object-contain" />
         </div>
         <div class="mt-2">
           <h4 class="title lg:max-w-[75%] text-ellipsis overflow-hidden">{{ brand }}</h4>
@@ -46,12 +46,14 @@ defineProps({
             nutriscore +
             '-new-fr.svg'
           "
+          :alt="'Nutriscore : ' + nutriscore"
           class="max-h-[50px]"
         />
         <img
           :src="
             'https://static.openfoodfacts.org/images/attributes/dist/nova-group-' + nova + '.svg'
           "
+          :alt="'Groupe Nova : ' + nova"
           class="max-h-[40px]"
         />
       </div>
@@ -72,7 +74,6 @@ defineProps({
 
 .thumbnail {
   border-radius: 2px;
-  box-shadow: rgba(3, 102, 214, 0.3) 0px 0px 0px 3px;
   overflow: hidden;
 }
 
@@ -101,7 +102,7 @@ defineProps({
 
 @media (min-width: 1024px) {
   .product {
-    width: 18.6%;
+    width: 18.8%;
   }
 
   .product:nth-of-type(5n + 2) {

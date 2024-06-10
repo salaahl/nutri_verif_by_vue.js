@@ -3,11 +3,16 @@
 @tailwind components;
 @tailwind utilities;
 
+body {
+  display: flex;
+  place-items: center;
+}
+
 #app {
   width: 100%;
   max-width: 1280px;
   margin: 0 auto;
-  padding: 0 1rem;
+  padding: 0 var(--app-padding-x);
   font-weight: normal;
 }
 
@@ -19,12 +24,7 @@
 }
 
 @media (min-width: 1024px) {
-  body {
-    display: flex;
-    place-items: center;
-  }
-
   #app {
-    padding: 0 2rem;
+    padding: 0 var(--app-padding-x);
   }
 }

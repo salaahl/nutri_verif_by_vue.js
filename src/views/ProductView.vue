@@ -1,45 +1,50 @@
 <script setup lang="ts">
+import { onMounted } from 'vue'
 import { useRoute } from 'vue-router'
 
-const $ = (id) => {
-  return document.querySelector(id)
-}
-const router = useRoute()
-const route = 'https://world.openfoodfacts.net/api/v2/product/' + router.fullPath.split('/').pop()
+onMounted(() => {
+  const $ = (id) => {
+    return document.querySelector(id)
+  }
+  const router = useRoute()
+  const route = 'https://world.openfoodfacts.net/api/v2/product/' + router.fullPath.split('/').pop()
 
-const novaGroup = [
-  'Aliments non transformés ou transformés minimalement',
-  'Ingrédients culinaires transformés',
-  'Aliments transformés',
-  'Produits alimentaires et boissons ultra-transformés'
-]
+  $('#back-link').style.marginLeft = $('main').offsetLeft + 'px'
 
-fetch(route)
-  .then((response) => response.json())
-  .then((data) => {
-    $('#product-img').src = data.product.image_front_url
-    $('#title').textContent = data.product.brands + ' - ' + data.product.generic_name_fr
-    $('#last-update').textContent = new Date(data.product.last_updated_t * 1000).toLocaleDateString(
-      'fr-FR'
-    )
-    $('#nutriscore-img').src =
-      'https://static.openfoodfacts.org/images/attributes/dist/nutriscore-' +
-      data.product.nutriscore_grade +
-      '-new-fr.svg'
-    $('#nutriscore-img').setAttribute('alt', 'Nutriscore : ' + data.product.nutriscore_grade)
-    $('#nova-group-img').src =
-      'https://static.openfoodfacts.org/images/attributes/dist/nova-group-' +
-      data.product.nova_group +
-      '.svg'
-    $('#nova-group-img').setAttribute('alt', 'Groupe Nova : ' + data.product.nutriscore_grade)
-    $('#nova-group-text').textContent = '(' + novaGroup[data.product.nova_group - 1] + ')'
-    $('#code').textContent = data.code
-    $('#ingredients').textContent += data.product.ingredients_text_fr
-    $('#calories-100g').textContent += data.product.nutriments['energy-kcal_100g']
-    $('#manufacturing-place').textContent += data.product.manufacturing_places
-    $('#product-sheet').href = data.product.link
-    $('#product-sheet').textContent = data.product.link
-  })
+  const novaGroup = [
+    'Aliments non transformés ou transformés minimalement',
+    'Ingrédients culinaires transformés',
+    'Aliments transformés',
+    'Produits alimentaires et boissons ultra-transformés'
+  ]
+
+  fetch(route)
+    .then((response) => response.json())
+    .then((data) => {
+      $('#product-img').src = data.product.image_front_url
+      $('#title').textContent = data.product.brands + ' - ' + data.product.generic_name_fr
+      $('#last-update').textContent = new Date(
+        data.product.last_updated_t * 1000
+      ).toLocaleDateString('fr-FR')
+      $('#nutriscore-img').src =
+        'https://static.openfoodfacts.org/images/attributes/dist/nutriscore-' +
+        data.product.nutriscore_grade +
+        '-new-fr.svg'
+      $('#nutriscore-img').setAttribute('alt', 'Nutriscore : ' + data.product.nutriscore_grade)
+      $('#nova-group-img').src =
+        'https://static.openfoodfacts.org/images/attributes/dist/nova-group-' +
+        data.product.nova_group +
+        '.svg'
+      $('#nova-group-img').setAttribute('alt', 'Groupe Nova : ' + data.product.nutriscore_grade)
+      $('#nova-group-text').textContent = '(' + novaGroup[data.product.nova_group - 1] + ')'
+      $('#code').textContent = data.code
+      $('#ingredients').textContent += data.product.ingredients_text_fr
+      $('#calories-100g').textContent += data.product.nutriments['energy-kcal_100g']
+      $('#manufacturing-place').textContent += data.product.manufacturing_places
+      $('#product-sheet').href = data.product.link
+      $('#product-sheet').textContent = data.product.link
+    })
+})
 </script>
 
 <template>
@@ -67,14 +72,14 @@ fetch(route)
                 id="nutriscore-img"
                 class="max-w-[100px] md:max-w-[115px] mt-2"
                 src="#"
-                alt="nutriscore"
+                alt="Nutriscore :"
               />
               <div class="flex items-end">
                 <img
                   id="nova-group-img"
                   class="max-h-[50px] md:max-h-[60px] mt-2"
                   src="#"
-                  alt="nova group"
+                  alt="Groupe Nova :"
                 />
                 <h4 id="nova-group-text" class="ml-2"></h4>
               </div>

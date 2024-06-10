@@ -13,9 +13,6 @@ export const useProductsStore = defineStore('products', {
     incrementPage() {
       this.page++
     },
-    decrementPage() {
-      this.page--
-    },
     updatePage(payload) {
       this.page = payload
     },
