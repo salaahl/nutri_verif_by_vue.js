@@ -5,16 +5,13 @@
   "type": "module",
   "scripts": {
     "dev": "vite",
+    "build": "run-p type-check \"build-only {@}\" --",
     "preview": "vite preview",
     "test:unit": "vitest",
     "build-only": "vite build",
     "type-check": "vue-tsc --build --force",
     "lint": "eslint . --ext .vue,.js,.jsx,.cjs,.mjs,.ts,.tsx,.cts,.mts --fix --ignore-path .gitignore",
-    "format": "prettier --write src/",
-    "ng": "ng",
-    "start": "node server.js",
-    "build": "ng build",
-    "heroku-postbuild": "ng build --configuration production"
+    "format": "prettier --write src/"
   },
   "dependencies": {
     "express": "^4.19.2",
