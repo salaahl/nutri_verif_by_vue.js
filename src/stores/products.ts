@@ -7,16 +7,16 @@ export const useProductsStore = defineStore('products', {
     pages: 1
   }),
   actions: {
-    updateProducts(payload) {
+    updateProducts(payload: any) {
       this.products = payload
     },
     incrementPage() {
       this.page++
     },
-    updatePage(payload) {
+    updatePage(payload: number) {
       this.page = payload
     },
-    updatePages(payload) {
+    updatePages(payload: number) {
       this.pages = payload
     }
   },
