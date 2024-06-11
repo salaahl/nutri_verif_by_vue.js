@@ -11,10 +11,14 @@
     "build-only": "vite build",
     "type-check": "vue-tsc --build --force",
     "lint": "eslint . --ext .vue,.js,.jsx,.cjs,.mjs,.ts,.tsx,.cts,.mts --fix --ignore-path .gitignore",
-    "format": "prettier --write src/"
+    "format": "prettier --write src/",
+    "postinstall": "npm run build",
+    "start": "node server.js"
   },
   "dependencies": {
+    "express": "^4.19.2",
     "pinia": "^2.1.7",
+    "serve-static": "^1.15.0",
     "vue": "^3.4.21",
     "vue-router": "^4.3.0"
   },
