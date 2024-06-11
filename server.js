@@ -1,8 +1,9 @@
-const express = require('express')
-const serveStatic = require('serve-static')
-const path = require('path')
+import express from 'express'
+import serveStatic from 'serve-static'
+import path from 'path'
 
 const app = express()
+const __dirname = import.meta.dirname;
 
 //here we are configuring dist to serve app files
 app.use('/', serveStatic(path.join(__dirname, '/dist')))
