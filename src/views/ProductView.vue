@@ -53,7 +53,7 @@ onMounted(() => {
   >
     <section
       id="product-images-container"
-      class="w-full md:w-2/4 flex items-center justify-center bg-stone-200"
+      class="w-full md:w-2/4 flex items-center justify-center bg-stone-200/25"
     >
       <div class="md:w-full md:min-w-[auto]">
         <img id="product-img" src="#" alt="..." class="h-auto w-auto m-auto md:object-none" />

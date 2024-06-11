@@ -29,6 +29,10 @@ onMounted(() => {
       } else {
         document.querySelector('header').style.top = '-' + (headerHeight + 4) + 'px'
       }
+
+      if (currentScrollPos < 20) {
+        document.querySelector('header').classList.remove('border-b-4')
+      }
       prevScrollpos = currentScrollPos
     }
   }
@@ -144,7 +148,7 @@ header {
   padding: 20px var(--app-padding-x);
   background-color: white;
   z-index: 99;
-  transition: all 0.5s;
+  transition: top 0.5s;
 }
 
 #back-link {
