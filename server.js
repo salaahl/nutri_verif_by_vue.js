@@ -1,6 +1,7 @@
-const express = require('express')
-const serveStatic = require('serve-static')
-const path = require('path')
+import express from "express"
+import serveStatic from "serve-static"
+import path from "path"
+
 app = express()
 app.use(serveStatic(path.join(__dirname, 'dist')))
 const port = process.env.PORT || 8080
