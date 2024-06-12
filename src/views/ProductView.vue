@@ -9,7 +9,7 @@ onMounted(() => {
   const router = useRoute()
   const route = 'https://world.openfoodfacts.net/api/v2/product/' + router.fullPath.split('/').pop()
 
-  $('div:has(> #product-images-container)').style.minHeight = 'calc(100vh - ' - document.querySelector('header').offsetHeight + 'px)'
+  $('#product-container').style.minHeight = 'calc(100vh - ' - document.querySelector('header').offsetHeight + 'px)'
   $('#back-link').style.marginLeft = $('main').offsetLeft + 'px'
 
   const novaGroup = [
@@ -50,6 +50,7 @@ onMounted(() => {
 
 <template>
   <div
+    id="product-container"
     class="flex flex-wrap justify-between md:flex-nowrap flex-col md:flex-row"
   >
     <section
