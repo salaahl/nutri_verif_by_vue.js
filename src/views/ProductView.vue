@@ -65,7 +65,7 @@ onMounted(() => {
       <div id="product-detail" class="h-full">
         <div class="h-full flex flex-col justify-evently">
           <div>
-            <h2 id="title" class="text-xl md:text-3xl uppercase"></h2>
+            <h2 id="title" class="text-xl md:text-2xl uppercase"></h2>
             <h3 class="text-sm">Dernière mise à jour : <span id="last-update"></span></h3>
           </div>
           <div>
