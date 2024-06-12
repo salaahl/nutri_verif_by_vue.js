@@ -59,7 +59,7 @@ onMounted(() => {
         <img id="product-img" src="#" alt="..." class="h-auto w-auto m-auto md:object-none" />
       </div>
     </section>
-    <section id="product-details-container" class="w-full md:w-2/4 max-md:mt-[15px] md:pl-6">
+    <section id="product-details-container" class="w-full md:w-2/4 max-md:mt-[15px] max-md:mb-8 md:pl-6">
       <div id="product-detail" class="h-full">
         <div class="h-full flex flex-col justify-evently">
           <div>
