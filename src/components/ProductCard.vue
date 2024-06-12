@@ -80,7 +80,7 @@ defineProps({
 
 .thumbnail:hover {
   transform: translateY(-1%);
-  box-shadow: 0px 10px 15px 0px rgb(60 64 67 / 20%), 0 10px 15px 0px rgb(60 64 67 / 10%);
+  box-shadow: 0px 10px 15px 0px rgb(60 64 67 / 10%), 0 10px 15px 0px rgb(60 64 67 / 5%);
 }
 
 .thumbnail img {
