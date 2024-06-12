@@ -145,7 +145,7 @@ header {
   position: sticky;
   min-height: 190px;
   width: 100vw;
-  padding: 20px var(--app-padding-x);
+  padding: 10px var(--app-padding-x);
   background-color: white;
   z-index: 99;
   transition: top 0.5s;
@@ -166,5 +166,11 @@ header h1 {
   font-family: 'Grand Hotel', cursive;
   font-weight: 400;
   font-style: normal;
+}
+
+@media (min-width: 1024px) {
+  header {
+    padding: 20px var(--app-padding-x);
+  }
 }
 </style>
