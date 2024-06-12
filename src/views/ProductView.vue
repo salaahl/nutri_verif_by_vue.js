@@ -39,9 +39,9 @@ onMounted(() => {
       $('#nova-group-img').setAttribute('alt', 'Groupe Nova : ' + data.product.nutriscore_grade)
       $('#nova-group-text').textContent = '(' + novaGroup[data.product.nova_group - 1] + ')'
       $('#code').textContent = data.code
-      $('#ingredients').textContent += data.product.ingredients_text_fr
-      $('#calories-100g').textContent += data.product.nutriments['energy-kcal_100g']
-      $('#manufacturing-place').textContent += data.product.manufacturing_places
+      $('#ingredients').textContent = data.product.ingredients_text_fr
+      $('#calories-100g').textContent = data.product.nutriments['energy-kcal_100g']
+      $('#manufacturing-place').textContent = data.product.manufacturing_places
       $('#product-sheet').href = data.product.link
       $('#product-sheet').textContent = data.product.link
     })
