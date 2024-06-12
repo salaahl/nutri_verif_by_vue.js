@@ -152,7 +152,7 @@ header {
   transition: top 0.5s;
 }
 
-header #logo {
+#logo {
   height: 50px;
   width: auto;
 }
@@ -174,12 +174,12 @@ header h1 {
   font-style: normal;
 }
 
-@media (min-width: 1024px) {
+@media (min-width: 768px) {
   header {
     padding: 20px var(--app-padding-x);
   }
 
-  header #logo {
+  #logo {
     height: 80px;
   }
 }
