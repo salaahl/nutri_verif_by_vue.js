@@ -53,7 +53,8 @@ onMounted(() => {
     <a href="/">
       <img
         alt="Logo du site"
-        class="logo m-auto"
+        id="logo"
+        class="m-auto"
         src="./assets/logo.png"
         width="125"
         height="125"
