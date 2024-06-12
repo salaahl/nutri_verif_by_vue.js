@@ -143,12 +143,17 @@ onMounted(() => {
 
 header {
   position: sticky;
-  min-height: 190px;
+  height: fit-content;
   width: 100vw;
   padding: 10px var(--app-padding-x);
   background-color: white;
   z-index: 99;
   transition: top 0.5s;
+}
+
+header #logo {
+  height: 50px;
+  width: auto;
 }
 
 #back-link {
@@ -171,6 +176,10 @@ header h1 {
 @media (min-width: 1024px) {
   header {
     padding: 20px var(--app-padding-x);
+  }
+
+  header #logo {
+    height: 80px;
   }
 }
 </style>
