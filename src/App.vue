@@ -60,7 +60,7 @@ onMounted(() => {
         height="125"
       />
       <div class="wrapper">
-        <h1 class="text-2xl">MangerSain</h1>
+        <h1 class="text-2xl">NutriVérif</h1>
       </div>
     </a>
     <div v-if="currentRoute == '/'" id="search-bar" class="relative mt-12">
