@@ -38,10 +38,15 @@ onMounted(() => {
         '.svg'
       $('#nova-group-img').setAttribute('alt', 'Groupe Nova : ' + data.product.nutriscore_grade)
       $('#nova-group-text').textContent = '(' + novaGroup[data.product.nova_group - 1] + ')'
-      $('#code').textContent = data.code
+      data.code ? $('#barcode').previousSibling.classList.remove('hidden') : false;
+      $('#barcode').textContent = data.code
+      data.product.ingredients_text_fr ? $('#ingredients').previousSibling.classList.remove('hidden') : false;
       $('#ingredients').textContent = data.product.ingredients_text_fr
-      $('#calories-100g').textContent = data.product.nutriments['energy-kcal_100g']
+      data.product.nutriments['energy-kcal_100g'] ? $('#calories-100g').previousSibling.classList.remove('hidden') : false;
+      $('#calories-100g').textContent = data.product.nutriments['energy-kcal_100g'] + ' calories'
+      data.product.manufacturing_places ? $('#manufacturing-place').previousSibling.classList.remove('hidden') : false;
       $('#manufacturing-place').textContent = data.product.manufacturing_places
+      data.product.link ? $('#product-sheet').parentElement.previousSibling.classList.remove('hidden') : false;
       $('#product-sheet').href = data.product.link
       $('#product-sheet').textContent = data.product.link
     })
@@ -49,19 +54,14 @@ onMounted(() => {
 </script>
 
 <template>
-  <div
-    id="product-container"
-    class="flex flex-wrap justify-between md:flex-nowrap flex-col md:flex-row"
-  >
-    <section
-      id="product-images-container"
-      class="w-full md:w-2/4 flex items-center justify-center md:mb-[10px] bg-stone-200/25"
-    >
+  <div id="product-container" class="flex flex-wrap justify-between md:flex-nowrap flex-col md:flex-row">
+    <section id="product-images-container"
+      class="w-full md:w-2/4 flex items-center justify-center md:mb-[10px] bg-stone-200/25">
       <div class="md:w-full md:min-w-[auto]">
         <img id="product-img" src="#" alt="..." class="h-auto w-auto m-auto md:object-none" />
       </div>
     </section>
-    <section id="product-details-container" class="w-full md:w-2/4 max-md:mt-[15px] max-md:mb-8 md:pl-6">
+    <section id="product-details-container" class="w-full md:w-2/4 max-md:my-8 md:pl-6">
       <div id="product-detail" class="h-full">
         <div class="h-full flex flex-col justify-evently">
           <div>
@@ -70,37 +70,24 @@ onMounted(() => {
           </div>
           <div>
             <div>
-              <img
-                id="nutriscore-img"
-                class="max-w-[100px] md:max-w-[115px] mt-2"
-                src="#"
-                alt="Nutriscore :"
-              />
+              <img id="nutriscore-img" class="max-w-[100px] md:max-w-[115px] mt-2" src="#" alt="Nutriscore :" />
               <div class="flex items-end">
-                <img
-                  id="nova-group-img"
-                  class="max-h-[50px] md:max-h-[60px] mt-2"
-                  src="#"
-                  alt="Groupe Nova :"
-                />
+                <img id="nova-group-img" class="max-h-[50px] md:max-h-[60px] mt-2" src="#" alt="Groupe Nova :" />
                 <h4 id="nova-group-text" class="ml-2"></h4>
               </div>
             </div>
-            <h3 class="mt-4 font-semibold">Ingrédients :</h3>
+            <h3 class="hidden mt-4 font-semibold">Ingrédients :</h3>
             <h4 id="ingredients" class=""></h4>
-            <h3 class="mt-4 font-semibold">Calories pour 100g :</h3>
+            <h3 class="hidden mt-4 font-semibold">Calories pour cents grammes :</h3>
             <h4 id="calories-100g" class=""></h4>
-            <h3 class="mt-4 font-semibold">Lieu de fabrication :</h3>
+            <h3 class="hidden mt-4 font-semibold">Lieu de fabrication :</h3>
             <h4 id="manufacturing-place" class=""></h4>
-            <h3 class="mt-4 font-semibold">Code-barres :</h3>
-            <h4 id="code" class=""></h4>
-            <h3 class="mt-4 font-semibold">Lien vers la fiche produit du fabricant :</h3>
+            <h3 class="hidden mt-4 font-semibold">Code-barres :</h3>
+            <h4 id="barcode" class=""></h4>
+            <h3 class="hidden mt-4 font-semibold">Lien vers la fiche produit du fabricant :</h3>
             <h4><a href="#" id="product-sheet" class=""></a></h4>
           </div>
         </div>
-      </div>
-      <div id="delivery-and-return-details">
-        <!-- Mettre les nutriscores ici ? -->
       </div>
     </section>
   </div>
