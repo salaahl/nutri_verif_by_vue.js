@@ -42,7 +42,6 @@ onMounted(() => {
       $('#barcode').textContent = data.code
       data.product.ingredients_text_fr ? $('#ingredients').previousSibling.classList.remove('hidden') : false;
       $('#ingredients').textContent = data.product.ingredients_text_fr
-      data.product.nutriments['energy-kcal_100g'] ? $('#calories-100g').previousSibling.classList.remove('hidden') : false;
       $('#calories-100g').textContent = data.product.nutriments['energy-kcal_100g'] + ' calories'
       data.product.manufacturing_places ? $('#manufacturing-place').previousSibling.classList.remove('hidden') : false;
       $('#manufacturing-place').textContent = data.product.manufacturing_places
