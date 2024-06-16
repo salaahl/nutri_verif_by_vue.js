@@ -37,14 +37,14 @@ onMounted(() => {
         '.svg'
       $('#nova-group-img').setAttribute('alt', 'Groupe Nova : ' + data.product.nutriscore_grade)
       $('#nova-group-text').textContent = '(' + novaGroup[data.product.nova_group - 1] + ')'
-      data.code ? $('#barcode').previousSibling.classList.remove('hidden') : false;
+      data.code ? $('#barcode').previousSibling.classList.remove('hidden') : $('#barcode').previousSibling.classList.add('hidden');
       $('#barcode').textContent = data.code
-      data.product.ingredients_text_fr ? $('#ingredients').previousSibling.classList.remove('hidden') : false;
+      data.product.ingredients_text_fr ? $('#ingredients').previousSibling.classList.remove('hidden') : $('#ingredients').previousSibling.classList.add('hidden');
       $('#ingredients').textContent = data.product.ingredients_text_fr
       $('#calories-100g').textContent = data.product.nutriments['energy-kcal_100g']
-      data.product.manufacturing_places ? $('#manufacturing-place').previousSibling.classList.remove('hidden') : false;
+      data.product.manufacturing_places ? $('#manufacturing-place').previousSibling.classList.remove('hidden') : $('#manufacturing-place').previousSibling.classList.add('hidden');
       $('#manufacturing-place').textContent = data.product.manufacturing_places
-      data.product.link ? $('#product-sheet').parentElement.previousSibling.classList.remove('hidden') : false;
+      data.product.link ? $('#product-sheet').parentElement.previousSibling.classList.remove('hidden') : $('#product-sheet').parentElement.previousSibling.classList.add('hidden');
       $('#product-sheet').href = data.product.link
       $('#product-sheet').textContent = data.product.link
     })
