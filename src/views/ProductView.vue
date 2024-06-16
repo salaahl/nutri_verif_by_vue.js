@@ -42,7 +42,7 @@ onMounted(() => {
       $('#barcode').textContent = data.code
       data.product.ingredients_text_fr ? $('#ingredients').previousSibling.classList.remove('hidden') : false;
       $('#ingredients').textContent = data.product.ingredients_text_fr
-      $('#calories-100g').textContent = data.product.nutriments['energy-kcal_100g'] + ' calories'
+      $('#calories-100g').textContent = data.product.nutriments['energy-kcal_100g']
       data.product.manufacturing_places ? $('#manufacturing-place').previousSibling.classList.remove('hidden') : false;
       $('#manufacturing-place').textContent = data.product.manufacturing_places
       data.product.link ? $('#product-sheet').parentElement.previousSibling.classList.remove('hidden') : false;
@@ -55,7 +55,7 @@ onMounted(() => {
 <template>
   <div id="product-container" class="flex flex-wrap justify-between md:flex-nowrap flex-col md:flex-row">
     <section id="product-images-container"
-      class="w-full md:w-2/4 flex items-center justify-center md:mb-[10px] bg-stone-200/25">
+      class="w-full md:w-2/4 flex items-center justify-center md:mb-[10px] rounded bg-stone-200/25">
       <div class="md:w-full md:min-w-[auto]">
         <img id="product-img" src="#" alt="..." class="h-auto w-auto m-auto md:object-none" />
       </div>
@@ -77,13 +77,13 @@ onMounted(() => {
             </div>
             <h3 class="hidden mt-4 font-semibold">Ingrédients :</h3>
             <h4 id="ingredients" class=""></h4>
-            <h3 class="hidden mt-4 font-semibold">Calories pour cents grammes :</h3>
+            <h3 class="mt-4 font-semibold">Calories pour 100 grammes :</h3>
             <h4 id="calories-100g" class=""></h4>
             <h3 class="hidden mt-4 font-semibold">Lieu de fabrication :</h3>
             <h4 id="manufacturing-place" class=""></h4>
             <h3 class="hidden mt-4 font-semibold">Code-barres :</h3>
             <h4 id="barcode" class=""></h4>
-            <h3 class="hidden mt-4 font-semibold">Lien vers la fiche produit du fabricant :</h3>
+            <h3 class="hidden mt-4 font-semibold">Plus d'infos :</h3>
             <h4><a href="#" id="product-sheet" class=""></a></h4>
           </div>
         </div>

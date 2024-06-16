@@ -17,7 +17,7 @@ onMounted(() => {
     return document.querySelector(id)
   }
 
-  let timer, searchTerm
+  let searchTerm
   let hourglass = $('.lds-hourglass')
 
   function searchProduct() {
@@ -37,7 +37,7 @@ onMounted(() => {
             data.products.forEach((product) => {
               products.push({
                 id: product.id,
-                image: product.image_front_small_url || '/src/assets/logo.svg',
+                image: product.image_front_small_url || '/src/assets/logo.png',
                 brand: product.brands || 'Fiche non finalisée',
                 name: product.generic_name_fr || 'Fiche non finalisée',
                 nutriscore: product.nutriscore_grade,
@@ -54,7 +54,7 @@ onMounted(() => {
             }
 
             productsStore.updatePages(pages)
-            $('#new-results').style.height = '100px'
+            $('#new-results').classList.add('animate')
             observer.observe($('#new-results'))
 
             y++
@@ -68,15 +68,13 @@ onMounted(() => {
   }
 
   async function search() {
-    $('#search-results').style.filter = 'blur(8px)'
-    hourglass.style.display = 'flex'
+    hourglass.classList.remove('hidden')
 
     const result = await searchProduct()
 
     setTimeout(() => {
-      $('#search-results').style.filter = 'blur(0px)'
-      hourglass.style.display = 'none'
-    }, 400)
+      hourglass.classList.add('hidden')
+    }, 1000)
   }
 
   // Intersection observer
@@ -89,7 +87,6 @@ onMounted(() => {
   function handleIntersection(entries) {
     entries.map((entry) => {
       if (entry.isIntersecting && productsStore.getPage < productsStore.getPages) {
-        // entry.target.classList.add('animate')
         productsStore.incrementPage()
         search()
       }
@@ -118,36 +115,29 @@ export default {
 <template>
   <div>
     <div id="search-results" class="mt-12">
-      <ProductCard
-        v-for="product in productsReactive"
-        :id="product.id"
-        :image="product.image"
-        :brand="product.brand"
-        :name="product.name"
-        :nutriscore="product.nutriscore"
-        :nova="product.nova"
-      />
+      <ProductCard v-for="product in productsReactive" :key="product.id" :id="product.id" :image="product.image"
+        :brand="product.brand" :name="product.name" :nutriscore="product.nutriscore" :nova="product.nova" />
     </div>
-    <div class="lds-hourglass"></div>
-    <div id="new-results"></div>
+    <div id="new-results">
+      <div class="lds-hourglass hidden"></div>
+    </div>
   </div>
 </template>
 
 <style scoped>
+#search-results {
+  display: flex;
+  flex-wrap: wrap;
+}
+
+#new-results {
+  display: flex;
+  min-height: 100px;
+}
+
 .lds-hourglass {
-  display: none;
-  position: fixed;
-  right: 0;
-  bottom: 0;
-  height: 100%;
-  width: 100%;
-  align-items: center;
-  justify-content: center;
-  backdrop-filter: blur(10px);
-  mask-image: linear-gradient(to top, rgb(255, 255, 255, 0) 0%, rgb(255, 255, 255, 1) 15%),
-    linear-gradient(to bottom, rgb(255, 255, 255, 0) 0%, rgb(255, 255, 255, 1) 25%);
-  mask-composite: intersect;
-  z-index: 99;
+  width: fit-content;
+  margin: auto;
 }
 
 .lds-hourglass:after {
@@ -163,20 +153,17 @@ export default {
   animation: lds-hourglass 1.2s infinite;
 }
 
-#search-results {
-  display: flex;
-  flex-wrap: wrap;
-}
-
 @keyframes lds-hourglass {
   0% {
     transform: rotate(0);
     animation-timing-function: cubic-bezier(0.55, 0.055, 0.675, 0.19);
   }
+
   50% {
     transform: rotate(900deg);
     animation-timing-function: cubic-bezier(0.215, 0.61, 0.355, 1);
   }
+
   100% {
     transform: rotate(1800deg);
   }
