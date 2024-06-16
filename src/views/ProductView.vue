@@ -10,7 +10,6 @@ onMounted(() => {
   const route = 'https://world.openfoodfacts.net/api/v2/product/' + router.fullPath.split('/').pop()
 
   $('#product-container').style.minHeight = 'calc(100vh - ' + $('header').offsetHeight + 'px)'
-  $('#back-link').style.marginLeft = $('main').offsetLeft + 'px'
 
   const novaGroup = [
     'Aliments non transformés ou transformés minimalement',
