@@ -68,6 +68,7 @@ onMounted(() => {
   }
 
   async function search() {
+    $('#about-me').style.height = '0px';
     hourglass.classList.remove('hidden')
 
     const result = await searchProduct()
@@ -160,6 +161,22 @@ export default {
       <ProductCard v-for="product in productsReactive" :key="product.id" :id="product.id" :image="product.image"
         :brand="product.brand" :name="product.name" :nutriscore="product.nutriscore" :nova="product.nova" />
     </div>
+    <div id="about-me">
+      <span class="py-1 font-thin">
+        NutriVérif est alimentée par "Open Food Facts", une base de données de produits alimentaires créée par tous et pour tous.
+      </span>
+      <div class="my-2"></div>
+      <span class="py-1 font-thin">
+        Vous pouvez l'utiliser pour faire de meilleurs choix alimentaires, et comme les données sont ouvertes, tout le
+        monde peut les réutiliser pour tout usage.
+      </span>
+      <RouterLink :to="'/about-me'" class="flex items-center w-fit mt-2">En savoir plus
+        <svg class="h-[15px] w-auto ml-2" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 448 512">
+          <path
+            d="M438.6 278.6c12.5-12.5 12.5-32.8 0-45.3l-160-160c-12.5-12.5-32.8-12.5-45.3 0s-12.5 32.8 0 45.3L338.8 224 32 224c-17.7 0-32 14.3-32 32s14.3 32 32 32l306.7 0L233.4 393.4c-12.5 12.5-12.5 32.8 0 45.3s32.8 12.5 45.3 0l160-160z" />
+        </svg>
+      </RouterLink>
+    </div>
     <div id="new-results">
       <div class="lds-hourglass hidden"></div>
     </div>
@@ -181,6 +198,16 @@ export default {
   height: auto;
   width: 0.875rem;
   filter: contrast(0.5);
+}
+
+#about-me {
+  height: 200px;
+  overflow: hidden;
+  transition: height 0.5s;
+}
+
+#about-me span {
+  background-color: hsla(160, 100%, 37%, 0.6);
 }
 
 #search-results {
@@ -207,8 +234,14 @@ export default {
   margin: 8px;
   box-sizing: border-box;
   border: 32px solid #fff;
-  border-color: black transparent black transparent;
+  border-color: black transparent var(--color-green) transparent;
   animation: lds-hourglass 1.2s infinite;
+}
+
+@media (min-width: 768px) {
+  #about-me {
+    height: 115px;
+  }
 }
 
 @keyframes lds-hourglass {

@@ -1,6 +1,7 @@
 :root {
   --app-padding-x: 1rem;
   --section-gap: 160px;
+  --color-green: hsla(160, 100%, 37%, 1);
 }
 
 *,

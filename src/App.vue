@@ -21,7 +21,7 @@ const currentRoute = computed(() => {
     <a href="/">
       <img alt="Logo du site" id="logo" class="m-auto" src="./assets/logo.png" width="125" height="125" />
       <div class="wrapper">
-        <h1 class="text-2xl">NutriVérif</h1>
+        <h1 class="text-2xl">Nutri<span class="text-green">Vérif</span></h1>
       </div>
     </a>
   </header>
