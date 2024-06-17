@@ -1,11 +1,18 @@
 <script setup>
 import { onMounted, reactive, computed } from 'vue'
 import { mapStores } from 'pinia'
+import { useAppStore } from '../stores/app.ts'
 import { useProductsStore } from '../stores/products.ts'
 import ProductCard from '/src/components/ProductCard.vue'
 
+const appStore = useAppStore()
 const productsStore = useProductsStore()
 let products = reactive([])
+let aboutMeReactive = computed({
+  get() {
+    return appStore.getAboutMe
+  }
+})
 let productsReactive = computed({
   get() {
     return productsStore.getProducts
@@ -18,7 +25,7 @@ onMounted(() => {
   }
 
   let searchTerm
-  let hourglass = $('.lds-hourglass')
+  let hourglass = document.querySelectorAll('.lds-hourglass')
 
   function searchProduct() {
     return new Promise((resolve, reject) => {
@@ -68,13 +75,23 @@ onMounted(() => {
   }
 
   async function search() {
-    $('#about-me').style.height = '0px';
-    hourglass.classList.remove('hidden')
+    if (aboutMeReactive.value) {
+      $('#about-me').style.height = '0px';
+    }
+
+    $('#search-bar button > svg').classList.add('hidden')
+    hourglass.forEach((ele) => {
+      ele.classList.remove('hidden')
+    })
 
     const result = await searchProduct()
 
     setTimeout(() => {
-      hourglass.classList.add('hidden')
+      hourglass.forEach((ele) => {
+        ele.classList.add('hidden')
+      })
+      $('#search-bar button > svg').classList.remove('hidden')
+      appStore.showAboutMe(false)
     }, 1000)
   }
 
@@ -96,6 +113,7 @@ onMounted(() => {
 
   $('form').addEventListener('submit', function (e) {
     e.preventDefault()
+    window.scrollTo({ top: 0, behavior: 'smooth' })
 
     products.length = 0
     searchTerm = $('#search-input').value
@@ -153,6 +171,7 @@ export default {
             <path stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
               d="m19 19-4-4m0-7A7 7 0 1 1 1 8a7 7 0 0 1 14 0Z" />
           </svg>
+          <div class="lds-hourglass hidden"></div>
           <span class="sr-only">Search</span>
         </button>
       </form>
@@ -161,9 +180,10 @@ export default {
       <ProductCard v-for="product in productsReactive" :key="product.id" :id="product.id" :image="product.image"
         :brand="product.brand" :name="product.name" :nutriscore="product.nutriscore" :nova="product.nova" />
     </div>
-    <div id="about-me">
+    <div v-if="aboutMeReactive" id="about-me">
       <span class="py-1 font-thin">
-        NutriVérif est alimentée par "Open Food Facts", une base de données de produits alimentaires créée par tous et pour tous.
+        NutriVérif est alimentée par "Open Food Facts", une base de données de produits alimentaires créée par tous et
+        pour tous.
       </span>
       <div class="my-2"></div>
       <span class="py-1 font-thin">
@@ -201,7 +221,7 @@ export default {
 }
 
 #about-me {
-  height: 200px;
+  height: 250px;
   overflow: hidden;
   transition: height 0.5s;
 }
@@ -231,16 +251,25 @@ export default {
   border-radius: 50%;
   width: 0;
   height: 0;
-  margin: 8px;
   box-sizing: border-box;
+  animation: lds-hourglass 1.2s infinite;
+}
+
+#search-bar .lds-hourglass:after {
+  margin: 0;
+  border: 0.5rem solid #fff;
+  border-color: black transparent var(--color-green) transparent;
+}
+
+#new-results .lds-hourglass:after {
+  margin: 8px;
   border: 32px solid #fff;
   border-color: black transparent var(--color-green) transparent;
-  animation: lds-hourglass 1.2s infinite;
 }
 
 @media (min-width: 768px) {
   #about-me {
-    height: 115px;
+    height: 130px;
   }
 }
 

@@ -1,10 +1,14 @@
 <script setup>
-import { computed } from 'vue'
+import { computed, onMounted } from 'vue'
 import { useRouter } from 'vue-router'
 
 const router = useRouter()
 const currentRoute = computed(() => {
   return router.currentRoute.value.path
+})
+
+onMounted(() => {
+  document.querySelector('main').style.minHeight = 'calc(100vh - ' + document.querySelector('header').offsetHeight + 'px)'
 })
 </script>
 
@@ -18,7 +22,7 @@ const currentRoute = computed(() => {
         </svg>
       </a>
     </div>
-    <a href="/">
+    <a href="/" class="block w-fit mx-auto">
       <img alt="Logo du site" id="logo" class="m-auto" src="./assets/logo.png" width="125" height="125" />
       <div class="wrapper">
         <h1 class="text-2xl">Nutri<span class="text-green">Vérif</span></h1>
@@ -26,13 +30,34 @@ const currentRoute = computed(() => {
     </a>
   </header>
 
-  <main>
+  <main class="content-center">
     <router-view v-slot="{ Component, route }">
       <transition :name="route.meta.transition || 'slide-fade'">
         <component :is="Component" />
       </transition>
     </router-view>
   </main>
+
+  <footer class="w-full py-4">
+    <div class="max-w-screen-xl mx-auto py-6 rounded-lg space-y-4 overflow-hidden bg-gray-50">
+      <nav class="flex flex-wrap justify-center -mx-5 -my-2">
+        <div class="px-2 md:px-6">
+          <RouterLink :to="'/about-me'" class="text-base leading-6 text-gray-500 hover:text-gray-900">
+            À propos de nous
+          </RouterLink>
+        </div>
+        <div class="px-2 md:px-6">
+          <RouterLink :to="'/legal-notice'" class="text-base leading-6 text-gray-500 hover:text-gray-900">
+            Mentions légales
+          </RouterLink>
+        </div>
+      </nav>
+      <p class="text-sm leading-6 text-center text-gray-400">
+        <a href="https://www.linkedin.com/in/salaha-sokhona/" target="_blank">© 2024 Salaha SOKHONA. Tous droits
+          réservés.</a>
+      </p>
+    </div>
+  </footer>
 </template>
 
 <style>
@@ -42,7 +67,7 @@ const currentRoute = computed(() => {
 
 .slide-fade-leave-active {
   position: absolute;
-  transition: all 0.2s ease-out;
+  transition: all 0.25s ease-out;
 }
 
 .slide-fade-enter-from,
