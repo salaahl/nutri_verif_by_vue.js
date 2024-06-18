@@ -39,8 +39,8 @@ onMounted(() => {
   </main>
 
   <footer class="w-full py-4">
-    <div class="max-w-screen-xl mx-auto py-6 rounded-lg space-y-4 overflow-hidden bg-gray-50">
-      <nav class="flex flex-wrap justify-center -mx-5 -my-2">
+    <div class="flex flex-wrap justify-center items-center max-w-screen-xl mx-auto py-4 rounded-lg overflow-hidden bg-gray-50">
+      <nav class="flex flex-wrap justify-center">
         <div class="px-2 md:px-6">
           <RouterLink :to="'/about-me'" class="text-base leading-6 text-gray-500 hover:text-gray-900">
             À propos de nous
@@ -52,10 +52,10 @@ onMounted(() => {
           </RouterLink>
         </div>
       </nav>
-      <p class="text-sm leading-6 text-center text-gray-400">
+      <div class="px-2 md:px-6 text-sm leading-6 text-center text-gray-400">
         <a href="https://www.linkedin.com/in/salaha-sokhona/" target="_blank">© 2024 Salaha SOKHONA. Tous droits
           réservés.</a>
-      </p>
+      </div>
     </div>
   </footer>
 </template>
