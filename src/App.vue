@@ -1,29 +1,25 @@
 <script setup>
-import { computed, onMounted } from 'vue'
+import { computed } from 'vue'
 import { useRouter } from 'vue-router'
 
 const router = useRouter()
 const currentRoute = computed(() => {
   return router.currentRoute.value.path
 })
-
-onMounted(() => {
-  document.querySelector('main').style.minHeight = 'calc(100vh - ' + document.querySelector('header').offsetHeight + 'px)'
-})
 </script>
 
 <template>
-  <header>
-    <div v-if="currentRoute !== '/'" id="back-link" class="flex items-center mb-4">
-      <a @click="$router.back()" class="flex"><svg class="h-[20px]" xmlns="http://www.w3.org/2000/svg"
-          viewBox="0 0 448 512">
+  <header class="md:h-[172px]">
+    <div v-if="currentRoute !== '/'" id="back-link" class="flex items-center mb-4 cursor-pointer">
+      <a @click="$router.back()" class="flex">
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 448 512">
           <path
             d="M9.4 233.4c-12.5 12.5-12.5 32.8 0 45.3l160 160c12.5 12.5 32.8 12.5 45.3 0s12.5-32.8 0-45.3L109.2 288 416 288c17.7 0 32-14.3 32-32s-14.3-32-32-32l-306.7 0L214.6 118.6c12.5-12.5 12.5-32.8 0-45.3s-32.8-12.5-45.3 0l-160 160z" />
         </svg>
       </a>
     </div>
     <a href="/" class="block w-fit mx-auto">
-      <img alt="Logo du site" id="logo" class="m-auto" src="./assets/logo.png" width="125" height="125" />
+      <img alt="Logo du site" id="logo" class="m-auto" src="/logo.png" width="125" height="125" />
       <div class="wrapper">
         <h1 class="text-2xl">Nutri<span class="text-green">Vérif</span></h1>
       </div>
@@ -33,13 +29,15 @@ onMounted(() => {
   <main class="content-center">
     <router-view v-slot="{ Component, route }">
       <transition :name="route.meta.transition || 'slide-fade'">
-        <component :is="Component" />
+        <div :key="route.name" class="md:min-h-[calc(100vh-172px)] flex flex-col justify-center">
+          <component :is="Component" />
+        </div>
       </transition>
     </router-view>
   </main>
 
   <footer class="w-full py-4">
-    <div class="flex flex-wrap justify-center items-center max-w-screen-xl mx-auto py-4 rounded-lg overflow-hidden bg-gray-50">
+    <div class="flex flex-wrap justify-center items-center max-w-screen-xl mx-auto py-4 rounded-lg overflow-hidden">
       <nav class="flex flex-wrap justify-center">
         <div class="px-2 md:px-6">
           <RouterLink :to="'/about-me'" class="text-base leading-6 text-gray-500 hover:text-gray-900">
@@ -52,7 +50,7 @@ onMounted(() => {
           </RouterLink>
         </div>
       </nav>
-      <div class="px-2 md:px-6 text-sm leading-6 text-center text-gray-400">
+      <div class="px-2 md:px-6 text-sm leading-6 text-center text-gray-500 hover:text-gray-900">
         <a href="https://www.linkedin.com/in/salaha-sokhona/" target="_blank">© 2024 Salaha SOKHONA. Tous droits
           réservés.</a>
       </div>
@@ -67,7 +65,7 @@ onMounted(() => {
 
 .slide-fade-leave-active {
   position: absolute;
-  transition: all 0.25s ease-out;
+  transition: all var(--transition-delay) ease-out;
 }
 
 .slide-fade-enter-from,
@@ -85,7 +83,11 @@ main {
 header {
   height: fit-content;
   padding: 10px var(--app-padding-x);
-  background-color: white;
+}
+
+footer>div,
+#back-link svg {
+  backdrop-filter: contrast(0.95);
 }
 
 #logo {
@@ -98,6 +100,12 @@ header {
   bottom: 50%;
   top: 50%;
   left: 0%;
+}
+
+#back-link svg {
+  height: 40px;
+  padding: 10px;
+  border-radius: 999px;
 }
 
 header h1 {
@@ -115,6 +123,13 @@ header h1 {
 
   #logo {
     height: 80px;
+  }
+
+  h2:not(#not-found h2):not(#title) {
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
   }
 }
 </style>

@@ -40,22 +40,12 @@ defineProps({
         </div>
       </div>
       <div class="details md:flex justify-between items-center mt-4 md:mt-0">
-        <img
-          :src="
-            'https://static.openfoodfacts.org/images/attributes/dist/nutriscore-' +
-            nutriscore +
-            '-new-fr.svg'
-          "
-          :alt="'Nutriscore : ' + nutriscore"
-          class="max-h-[50px]"
-        />
-        <img
-          :src="
-            'https://static.openfoodfacts.org/images/attributes/dist/nova-group-' + nova + '.svg'
-          "
-          :alt="'Groupe Nova : ' + nova"
-          class="max-h-[40px]"
-        />
+        <img :src="'https://static.openfoodfacts.org/images/attributes/dist/nutriscore-' +
+          nutriscore +
+          '-new-fr.svg'
+          " :alt="'Nutriscore : ' + nutriscore" class="max-h-[50px]" />
+        <img v-if="nova" :src="'https://static.openfoodfacts.org/images/attributes/dist/nova-group-' + nova + '.svg'
+          " :alt="'Groupe Nova : ' + nova" class="max-h-[40px]" />
       </div>
     </RouterLink>
   </article>

@@ -26,11 +26,12 @@ const routes = [
     name: 'legal-notice',
     meta: { transition: 'slide-fade' }
   },
-  { path: '/:pathMatch(.*)*', 
+  {
+    path: '/:pathMatch(.*)*',
     component: NotFound,
     name: 'NotFound',
     meta: { transition: 'slide-fade' }
-  },
+  }
 ]
 
 const router = createRouter({
