@@ -63,7 +63,6 @@ onMounted(() => {
 
             productsStore.updatePages(pages)
             $('#new-results').classList.add('animate')
-            observer.observe($('#new-results'))
 
             y++
           })
@@ -76,15 +75,10 @@ onMounted(() => {
   }
 
   async function search() {
-    if (aboutMeReactive.value) {
-      $('#about-me').style.height = '0px';
-    }
-
     $('#search-bar button > svg').classList.add('hidden')
     hourglass.forEach((ele) => {
       ele.classList.remove('hidden')
     })
-    
     const result = await searchProduct()
   }
 
@@ -108,10 +102,15 @@ onMounted(() => {
     e.preventDefault()
     window.scrollTo({ top: 0, behavior: 'smooth' })
 
+    if (aboutMeReactive.value) {
+      $('#about-me').style.height = '0px';
+    }
+    
     products.length = 0
     searchTerm = $('#search-input').value
     search()
     productsStore.updatePage(1)
+    observer.observe($('#new-results'))
   })
 
   // Rétracte la barre de navigation
