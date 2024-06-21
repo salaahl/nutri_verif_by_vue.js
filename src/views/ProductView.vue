@@ -3,7 +3,7 @@ import { onBeforeMount, onMounted, reactive } from 'vue'
 import { useRoute } from 'vue-router'
 
 const router = useRoute()
-const route = 'https://world.openfoodfacts.net/api/v2/product/' + router.fullPath.split('/').pop()
+const route = 'https://world.openfoodfacts.org/api/v3/product/' + router.fullPath.split('/').pop() + '.json'
 
 const $ = (id) => {
   return document.querySelector(id)
