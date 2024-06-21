@@ -1,5 +1,5 @@
 <script setup>
-import { onMounted, reactive, computed } from 'vue'
+import { onMounted, onBeforeUpdate, onUpdated, reactive, computed } from 'vue'
 import { mapStores } from 'pinia'
 import { useAppStore } from '../stores/app.ts'
 import { useProductsStore } from '../stores/products.ts'
@@ -18,31 +18,38 @@ let productsReactive = computed({
     return productsStore.getProducts
   }
 })
-
-let loader;
-
-function removeLoader() {
-  clearTimeout(loader)
-
-  loader = setTimeout(() => {
-    if(
-      document.querySelector('#search-bar button > svg') && document.querySelectorAll('.lds-hourglass')
-    ) {
-      document.querySelectorAll('.lds-hourglass').forEach((ele) => {
-        ele.classList.add('hidden')
-      })
-      document.querySelector('#search-bar button > svg').classList.remove('hidden')
-      appStore.showAboutMe(false)
-    }
-  }, 250)
+let $ = (id) => {
+  return document.querySelector(id)
 }
-onMounted(() => {
-  let $ = (id) => {
-    return document.querySelector(id)
-  }
 
+let hourglass = null;
+
+function loader() {
+  if(
+    $('#search-bar button > svg') && hourglass
+  ) {
+    $('#search-bar button > svg').classList.add('hidden')
+    hourglass.forEach((ele) => {
+      ele.classList.remove('hidden')
+    })
+  }
+}
+  
+function removeLoader() {
+  if(
+    $('#search-bar button > svg') && hourglass
+  ) {
+    hourglass.forEach((ele) => {
+      ele.classList.add('hidden')
+    })
+    $('#search-bar button > svg').classList.remove('hidden')
+    appStore.showAboutMe(false)
+  }
+}
+
+onMounted(() => {
   let searchTerm
-  let hourglass = document.querySelectorAll('.lds-hourglass')
+  hourglass = document.querySelectorAll('.lds-hourglass')
 
   function searchProduct() {
     return new Promise((resolve, reject) => {
@@ -95,12 +102,6 @@ onMounted(() => {
     if (aboutMeReactive.value) {
       $('#about-me').style.height = '0px';
     }
-
-    $('#search-bar button > svg').classList.add('hidden')
-    hourglass.forEach((ele) => {
-      ele.classList.remove('hidden')
-    })
-
     const result = await searchProduct()
   }
 
@@ -148,6 +149,16 @@ onMounted(() => {
     }
   }
 })
+
+onBeforeUpdate(() => {
+  console.log('before update')
+  loader();
+})
+
+onUpdated(() => {
+  console.log('updated')
+  removeLoader();
+})
 </script>
 
 <script>
@@ -185,7 +196,7 @@ export default {
     </form>
   </div>
   <div id="search-results" class="mt-12">
-    <ProductCard @vue:mounted="removeLoader" v-for="product in productsReactive" @vue:mount="console.log('new mount')" :key="product.id" :id="product.id" :image="product.image"
+    <ProductCard v-for="product in productsReactive" @vue:mount="console.log('new mount')" :key="product.id" :id="product.id" :image="product.image"
       :brand="product.brand" :name="product.name" :nutriscore="product.nutriscore" :nova="product.nova" />
   </div>
   <div v-if="aboutMeReactive" id="about-me">
