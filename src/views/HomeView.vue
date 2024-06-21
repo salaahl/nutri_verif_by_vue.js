@@ -79,6 +79,12 @@ onMounted(() => {
     if (aboutMeReactive.value) {
       $('#about-me').style.height = '0px';
     }
+
+    $('#search-bar button > svg').classList.add('hidden')
+    hourglass.forEach((ele) => {
+      ele.classList.remove('hidden')
+    })
+    
     const result = await searchProduct()
   }
 
@@ -127,16 +133,7 @@ onMounted(() => {
   }
 })
 
-onBeforeUpdate(() => {
-  console.log('before update')
-  $('#search-bar button > svg').classList.add('hidden')
-  hourglass.forEach((ele) => {
-    ele.classList.remove('hidden')
-  })
-})
-
 onUpdated(() => {
-  console.log('updated')
   hourglass.forEach((ele) => {
     ele.classList.add('hidden')
   })
