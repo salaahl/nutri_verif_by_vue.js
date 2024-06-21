@@ -22,9 +22,11 @@ let $ = (id) => {
   return document.querySelector(id)
 }
 
+let hourglass = null;
+
 onMounted(() => {
   let searchTerm
-  var hourglass = document.querySelectorAll('.lds-hourglass')
+  hourglass = document.querySelectorAll('.lds-hourglass')
 
   function searchProduct() {
     return new Promise((resolve, reject) => {
