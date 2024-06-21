@@ -19,6 +19,23 @@ let productsReactive = computed({
   }
 })
 
+let loader;
+
+function removeLoader() {
+  clearTimeout(loader)
+
+  loader = setTimeout(() => {
+    if(
+      document.querySelector('#search-bar button > svg') && document.querySelectorAll('.lds-hourglass')
+    ) {
+      document.querySelectorAll('.lds-hourglass').forEach((ele) => {
+        ele.classList.add('hidden')
+      })
+      document.querySelector('#search-bar button > svg').classList.remove('hidden')
+      appStore.showAboutMe(false)
+    }
+  }, 250)
+}
 onMounted(() => {
   let $ = (id) => {
     return document.querySelector(id)
@@ -85,14 +102,6 @@ onMounted(() => {
     })
 
     const result = await searchProduct()
-
-    setTimeout(() => {
-      hourglass.forEach((ele) => {
-        ele.classList.add('hidden')
-      })
-      $('#search-bar button > svg').classList.remove('hidden')
-      appStore.showAboutMe(false)
-    }, 1000)
   }
 
   // Intersection observer
@@ -176,7 +185,7 @@ export default {
     </form>
   </div>
   <div id="search-results" class="mt-12">
-    <ProductCard v-for="product in productsReactive" @vue:mount="console.log('new mount')" :key="product.id" :id="product.id" :image="product.image"
+    <ProductCard @vue:mounted="removeLoader" v-for="product in productsReactive" @vue:mount="console.log('new mount')" :key="product.id" :id="product.id" :image="product.image"
       :brand="product.brand" :name="product.name" :nutriscore="product.nutriscore" :nova="product.nova" />
   </div>
   <div v-if="aboutMeReactive" id="about-me">
