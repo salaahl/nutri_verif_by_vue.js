@@ -15,7 +15,6 @@ let aboutMeReactive = computed({
 })
 let productsReactive = computed({
   get() {
-    console.log('updated')
     return productsStore.getProducts
   }
 })
@@ -177,7 +176,7 @@ export default {
     </form>
   </div>
   <div id="search-results" class="mt-12">
-    <ProductCard v-for="product in productsReactive" :key="product.id" :id="product.id" :image="product.image"
+    <ProductCard v-for="product in productsReactive" @vue:mount="console.log('new mount')" :key="product.id" :id="product.id" :image="product.image"
       :brand="product.brand" :name="product.name" :nutriscore="product.nutriscore" :nova="product.nova" />
   </div>
   <div v-if="aboutMeReactive" id="about-me">
