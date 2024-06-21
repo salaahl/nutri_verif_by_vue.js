@@ -15,6 +15,7 @@ let aboutMeReactive = computed({
 })
 let productsReactive = computed({
   get() {
+    console.log('updated')
     return productsStore.getProducts
   }
 })
