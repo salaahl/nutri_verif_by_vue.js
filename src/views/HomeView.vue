@@ -22,34 +22,9 @@ let $ = (id) => {
   return document.querySelector(id)
 }
 
-let hourglass = null;
-
-function loader() {
-  if(
-    $('#search-bar button > svg') && hourglass
-  ) {
-    $('#search-bar button > svg').classList.add('hidden')
-    hourglass.forEach((ele) => {
-      ele.classList.remove('hidden')
-    })
-  }
-}
-  
-function removeLoader() {
-  if(
-    $('#search-bar button > svg') && hourglass
-  ) {
-    hourglass.forEach((ele) => {
-      ele.classList.add('hidden')
-    })
-    $('#search-bar button > svg').classList.remove('hidden')
-    appStore.showAboutMe(false)
-  }
-}
-
 onMounted(() => {
   let searchTerm
-  hourglass = document.querySelectorAll('.lds-hourglass')
+  var hourglass = document.querySelectorAll('.lds-hourglass')
 
   function searchProduct() {
     return new Promise((resolve, reject) => {
@@ -152,12 +127,19 @@ onMounted(() => {
 
 onBeforeUpdate(() => {
   console.log('before update')
-  loader();
+  $('#search-bar button > svg').classList.add('hidden')
+  hourglass.forEach((ele) => {
+    ele.classList.remove('hidden')
+  })
 })
 
 onUpdated(() => {
   console.log('updated')
-  removeLoader();
+  hourglass.forEach((ele) => {
+    ele.classList.add('hidden')
+  })
+  $('#search-bar button > svg').classList.remove('hidden')
+  appStore.showAboutMe(false)
 })
 </script>
 
@@ -196,7 +178,7 @@ export default {
     </form>
   </div>
   <div id="search-results" class="mt-12">
-    <ProductCard v-for="product in productsReactive" @vue:mount="console.log('new mount')" :key="product.id" :id="product.id" :image="product.image"
+    <ProductCard v-for="product in productsReactive" :key="product.id" :id="product.id" :image="product.image"
       :brand="product.brand" :name="product.name" :nutriscore="product.nutriscore" :nova="product.nova" />
   </div>
   <div v-if="aboutMeReactive" id="about-me">
