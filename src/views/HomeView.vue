@@ -56,8 +56,10 @@ onMounted(() => {
               })
             })
 
-            for (let i = 1; (i * 20) < data.count; i++) {
-              pages.value++
+            if (method == 'form') {
+              for (let i = 1; (i * 20) < data.count; i++) {
+                pages.value++
+              }
             }
 
             y++
@@ -69,25 +71,6 @@ onMounted(() => {
       }, 300)
     })
   }
-
-  // Intersection observer
-  const options = {
-    threshold: 0.5
-  }
-
-  const observer = new IntersectionObserver(handleIntersection, options)
-
-  function handleIntersection(entries) {
-    entries.map(async (entry) => {
-      if (entry.isIntersecting && method !== 'form' && page.value < pages.value) {
-        $('#new-results .lds-hourglass').classList.remove('hidden')
-        page.value++
-        await searchProduct()
-      }
-    })
-  }
-
-  observer.observe($('#new-results'))
 
   $('form').addEventListener('submit', async function (e) {
     e.preventDefault()
@@ -113,12 +96,20 @@ onMounted(() => {
     }, 1000)
   })
 
-  // Rétracte la barre de navigation
-  var prevScrollpos = window.scrollY
+  // Cacher la barre de navigation et/ou recharger les résultats :
+  let prevScrollpos = 0
+  let refresh = true
 
-  window.onscroll = function () {
+  window.onscroll = async function () {
+    let h = document.documentElement,
+      b = document.body,
+      st = 'scrollTop',
+      sh = 'scrollHeight';
+
+    let percent = (h[st] || b[st]) / ((h[sh] || b[sh]) - h.clientHeight) * 100;
+    let currentScrollPos = percent
+
     if ($('#search-bar')) {
-      var currentScrollPos = window.scrollY
       const searchBarHeight = $('#search-bar').offsetHeight
 
       if (prevScrollpos > currentScrollPos) {
@@ -126,9 +117,26 @@ onMounted(() => {
       } else {
         $('#search-bar').style.top = '-' + (searchBarHeight + 4) + 'px'
       }
-
-      prevScrollpos = currentScrollPos
     }
+
+    if (
+      $('#search-results')
+      && currentScrollPos > prevScrollpos
+      && currentScrollPos > 80
+      && method !== 'form'
+      && page.value < pages.value
+      && refresh
+    ) {
+      refresh = false
+      $('#new-results .lds-hourglass').classList.remove('hidden')
+      page.value++
+      await searchProduct()
+
+      setTimeout(() => {
+        refresh = true
+      }, 2000)
+    }
+    prevScrollpos = currentScrollPos
   }
 })
 
@@ -239,11 +247,6 @@ export default {
   flex-wrap: wrap;
 }
 
-#new-results {
-  display: flex;
-  min-height: 100px;
-}
-
 .lds-hourglass {
   width: fit-content;
   margin: auto;
@@ -274,6 +277,24 @@ export default {
 @media (min-width: 768px) {
   #about-me {
     height: 130px;
+  }
+}
+
+@supports (animation-timeline: view()) {
+  .product {
+    animation: fade linear;
+    animation-timeline: view();
+    animation-range-end: 30%;
+  }
+
+  @keyframes fade {
+    from {
+      filter: blur(1px) opacity(0);
+    }
+
+    to {
+      filter: blur(0px) opacity(1);
+    }
   }
 }
 
