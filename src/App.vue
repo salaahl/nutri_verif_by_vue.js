@@ -51,7 +51,7 @@ const currentRoute = computed(() => {
         </div>
       </nav>
       <div class="px-2 md:px-6 text-sm leading-6 text-center text-gray-500 hover:text-gray-900">
-        <a href="https://www.linkedin.com/in/salaha-sokhona/" target="_blank">© 2024 Salaha SOKHONA. Tous droits
+        <a href="https://www.linkedin.com/in/salaha-sokhona/" target="_blank">© 2024 Salaha Sokhona. Tous droits
           réservés.</a>
       </div>
     </div>

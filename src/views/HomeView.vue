@@ -1,5 +1,5 @@
 <script setup>
-import { onMounted, onBeforeUpdate, onUpdated, reactive, computed } from 'vue'
+import { onMounted, onUpdated, computed } from 'vue'
 import { mapStores } from 'pinia'
 import { useAppStore } from '../stores/app.ts'
 import { useProductsStore } from '../stores/products.ts'
@@ -7,27 +7,30 @@ import ProductCard from '/src/components/ProductCard.vue'
 
 const appStore = useAppStore()
 const productsStore = useProductsStore()
-let products = reactive([])
-let aboutMeReactive = computed({
-  get() {
-    return appStore.getAboutMe
-  }
+
+let aboutMeStatus = computed({
+  get: () => appStore.getAboutMeStatus,
+  set: (val) => appStore.setAboutMeStatus(val)
 })
-let productsReactive = computed({
-  get() {
-    return productsStore.getProducts
-  }
+let products = computed({
+  get: () => productsStore.getProducts,
+  set: (val) => productsStore.updateProducts(val)
 })
+let page = computed({
+  get: () => productsStore.getPage,
+  set: (val) => productsStore.updatePage(val)
+})
+let pages = computed({
+  get: () => productsStore.getPages,
+  set: (val) => productsStore.updatePages(val)
+})
+
 let $ = (id) => {
   return document.querySelector(id)
 }
-
-let hourglass = null;
+let searchTerm, method;
 
 onMounted(() => {
-  let searchTerm
-  hourglass = document.querySelectorAll('.lds-hourglass')
-
   function searchProduct() {
     return new Promise((resolve, reject) => {
       setTimeout(() => {
@@ -36,14 +39,14 @@ onMounted(() => {
           'https://world.openfoodfacts.org/cgi/search.pl?search_terms=' +
           searchTerm +
           '&page_size=20?&page=' +
-          productsStore.getPage +
+          page.value +
           '&search_simple=1&action=process&json=1'
 
         fetch(route)
           .then((response) => response.json())
           .then((data) => {
             data.products.forEach((product) => {
-              products.push({
+              products.value.push({
                 id: product.id,
                 image: product.image_front_small_url || '/logo.png',
                 brand: product.brands || 'Fiche non finalisée',
@@ -53,16 +56,9 @@ onMounted(() => {
               })
             })
 
-            productsStore.updateProducts(products)
-
-            let pages = 1
-
-            for (let i = 20; i < data.count; i += 20) {
-              pages++
+            for (let i = 1; (i * 20) < data.count; i++) {
+              pages.value++
             }
-
-            productsStore.updatePages(pages)
-            $('#new-results').classList.add('animate')
 
             y++
           })
@@ -74,14 +70,6 @@ onMounted(() => {
     })
   }
 
-  async function search() {
-    $('#search-bar button > svg').classList.add('hidden')
-    hourglass.forEach((ele) => {
-      ele.classList.remove('hidden')
-    })
-    const result = await searchProduct()
-  }
-
   // Intersection observer
   const options = {
     threshold: 0.5
@@ -90,27 +78,39 @@ onMounted(() => {
   const observer = new IntersectionObserver(handleIntersection, options)
 
   function handleIntersection(entries) {
-    entries.map((entry) => {
-      if (entry.isIntersecting && productsStore.getPage < productsStore.getPages) {
-        productsStore.incrementPage()
-        search()
+    entries.map(async (entry) => {
+      if (entry.isIntersecting && method !== 'form' && page.value < pages.value) {
+        $('#new-results .lds-hourglass').classList.remove('hidden')
+        page.value++
+        await searchProduct()
       }
     })
   }
 
-  $('form').addEventListener('submit', function (e) {
-    e.preventDefault()
-    window.scrollTo({ top: 0, behavior: 'smooth' })
+  observer.observe($('#new-results'))
 
-    if (aboutMeReactive.value) {
+  $('form').addEventListener('submit', async function (e) {
+    e.preventDefault()
+
+    $('#search-bar button > svg').classList.add('hidden')
+    $('#search-bar .lds-hourglass').classList.remove('hidden')
+
+    method = 'form'
+    window.scrollTo({ top: 0, behavior: 'smooth' })
+    page.value = 1
+
+    if (aboutMeStatus.value) {
       $('#about-me').style.height = '0px';
     }
-    
-    products.length = 0
+
+    products.value.length = 0
     searchTerm = $('#search-input').value
-    search()
-    productsStore.updatePage(1)
-    observer.observe($('#new-results'))
+
+    await searchProduct()
+
+    setTimeout(() => {
+      method = null
+    }, 1000)
   })
 
   // Rétracte la barre de navigation
@@ -133,11 +133,17 @@ onMounted(() => {
 })
 
 onUpdated(() => {
-  hourglass.forEach((ele) => {
-    ele.classList.add('hidden')
-  })
-  $('#search-bar button > svg').classList.remove('hidden')
-  appStore.showAboutMe(false)
+  // Les modifications s'enlèvent et se remettent beaucoup trop vite sans le timer
+  let timer;
+  clearTimeout(timer)
+
+  timer = setTimeout(() => {
+    document.querySelectorAll('.lds-hourglass').forEach((ele) => {
+      ele.classList.add('hidden')
+    })
+    $('#search-bar button > svg').classList.remove('hidden')
+    aboutMeStatus.value = false
+  }, 500)
 })
 </script>
 
@@ -176,10 +182,10 @@ export default {
     </form>
   </div>
   <div id="search-results" class="mt-12">
-    <ProductCard v-for="product in productsReactive" :key="product.id" :id="product.id" :image="product.image"
+    <ProductCard v-for="product in products" :key="product.id" :id="product.id" :image="product.image"
       :brand="product.brand" :name="product.name" :nutriscore="product.nutriscore" :nova="product.nova" />
   </div>
-  <div v-if="aboutMeReactive" id="about-me">
+  <div v-if="aboutMeStatus" id="about-me">
     <span class="py-1 font-thin">
       NutriVérif est alimentée par "Open Food Facts", une base de données de produits alimentaires créée par tous et
       pour tous.

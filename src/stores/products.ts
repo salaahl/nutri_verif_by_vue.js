@@ -10,9 +10,6 @@ export const useProductsStore = defineStore('products', {
     updateProducts(payload: any) {
       this.products = payload
     },
-    incrementPage() {
-      this.page++
-    },
     updatePage(payload: number) {
       this.page = payload
     },
