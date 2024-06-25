@@ -1,10 +1,12 @@
 <script setup>
 import { onMounted, onUpdated, computed } from 'vue'
+import { useRouter } from 'vue-router'
 import { mapStores } from 'pinia'
 import { useAppStore } from '../stores/app.ts'
 import { useProductsStore } from '../stores/products.ts'
 import ProductCard from '/src/components/ProductCard.vue'
 
+const router = useRouter()
 const appStore = useAppStore()
 const productsStore = useProductsStore()
 
@@ -75,25 +77,31 @@ onMounted(() => {
   $('form').addEventListener('submit', async function (e) {
     e.preventDefault()
 
-    $('#search-bar button > svg').classList.add('hidden')
-    $('#search-bar .lds-hourglass').classList.remove('hidden')
-
-    method = 'form'
-    window.scrollTo({ top: 0, behavior: 'smooth' })
-    page.value = 1
-
-    if (aboutMeStatus.value) {
-      $('#about-me').style.height = '0px';
-    }
-
-    products.value.length = 0
     searchTerm = $('#search-input').value
+    let regex = /^[0-9]{8,13}$/;
 
-    await searchProduct()
+    if (regex.test(searchTerm)) {
+      router.push({ name: 'product', params: { id: searchTerm } })
+    } else {
+      $('#search-bar button > svg').classList.add('hidden')
+      $('#search-bar .lds-hourglass').classList.remove('hidden')
 
-    setTimeout(() => {
-      method = null
-    }, 1000)
+      method = 'form'
+      window.scrollTo({ top: 0, behavior: 'smooth' })
+      page.value = 1
+
+      if (aboutMeStatus.value) {
+        $('#about-me').style.height = '0px';
+      }
+
+      products.value.length = 0
+
+      await searchProduct()
+
+      setTimeout(() => {
+        method = null
+      }, 1000)
+    }
   })
 
   // Cacher la barre de navigation et/ou recharger les résultats :
@@ -176,7 +184,7 @@ export default {
         </div>
         <input type="text" id="search-input"
           class="bg-gray-50 border-4 text-gray-900 text-sm rounded-full outline-0 focus:ring-gray-400 focus:border-gray-400 block w-full ps-10 p-2.5"
-          placeholder="Un nom de produit, une marque ou un type d'aliment" required />
+          placeholder="Un nom de produit, un code-barres, une marque ou un type d'aliment" required />
       </div>
       <button type="submit"
         class="p-2.5 ms-2 text-sm font-medium text-white bg-blue-700 rounded-full border border-blue-700 hover:bg-blue-800 focus:ring-4 focus:outline-none focus:ring-blue-300">

@@ -1,13 +1,9 @@
 <script setup>
 import { onBeforeMount, reactive } from 'vue'
-import { useRoute } from 'vue-router'
+import { useRouter } from 'vue-router'
 
-const router = useRoute()
-const route = 'https://world.openfoodfacts.org/api/v3/product/' + router.fullPath.split('/').pop() + '.json'
-
-const $ = (id) => {
-  return document.querySelector(id)
-}
+const router = useRouter()
+const route = 'https://world.openfoodfacts.org/api/v3/product/' + router.currentRoute.value.fullPath.split('/').pop() + '.json'
 
 let product = reactive([{
   image: null,
@@ -45,8 +41,12 @@ onBeforeMount(() => {
       product.calories100g = data.product.nutriments['energy-kcal_100g']
       product.manufacturingPlace = data.product.manufacturing_places
       product.productSheet = data.product.link
+    }).catch((error) => {
+      console.log(error.message)
+      router.replace({ name: 'NotFound' })
     })
 })
+
 </script>
 
 <template>
