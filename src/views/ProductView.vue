@@ -7,7 +7,8 @@ const route = 'https://world.openfoodfacts.org/api/v3/product/' + router.current
 
 let product = reactive([{
   image: null,
-  title: null,
+  brand: null,
+  generic_name: null,
   lastUpdate: null,
   nutriscore: null,
   novaGroup: null,
@@ -30,7 +31,8 @@ onBeforeMount(() => {
     .then((response) => response.json())
     .then((data) => {
       product.image = data.product.image_front_url || '/logo.png'
-      product.title = data.product.brands + ' - ' + data.product.generic_name_fr
+      product.brand = data.product.brands
+      product.generic_name = data.product.generic_name_fr
       product.lastUpdate = new Date(
         data.product.last_updated_t * 1000
       ).toLocaleDateString('fr-FR')
@@ -55,7 +57,7 @@ onBeforeMount(() => {
     <section id="product-images-container"
       class="w-full md:w-2/4 flex items-center justify-center md:mb-[10px] max-md:rounded-r-lg rounded-l-lg">
       <div class="md:w-full md:min-w-[auto]">
-        <img v-if="product.image" id="product-img" :src="product.image" :alt="product.title"
+        <img v-if="product.image" id="product-img" :src="product.image" :alt="product.generic_name"
           class="h-auto w-auto m-auto md:object-none" />
       </div>
     </section>
@@ -63,7 +65,10 @@ onBeforeMount(() => {
       <div id="product-detail" class="h-full">
         <div class="h-full flex flex-col justify-evently">
           <div>
-            <h2 v-if="product.title" id="title" class="text-xl md:text-2xl uppercase">{{ product.title }}</h2>
+            <h2 id="title" class="text-xl md:text-2xl uppercase">
+              <span v-if="product.brand" id="brand" class="text-[#00bd7e]">{{ product.brand }} - </span>
+              <span v-if="product.generic_name" id="generic-name">{{ product.generic_name }}</span>
+            </h2>
             <h3 v-if="product.lastUpdate" class="text-sm">Dernière mise à jour : <span id="last-update">{{
               product.lastUpdate }}</span>
             </h3>

@@ -277,7 +277,7 @@ export default {
 #search-bar .lds-hourglass:after {
   margin: 0;
   border: 0.5rem solid #fff;
-  border-color: black transparent var(--color-green) transparent;
+  border-color: hsla(160, 100%, 37%, 0.6) transparent var(--color-green) transparent;
 }
 
 #new-results .lds-hourglass:after {
