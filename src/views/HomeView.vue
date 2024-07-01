@@ -235,7 +235,7 @@ export default {
   margin-left: auto;
   margin-right: auto;
   z-index: 99;
-  transition: top 0.5s;
+  transition: top 0.25s;
 }
 
 #search-bar-icon {
