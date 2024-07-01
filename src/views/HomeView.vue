@@ -14,6 +14,10 @@ let aboutMeStatus = computed({
   get: () => appStore.getAboutMeStatus,
   set: (val) => appStore.setAboutMeStatus(val)
 })
+let searchInput = computed({
+  get: () => appStore.getSearchInput,
+  set: (val) => appStore.setSearchInput(val)
+})
 let products = computed({
   get: () => productsStore.getProducts,
   set: (val) => productsStore.updateProducts(val)
@@ -30,7 +34,7 @@ let pages = computed({
 let $ = (id) => {
   return document.querySelector(id)
 }
-let searchTerm, method;
+let method;
 
 onMounted(() => {
   function searchProduct() {
@@ -39,7 +43,7 @@ onMounted(() => {
         let y = 0
         let route =
           'https://world.openfoodfacts.org/cgi/search.pl?search_terms=' +
-          searchTerm +
+          searchInput.value +
           '&page_size=20?&page=' +
           page.value +
           '&search_simple=1&action=process&json=1'
@@ -77,11 +81,11 @@ onMounted(() => {
   $('form').addEventListener('submit', async function (e) {
     e.preventDefault()
 
-    searchTerm = $('#search-input').value
+    searchInput.value = $('#search-input').value
     let regex = /^[0-9]{8,13}$/;
 
-    if (regex.test(searchTerm)) {
-      router.push({ name: 'product', params: { id: searchTerm } })
+    if (regex.test(searchInput.value)) {
+      router.push({ name: 'product', params: { id: searchInput.value } })
     } else {
       $('#search-bar button > svg').classList.add('hidden')
       $('#search-bar .lds-hourglass').classList.remove('hidden')
@@ -290,18 +294,18 @@ export default {
 
 @supports (animation-timeline: view()) {
   .product {
-    animation: fade linear;
+    animation: translate linear;
     animation-timeline: view();
-    animation-range-end: 30%;
+    animation-range-end: 20%;
   }
 
-  @keyframes fade {
+  @keyframes translate {
     from {
-      filter: blur(1px) opacity(0);
+      transform: translateY(50px);
     }
 
     to {
-      filter: blur(0px) opacity(1);
+      transform: translateX(0px);
     }
   }
 }
