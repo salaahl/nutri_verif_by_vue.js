@@ -305,7 +305,7 @@ export default {
     }
 
     to {
-      transform: translateX(0px);
+      transform: translateY(0px);
     }
   }
 }
