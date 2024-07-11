@@ -118,8 +118,7 @@ onMounted(() => {
       st = 'scrollTop',
       sh = 'scrollHeight';
 
-    let percent = (h[st] || b[st]) / ((h[sh] || b[sh]) - h.clientHeight) * 100;
-    let currentScrollPos = percent
+    let currentScrollPos = (h[st] || b[st]) / ((h[sh] || b[sh]) - h.clientHeight) * 100;
 
     if ($('#search-bar')) {
       const searchBarHeight = $('#search-bar').offsetHeight
@@ -134,7 +133,7 @@ onMounted(() => {
     if (
       $('#search-results')
       && currentScrollPos > prevScrollpos
-      && currentScrollPos > 80
+      && currentScrollPos > 70
       && method !== 'form'
       && page.value < pages.value
       && refresh

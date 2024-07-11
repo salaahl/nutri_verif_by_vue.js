@@ -4,7 +4,7 @@ export const useProductsStore = defineStore('products', {
   state: () => ({
     products: [],
     page: 1,
-    pages: 1
+    pages: 0
   }),
   actions: {
     updateProducts(payload: any) {
