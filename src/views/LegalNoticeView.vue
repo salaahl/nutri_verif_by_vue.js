@@ -35,6 +35,6 @@
 
 <style scoped>
 p {
-  margin: 20px auto;
+  margin: 20px 0;
 }
 </style>
