@@ -61,7 +61,7 @@ onBeforeMount(() => {
 <template>
   <div
     id="product-container"
-    class="md:min-h-[calc(100vh-172px)] flex flex-wrap justify-between md:flex-nowrap flex-col md:flex-row"
+    class="md:min-h-[calc(100vh-272px)] flex flex-wrap justify-between md:flex-nowrap flex-col md:flex-row"
   >
     <section
       id="product-images-container"
@@ -87,12 +87,12 @@ onBeforeMount(() => {
       <div id="product-detail" class="h-full">
         <div class="h-full flex flex-col justify-evently">
           <div>
-            <h2 id="title" class="text-xl md:text-2xl uppercase">
+            <h1 class="title text-xl md:text-2xl uppercase">
               <span v-if="product.brand" id="brand" class="text-[#00bd7e]"
                 >{{ product.brand }} -
               </span>
               <span v-if="product.generic_name" id="generic-name">{{ product.generic_name }}</span>
-            </h2>
+            </h1>
             <h3 v-if="product.lastUpdate" class="text-sm">
               Dernière mise à jour : <span id="last-update">{{ product.lastUpdate }}</span>
             </h3>
@@ -154,7 +154,7 @@ onBeforeMount(() => {
 
 <style>
 #product-images-container {
-  backdrop-filter: contrast(0.95);
+  background-color: rgb(0 0 0 / 0.025);
 }
 
 #product-details-container .lds-hourglass:after {
