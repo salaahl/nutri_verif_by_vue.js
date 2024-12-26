@@ -65,9 +65,9 @@ onBeforeMount(() => {
   >
     <section
       id="product-images-container"
-      class="w-full md:w-2/4 flex items-center justify-center md:mb-[10px] max-md:rounded-r-lg rounded-l-lg"
+      class="w-full md:w-2/4 flex items-center justify-center max-md:border-b-4 md:border-r-4"
     >
-      <div class="md:w-full md:min-w-[auto]">
+      <div class="md:w-full md:min-w-[auto] mb-[50px] md:mb-0">
         <div class="loader-container h-full flex justify-center items-center">
           <img src="/logo.png" class="h-auto w-auto m-auto opacity-50 md:object-none" />
         </div>
@@ -80,8 +80,8 @@ onBeforeMount(() => {
         />
       </div>
     </section>
-    <section id="product-details-container" class="w-full md:w-2/4 max-md:my-8 md:pl-6">
-      <div class="loader-container h-full flex justify-center items-center">
+    <section id="product-details-container" class="relative w-full md:w-2/4 max-md:my-8 md:pl-6">
+      <div class="loader-container md:absolute h-full w-full flex justify-center items-center">
         <div class="lds-hourglass"></div>
       </div>
       <div id="product-detail" class="h-full">
@@ -153,10 +153,6 @@ onBeforeMount(() => {
 </template>
 
 <style>
-#product-images-container {
-  background-color: rgb(0 0 0 / 0.025);
-}
-
 #product-details-container .lds-hourglass:after {
   margin: 8px;
   border: 32px solid #fff;
