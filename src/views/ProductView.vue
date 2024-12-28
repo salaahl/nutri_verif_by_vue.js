@@ -1,5 +1,5 @@
 <script setup>
-import { onBeforeMount, reactive } from 'vue'
+import { onBeforeMount, onMounted, onUnmounted, reactive } from 'vue'
 import { useRouter } from 'vue-router'
 
 const router = useRouter()
@@ -56,18 +56,26 @@ onBeforeMount(() => {
       router.replace({ name: 'NotFound' })
     })
 })
+
+onMounted(() => {
+  document.querySelector('body').style.backgroundColor = 'rgb(243, 244, 246, 1)'
+})
+
+onUnmounted(() => {
+  document.querySelector('body').style.backgroundColor = 'rgb(255, 255, 255, 1)'
+})
 </script>
 
 <template>
   <div
     id="product-container"
-    class="md:min-h-[calc(100vh-272px)] flex flex-wrap justify-between md:flex-nowrap flex-col md:flex-row"
+    class="md:min-h-[calc(100vh-344px)] flex flex-wrap justify-between md:flex-nowrap flex-col md:flex-row"
   >
     <section
       id="product-images-container"
-      class="w-full md:w-2/4 flex items-center justify-center max-md:border-b-4 md:border-r-4"
+      class="w-full md:w-2/4 flex items-center justify-center bg-white rounded-xl"
     >
-      <div class="md:w-full md:min-w-[auto] mb-[50px] md:mb-0">
+      <div class="md:w-full md:min-w-[auto] my-[50px] md:m-0">
         <div class="loader-container h-full flex justify-center items-center">
           <img src="/logo.png" class="h-auto w-auto m-auto opacity-50 md:object-none" />
         </div>
