@@ -43,7 +43,7 @@ onMounted(() => {
   // Function to search products from the API
   async function searchProduct() {
     const fields = 'id,image_front_small_url,brands,generic_name_fr,nutriscore_grade,nova_group'
-    const route = `https://world.openfoodfacts.org/cgi/search.pl?search_terms=${searchInput.value}&fields=${fields}&page_size=20&page=${page.value}&search_simple=1&action=process&json=1`
+    const route = `https://world.openfoodfacts.org/cgi/search.pl?search_terms=${searchInput.value}&fields=${fields}&sort_by=popularity_key&page_size=20&page=${page.value}&search_simple=1&action=process&json=1`
 
     try {
       const response = await fetch(route)
@@ -84,7 +84,11 @@ onMounted(() => {
       method = 'form'
       window.scrollTo({ top: 0, behavior: 'smooth' })
       page.value = 1
-      if (aboutMeStatus.value) $('#about-me').style.height = '0px'
+      if (aboutMeStatus.value) {
+        $('#website-name').style.opacity = '1'
+        $('#header').style.display = 'none'
+        $('#about-me').style.height = '0'
+      }
 
       products.value.length = 0
       await searchProduct()
@@ -152,6 +156,10 @@ onUpdated(() => {
 </script>
 
 <template>
+  <div v-if="aboutMeStatus" id="header" class="absolute top-0 md:top-[10%] w-full">
+    <h1 class="text-6xl font-light text-center">Nutri<span class="text-[#00bd7e]">Vérif</span></h1>
+    <h2 class="text-lg font-thin text-center">Manger (plus) sain</h2>
+  </div>
   <div id="search-bar" class="relative">
     <form class="flex items-center">
       <label for="search-input" class="sr-only">Search</label>
@@ -231,7 +239,18 @@ onUpdated(() => {
   </div>
 </template>
 
+<style>
+#website-name {
+  opacity: 0;
+  transition: opacity 0.5s;
+}
+</style>
+
 <style scoped>
+h1 {
+  font-family: 'Grand Hotel', cursive;
+}
+
 #search-bar {
   position: sticky;
   width: 100%;

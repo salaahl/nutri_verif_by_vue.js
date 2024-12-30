@@ -1,10 +1,15 @@
 <script setup>
-import { onBeforeMount, onMounted, onUnmounted, reactive, watch } from 'vue'
+import { onBeforeMount, onMounted, onUnmounted, computed, reactive, watch } from 'vue'
 import { useRoute, useRouter, onBeforeRouteUpdate } from 'vue-router'
+import { useAppStore } from '../stores/app.ts'
+import { useProductsStore } from '../stores/products.ts'
+import { franc } from 'franc-min'
 import ProductCard from '/src/components/ProductCard.vue'
 
 const router = useRouter()
 const route = useRoute()
+const appStore = useAppStore()
+const productsStore = useProductsStore()
 
 const product = reactive({
   id: null,
@@ -68,7 +73,7 @@ const fetchProduct = async () => {
     image: p.image_front_url || '/logo.png',
     brand: p.brands,
     generic_name: p.generic_name_fr,
-    categories: p.categories_hierarchy,
+    categories: p.categories.split(','),
     lastUpdate: new Date(p.last_updated_t * 1000).toLocaleDateString('fr-FR'),
     nutriscore: p.nutriscore_grade,
     novaGroup: p.nova_group,
@@ -81,12 +86,80 @@ const fetchProduct = async () => {
   if (product.nutriscore !== 'a') fetchMoreProducts() // Fetch similar products if Nutriscore isn't A
 }
 
+const isFrench = (text) => {
+  return franc(text) === 'fra'
+}
+
+const filteredCategories = computed(() => {
+  if (!product.categories.length) return []
+  return product.categories
+    .filter((category) => {
+      // Si la catégorie commence par 'fr:', elle est incluse
+      // Si elle ne commence pas par 'fr:', on vérifie si c'est du français
+      return category.trim().startsWith('fr:') || isFrench(category)
+    })
+    .map((category) => {
+      // Si la catégorie commence par 'fr:', on enlève le préfixe 'fr:'
+      return category.trim().startsWith('fr:')
+        ? category.trim().replace(/fr:/, '').trim()
+        : category
+    })
+})
+
+setTimeout(() => {
+  console.log('Filtered categories:', filteredCategories.value)
+}, 1000)
+
+// Search for products by category
+const searchByCategory = async (category) => {
+  let searchInput = computed({
+    get: () => appStore.getSearchInput,
+    set: (val) => appStore.setSearchInput(val)
+  })
+
+  let page = computed({
+    get: () => productsStore.getPage,
+    set: (val) => productsStore.updatePage(val)
+  })
+
+  let products = computed({
+    get: () => productsStore.getProducts,
+    set: (val) => productsStore.updateProducts(val)
+  })
+
+  searchInput.value = category // Set the search input to the selected category
+  page.value = 1 // Reset the page to 1
+  products.value.length = 0 // Clear the products array before adding new data
+
+  const fields = 'id,image_front_small_url,brands,generic_name_fr,nutriscore_grade,nova_group'
+  const url = `https://world.openfoodfacts.org/cgi/search.pl?search_terms=${category}&fields=${fields}&sort_by=popularity_key&page_size=20&page=1&search_simple=1&action=process&json=1`
+
+  try {
+    const response = await fetch(url)
+    const data = await response.json()
+    data.products.forEach((product) => {
+      products.value.push({
+        id: product.id,
+        image: product.image_front_small_url || '/logo.png',
+        brand: product.brands || 'Fiche non finalisée',
+        name: product.generic_name_fr || 'Fiche non finalisée',
+        nutriscore: product.nutriscore_grade,
+        nova: product.nova_group
+      })
+    })
+
+    router.push({ name: 'home' })
+  } catch (error) {
+    console.error('Error fetching data:', error.message)
+  }
+}
+
 // Fetch similar products
 const fetchMoreProducts = async () => {
   if (!product.categories?.length) return
 
   const fields =
-    'id,categories_hierarchy,image_front_url,brands,generic_name_fr,nutriscore_grade,nova_group,last_updated_t,ingredients_text_fr,nutriments,manufacturing_places,link'
+    'id,categories,image_front_url,brands,generic_name_fr,nutriscore_grade,nova_group,last_updated_t,ingredients_text_fr,nutriments,manufacturing_places,link'
   const url = `https://world.openfoodfacts.org/api/v2/search?categories_tags=${product.categories.slice(0, 4).join(',')}&fields=${fields}&sort_by=nutriscore_score,popularity_key&page_size=4&action=process&json=1`
   const data = await fetchData(url)
 
@@ -101,7 +174,7 @@ const fetchMoreProducts = async () => {
           image: p.image_front_url || '/logo.png',
           brand: p.brands,
           generic_name: p.generic_name_fr,
-          categories: p.categories_hierarchy,
+          categories: p.categories.split(','),
           lastUpdate: new Date(p.last_updated_t * 1000).toLocaleDateString('fr-FR'),
           nutriscore: p.nutriscore_grade,
           novaGroup: p.nova_group,
@@ -240,6 +313,16 @@ watch(
                 product.productSheet
               }}</a>
             </h4>
+            <div v-if="filteredCategories.length" id="tags" class="mt-4">
+              <button
+                v-for="category in filteredCategories"
+                :key="category"
+                class="tag mt-2 bg-[indianred] text-white py-2 px-4 rounded-full mr-2"
+                @click="searchByCategory(category)"
+              >
+                #{{ category }}
+              </button>
+            </div>
           </div>
         </div>
       </div>
@@ -251,7 +334,9 @@ watch(
       id="more-products"
       class="w-full flex flex-wrap lg:flex-nowrap items-center justify-between p-8 lg:px-16 bg-white rounded-xl"
     >
-      <h2 class="title w-full lg:w-1/4 text-center lg:text-left text-2xl">Alternatives</h2>
+      <h2 class="title w-full lg:w-1/4 text-center lg:text-left text-3xl lg:text-2xl">
+        Alternatives
+      </h2>
       <ProductCard
         v-for="p in moreProducts"
         :key="p.id"
@@ -272,6 +357,15 @@ watch(
   margin: 8px;
   border: 32px solid #fff;
   border-color: black transparent var(--color-green) transparent;
+}
+
+.tag {
+  transition: all 0.35s ease-in-out;
+}
+
+.tag:hover {
+  color: #000;
+  background-color: whitesmoke;
 }
 
 #more-products > .title {

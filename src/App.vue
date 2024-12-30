@@ -30,7 +30,7 @@ const currentRoute = computed(() => {
   <main class="content-center">
     <router-view v-slot="{ Component, route }">
       <transition :name="route.meta.transition || 'slide-fade'">
-        <div :key="route.name" class="md:min-h-[calc(100vh-272px)] flex flex-col justify-center">
+        <div :key="route.name" class="min-h-[calc(100vh-272px)] flex flex-col justify-center">
           <component :is="Component" />
         </div>
       </transition>
