@@ -18,8 +18,8 @@ const product = reactive({
   generic_name: null,
   categories: [],
   lastUpdate: null,
-  nutriscore: null,
-  novaGroup: null,
+  nutriscore: 'unknown',
+  novaGroup: 'unknown',
   ingredients: null,
   calories100g: null,
   manufacturingPlace: null,
@@ -47,8 +47,8 @@ const resetProduct = () => {
     generic_name: null,
     categories: [],
     lastUpdate: null,
-    nutriscore: null,
-    novaGroup: null,
+    nutriscore: 'unknown',
+    novaGroup: 'unknown',
     ingredients: null,
     calories100g: null,
     manufacturingPlace: null,
@@ -75,8 +75,8 @@ const fetchProduct = async () => {
     generic_name: p.generic_name_fr,
     categories: p.categories.split(','),
     lastUpdate: new Date(p.last_updated_t * 1000).toLocaleDateString('fr-FR'),
-    nutriscore: p.nutriscore_grade,
-    novaGroup: p.nova_group,
+    nutriscore: p.nutriscore_grade || 'unknown',
+    novaGroup: p.nova_group || 'unknown',
     ingredients: p.ingredients_text_fr,
     calories100g: p.nutriments?.['energy-kcal_100g'],
     manufacturingPlace: p.manufacturing_places,
@@ -176,8 +176,8 @@ const fetchMoreProducts = async () => {
           generic_name: p.generic_name_fr,
           categories: p.categories.split(','),
           lastUpdate: new Date(p.last_updated_t * 1000).toLocaleDateString('fr-FR'),
-          nutriscore: p.nutriscore_grade,
-          novaGroup: p.nova_group,
+          nutriscore: p.nutriscore_grade || 'unknown',
+          novaGroup: p.nova_group || 'unknown',
           ingredients: p.ingredients_text_fr,
           calories100g: p.nutriments?.['energy-kcal_100g'],
           manufacturingPlace: p.manufacturing_places,
@@ -203,14 +203,6 @@ const updateProduct = async (productId) => {
 }
 
 onBeforeMount(fetchProduct) // Fetch product on initial mount
-
-onMounted(() => {
-  document.querySelector('body').style.backgroundColor = 'rgb(243, 244, 246, 1)'
-})
-
-onUnmounted(() => {
-  document.querySelector('body').style.backgroundColor = 'rgb(255, 255, 255, 1)'
-})
 
 onBeforeRouteUpdate((to) => {
   updateProduct(to.params.id) // Update product when route changes
@@ -296,7 +288,7 @@ watch(
             <h3 v-if="product.ingredients" class="mt-4 font-semibold">Ingrédients :</h3>
             <h4 v-if="product.ingredients" id="ingredients">{{ product.ingredients }}</h4>
             <h3 v-if="product.calories100g" class="mt-4 font-semibold">
-              Calories pour 100 grammes :
+              Calories pour 100 grammes / 100 millilitres :
             </h3>
             <h4 v-if="product.calories100g" id="calories-100g">{{ product.calories100g }}</h4>
             <h3 v-if="product.manufacturingPlace" class="mt-4 font-semibold">
@@ -346,7 +338,9 @@ watch(
         :name="p.generic_name"
         :nutriscore="p.nutriscore"
         :nova="p.novaGroup"
-        :class="['w-full max-w-[300px] lg:max-w-[250px] mt-8 lg:mt-0 mx-auto lg:ml-8']"
+        :class="[
+          'w-full lg:w-[23%] max-w-[300px] lg:max-w-[250px] mt-8 lg:mt-0 mx-auto lg:ml-[2%]'
+        ]"
       />
     </section>
   </aside>

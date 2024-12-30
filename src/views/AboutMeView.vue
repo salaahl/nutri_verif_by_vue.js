@@ -12,7 +12,7 @@ onMounted(() => {
 
 onUnmounted(() => {
   document.querySelector('#website-name > span').style.color = 'hsla(160, 100%, 37%, 1)'
-  document.querySelector('body').style.backgroundColor = 'rgb(255, 255, 255, 1)'
+  document.querySelector('body').style.backgroundColor = 'whitesmoke'
 })
 </script>
 

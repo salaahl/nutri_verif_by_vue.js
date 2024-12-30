@@ -17,11 +17,11 @@ defineProps({
     required: true
   },
   nutriscore: {
-    type: String,
+    type: [Number, String],
     required: false
   },
   nova: {
-    type: Number,
+    type: [Number, String],
     required: false
   }
 })
@@ -50,7 +50,6 @@ defineProps({
           class="max-h-[50px]"
         />
         <img
-          v-if="nova"
           :src="
             'https://static.openfoodfacts.org/images/attributes/dist/nova-group-' + nova + '.svg'
           "
@@ -63,15 +62,10 @@ defineProps({
 </template>
 
 <style scoped>
-.product h4 {
-  white-space: nowrap;
-  text-overflow: ellipsis;
-  overflow: hidden;
-}
-
-.thumbnail {
-  border-radius: 999px;
-  overflow: hidden;
+.product {
+  padding: 15px;
+  background-color: white;
+  border-radius: 10px;
   transition: all 1s
     linear(
       0 0%,
@@ -109,11 +103,22 @@ defineProps({
     );
 }
 
-.thumbnail:hover {
+.product:hover {
   transform: translateY(-1%);
   box-shadow:
     0px 10px 15px 0px rgb(60 64 67 / 10%),
     0 10px 15px 0px rgb(60 64 67 / 5%);
+}
+
+.product h4 {
+  white-space: nowrap;
+  text-overflow: ellipsis;
+  overflow: hidden;
+}
+
+.thumbnail {
+  border-radius: 999px;
+  overflow: hidden;
 }
 
 .thumbnail img {

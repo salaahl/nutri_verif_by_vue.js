@@ -54,8 +54,8 @@ onMounted(() => {
           image: product.image_front_small_url || '/logo.png',
           brand: product.brands || 'Fiche non finalisée',
           name: product.generic_name_fr || 'Fiche non finalisée',
-          nutriscore: product.nutriscore_grade,
-          nova: product.nova_group
+          nutriscore: product.nutriscore_grade || 'unknown',
+          nova: product.nova_group || 'unknown'
         })
       })
 
@@ -156,11 +156,11 @@ onUpdated(() => {
 </script>
 
 <template>
-  <div v-if="aboutMeStatus" id="header" class="absolute top-0 md:top-[10%] w-full">
+  <div v-if="aboutMeStatus" id="header" class="w-full mb-16">
     <h1 class="text-6xl font-light text-center">Nutri<span class="text-[#00bd7e]">Vérif</span></h1>
     <h2 class="text-lg font-thin text-center">Manger (plus) sain</h2>
   </div>
-  <div id="search-bar" class="relative">
+  <div id="search-bar" class="relative mb-16">
     <form class="flex items-center">
       <label for="search-input" class="sr-only">Search</label>
       <div class="relative w-full">
@@ -203,7 +203,7 @@ onUpdated(() => {
       </button>
     </form>
   </div>
-  <div id="search-results" class="mt-12">
+  <div id="search-results">
     <ProductCard
       v-for="product in products"
       :key="product.id"
@@ -215,7 +215,7 @@ onUpdated(() => {
       :nova="product.nova"
     />
   </div>
-  <div v-if="aboutMeStatus" id="about-me">
+  <div v-if="aboutMeStatus" id="about-me" class="mb-16">
     <span class="py-1 font-thin">
       NutriVérif est alimentée par "Open Food Facts", une base de données de produits alimentaires
       créée par tous et pour tous.
@@ -233,6 +233,45 @@ onUpdated(() => {
         />
       </svg>
     </RouterLink>
+  </div>
+  <div v-if="aboutMeStatus" id="explanations">
+    <h2 class="title mb-8 text-2xl lg:text-3xl font-thin">
+      Votre alimentation <span class="text-[indianred]">décryptée</span>
+    </h2>
+    <section class="p-4 md:p-8 bg-white rounded-lg">
+      <article id="nutriscore-explanation" class="w-full mr-auto mb-8 text-justify">
+        <div class="flex flex-col md:flex-row md:justify-between items-center">
+          <img
+            src="https://static.openfoodfacts.org/images/attributes/dist/nutriscore-a.svg"
+            alt="Nutriscore"
+            class="w-[10rem] mb-4 md:mb-0 md:mr-8"
+          />
+          <p class="w-full md:w-3/4 font-thin">
+            Le Nutri-Score est un étiquetage nutritionnel simple qui aide les consommateurs à
+            choisir des aliments plus sains. Représenté par une échelle de A à E, avec des couleurs
+            du vert au rouge, il évalue les produits selon leur composition, en équilibrant les
+            éléments bénéfiques (fibres, protéines) et ceux à limiter (sucre, sel). Facile à
+            comprendre, il encourage une alimentation équilibrée et des choix éclairés.
+          </p>
+        </div>
+      </article>
+      <article id="nova-explanation" class="w-full ml-auto mb-8 text-justify">
+        <div class="flex flex-col md:flex-row md:justify-between items-center">
+          <img
+            src="https://static.openfoodfacts.org/images/attributes/dist/nova-group-1.svg"
+            alt="NOVA"
+            class="w-[2.5rem] mb-4 md:mb-0 md:mr-8"
+          />
+          <p class="w-full md:w-3/4 font-thin">
+            Le NOVA est un étiquetage nutritionnel simple qui aide les consommateurs à choisir des
+            aliments plus sains. Représenté par une échelle de 1 à 4, avec des couleurs du vert au
+            rouge, il évalue les produits selon leur composition, en équilibrant les éléments
+            bénéfiques (fibres, protéines) et ceux à limiter (sucre, sel). Facile à comprendre, il
+            encourage une alimentation équilibrée et des choix éclairés.
+          </p>
+        </div>
+      </article>
+    </section>
   </div>
   <div id="new-results">
     <div class="lds-hourglass hidden"></div>
