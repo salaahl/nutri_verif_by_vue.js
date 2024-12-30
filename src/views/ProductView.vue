@@ -1,61 +1,135 @@
 <script setup>
-import { onBeforeMount, onMounted, onUnmounted, reactive } from 'vue'
-import { useRouter } from 'vue-router'
+import { onBeforeMount, onMounted, onUnmounted, reactive, watch } from 'vue'
+import { useRoute, useRouter, onBeforeRouteUpdate } from 'vue-router'
+import ProductCard from '/src/components/ProductCard.vue'
 
 const router = useRouter()
-const route =
-  'https://world.openfoodfacts.org/api/v3/product/' +
-  router.currentRoute.value.fullPath.split('/').pop() +
-  '.json'
+const route = useRoute()
 
-let product = reactive([
-  {
+const product = reactive({
+  id: null,
+  image: null,
+  brand: null,
+  generic_name: null,
+  categories: [],
+  lastUpdate: null,
+  nutriscore: null,
+  novaGroup: null,
+  ingredients: null,
+  calories100g: null,
+  manufacturingPlace: null,
+  productSheet: null
+})
+
+const moreProducts = reactive([])
+
+const fetchData = async (url) => {
+  try {
+    const response = await fetch(url)
+    const data = await response.json()
+    return data
+  } catch (error) {
+    console.error('Erreur lors de la récupération des données :', error)
+    return null
+  }
+}
+
+const resetProduct = () => {
+  Object.assign(product, {
+    id: null,
     image: null,
     brand: null,
     generic_name: null,
+    categories: [],
     lastUpdate: null,
     nutriscore: null,
     novaGroup: null,
-    barcode: null,
     ingredients: null,
     calories100g: null,
     manufacturingPlace: null,
     productSheet: null
+  })
+}
+
+const fetchProduct = async () => {
+  resetProduct() // Reset the product data before fetching new data
+
+  const url = `https://world.openfoodfacts.org/api/v3/product/${route.params.id}.json`
+  const data = await fetchData(url)
+
+  if (!data || !data.product) {
+    router.replace({ name: 'NotFound' })
+    return
   }
-])
 
-const novaGroupText = [
-  'Aliments non transformés ou transformés minimalement',
-  'Ingrédients culinaires transformés',
-  'Aliments transformés',
-  'Produits alimentaires et boissons ultra-transformés'
-]
+  const p = data.product
+  Object.assign(product, {
+    id: p.id,
+    image: p.image_front_url || '/logo.png',
+    brand: p.brands,
+    generic_name: p.generic_name_fr,
+    categories: p.categories_hierarchy,
+    lastUpdate: new Date(p.last_updated_t * 1000).toLocaleDateString('fr-FR'),
+    nutriscore: p.nutriscore_grade,
+    novaGroup: p.nova_group,
+    ingredients: p.ingredients_text_fr,
+    calories100g: p.nutriments?.['energy-kcal_100g'],
+    manufacturingPlace: p.manufacturing_places,
+    productSheet: p.link
+  })
 
-onBeforeMount(() => {
-  fetch(route)
-    .then((response) => response.json())
-    .then((data) => {
-      product.image = data.product.image_front_url || '/logo.png'
-      product.brand = data.product.brands
-      product.generic_name = data.product.generic_name_fr
-      product.lastUpdate = new Date(data.product.last_updated_t * 1000).toLocaleDateString('fr-FR')
-      product.nutriscore = data.product.nutriscore_grade
-      product.novaGroup = data.product.nova_group
-      product.barcode = data.code
-      product.ingredients = data.product.ingredients_text_fr
-      product.calories100g = data.product.nutriments['energy-kcal_100g']
-      product.manufacturingPlace = data.product.manufacturing_places
-      product.productSheet = data.product.link
+  if (product.nutriscore !== 'a') fetchMoreProducts() // Fetch similar products if Nutriscore isn't A
+}
 
-      document
-        .querySelectorAll('.loader-container')
-        .forEach((loader) => (loader.style.display = 'none'))
-    })
-    .catch((error) => {
-      console.log(error.message)
-      router.replace({ name: 'NotFound' })
-    })
-})
+// Fetch similar products
+const fetchMoreProducts = async () => {
+  if (!product.categories?.length) return
+
+  const fields =
+    'id,categories_hierarchy,image_front_url,brands,generic_name_fr,nutriscore_grade,nova_group,last_updated_t,ingredients_text_fr,nutriments,manufacturing_places,link'
+  const url = `https://world.openfoodfacts.org/api/v2/search?categories_tags=${product.categories.slice(0, 4).join(',')}&fields=${fields}&sort_by=nutriscore_score,popularity_key&page_size=4&action=process&json=1`
+  const data = await fetchData(url)
+
+  if (data?.products) {
+    moreProducts.length = 0 // Reset the moreProducts array before adding new data
+    data.products
+      .filter((p) => p.id !== product.id)
+      .slice(0, 3)
+      .forEach((p) => {
+        moreProducts.push({
+          id: p.id,
+          image: p.image_front_url || '/logo.png',
+          brand: p.brands,
+          generic_name: p.generic_name_fr,
+          categories: p.categories_hierarchy,
+          lastUpdate: new Date(p.last_updated_t * 1000).toLocaleDateString('fr-FR'),
+          nutriscore: p.nutriscore_grade,
+          novaGroup: p.nova_group,
+          ingredients: p.ingredients_text_fr,
+          calories100g: p.nutriments?.['energy-kcal_100g'],
+          manufacturingPlace: p.manufacturing_places,
+          productSheet: p.link
+        })
+      })
+  }
+}
+
+// Update product when route changes
+const updateProduct = async (productId) => {
+  resetProduct() // Reset product data before updating
+
+  const foundProduct = moreProducts.find((p) => p.id === productId)
+
+  if (foundProduct) {
+    // Clear previous product data and assign new data
+    Object.assign(product, { ...foundProduct })
+    fetchMoreProducts() // Re-fetch similar products for the new product
+  } else {
+    await fetchProduct() // If no similar product, fetch the new product directly
+  }
+}
+
+onBeforeMount(fetchProduct) // Fetch product on initial mount
 
 onMounted(() => {
   document.querySelector('body').style.backgroundColor = 'rgb(243, 244, 246, 1)'
@@ -64,10 +138,22 @@ onMounted(() => {
 onUnmounted(() => {
   document.querySelector('body').style.backgroundColor = 'rgb(255, 255, 255, 1)'
 })
+
+onBeforeRouteUpdate((to) => {
+  updateProduct(to.params.id) // Update product when route changes
+})
+
+watch(
+  () => route.params.id,
+  (newId) => {
+    updateProduct(newId) // Handle product updates when the route params change
+  }
+)
 </script>
 
 <template>
   <div
+    :key="route.params.id"
     id="product-container"
     class="md:min-h-[calc(100vh-344px)] flex flex-wrap justify-between md:flex-nowrap flex-col md:flex-row"
   >
@@ -75,21 +161,25 @@ onUnmounted(() => {
       id="product-images-container"
       class="w-full md:w-2/4 flex items-center justify-center bg-white rounded-xl"
     >
-      <div class="md:w-full md:min-w-[auto] my-[50px] md:m-0">
-        <div class="loader-container h-full flex justify-center items-center">
-          <img src="/logo.png" class="h-auto w-auto m-auto opacity-50 md:object-none" />
+      <div class="md:w-full my-[50px]">
+        <div v-if="!product.image" class="loader-container h-full flex justify-center items-center">
+          <img src="/logo.png" class="h-auto w-auto m-auto opacity-50" />
         </div>
         <img
           v-if="product.image"
           id="product-img"
           :src="product.image"
           :alt="product.generic_name"
-          class="h-auto w-auto m-auto md:object-none"
+          class="h-auto w-auto m-auto"
         />
       </div>
     </section>
+
     <section id="product-details-container" class="relative w-full md:w-2/4 max-md:my-8 md:pl-6">
-      <div class="loader-container md:absolute h-full w-full flex justify-center items-center">
+      <div
+        v-if="!product.lastUpdate"
+        class="loader-container md:absolute h-full w-full flex justify-center items-center"
+      >
         <div class="lds-hourglass"></div>
       </div>
       <div id="product-detail" class="h-full">
@@ -128,9 +218,6 @@ onUnmounted(() => {
                   "
                   :alt="'Groupe Nova : ' + product.novaGroup"
                 />
-                <h4 v-if="product.novaGroup" id="nova-group-text" class="ml-2">
-                  {{ '(' + novaGroupText[product.novaGroup - 1] + ')' }}
-                </h4>
               </div>
             </div>
             <h3 v-if="product.ingredients" class="mt-4 font-semibold">Ingrédients :</h3>
@@ -145,8 +232,8 @@ onUnmounted(() => {
             <h4 v-if="product.manufacturingPlace" id="manufacturing-place">
               {{ product.manufacturingPlace }}
             </h4>
-            <h3 v-if="product.barcode" class="mt-4 font-semibold">Code-barres :</h3>
-            <h4 v-if="product.barcode" id="barcode">{{ product.barcode }}</h4>
+            <h3 v-if="product.id" class="mt-4 font-semibold">Code-barres :</h3>
+            <h4 v-if="product.id" id="barcode">{{ product.id }}</h4>
             <h3 v-if="product.productSheet" class="mt-4 font-semibold">Plus d'infos :</h3>
             <h4 v-if="product.productSheet">
               <a :href="product.productSheet" id="product-sheet" class="underline">{{
@@ -158,12 +245,47 @@ onUnmounted(() => {
       </div>
     </section>
   </div>
+
+  <aside v-if="moreProducts.length" class="mt-16">
+    <section
+      id="more-products"
+      class="w-full flex flex-wrap lg:flex-nowrap items-center justify-between p-8 lg:px-16 bg-white rounded-xl"
+    >
+      <h2 class="title w-full lg:w-1/4 text-center lg:text-left text-2xl">Alternatives</h2>
+      <ProductCard
+        v-for="p in moreProducts"
+        :key="p.id"
+        :id="p.id"
+        :image="p.image"
+        :brand="p.brand"
+        :name="p.generic_name"
+        :nutriscore="p.nutriscore"
+        :nova="p.novaGroup"
+        :class="['w-full max-w-[300px] lg:max-w-[250px] mt-8 lg:mt-0 mx-auto lg:ml-8']"
+      />
+    </section>
+  </aside>
 </template>
 
-<style>
+<style scoped>
 #product-details-container .lds-hourglass:after {
   margin: 8px;
   border: 32px solid #fff;
   border-color: black transparent var(--color-green) transparent;
+}
+
+#more-products > .title {
+  font-family: 'Grand Hotel', cursive;
+  font-size: xx-large;
+}
+
+#more-products > .title::first-letter {
+  color: indianred;
+}
+
+@media (min-width: 768px) {
+  #more-products > .title {
+    font-size: xxx-large;
+  }
 }
 </style>

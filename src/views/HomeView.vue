@@ -1,7 +1,6 @@
 <script setup>
 import { onMounted, onUpdated, computed } from 'vue'
 import { useRouter } from 'vue-router'
-import { mapStores } from 'pinia'
 import { useAppStore } from '../stores/app.ts'
 import { useProductsStore } from '../stores/products.ts'
 import ProductCard from '/src/components/ProductCard.vue'
@@ -14,76 +13,68 @@ let aboutMeStatus = computed({
   get: () => appStore.getAboutMeStatus,
   set: (val) => appStore.setAboutMeStatus(val)
 })
+
 let searchInput = computed({
   get: () => appStore.getSearchInput,
   set: (val) => appStore.setSearchInput(val)
 })
+
 let products = computed({
   get: () => productsStore.getProducts,
   set: (val) => productsStore.updateProducts(val)
 })
+
 let page = computed({
   get: () => productsStore.getPage,
   set: (val) => productsStore.updatePage(val)
 })
+
 let pages = computed({
   get: () => productsStore.getPages,
   set: (val) => productsStore.updatePages(val)
 })
 
-let $ = (id) => {
-  return document.querySelector(id)
-}
 let method
 
+// Helper function to get elements by selector
+const $ = (id) => document.querySelector(id)
+
 onMounted(() => {
-  function searchProduct() {
-    return new Promise((resolve, reject) => {
-      setTimeout(() => {
-        let y = 0
-        let route =
-          'https://world.openfoodfacts.org/cgi/search.pl?search_terms=' +
-          searchInput.value +
-          '&page_size=20?&page=' +
-          page.value +
-          '&search_simple=1&action=process&json=1'
+  // Function to search products from the API
+  async function searchProduct() {
+    const fields = 'id,image_front_small_url,brands,generic_name_fr,nutriscore_grade,nova_group'
+    const route = `https://world.openfoodfacts.org/cgi/search.pl?search_terms=${searchInput.value}&fields=${fields}&page_size=20&page=${page.value}&search_simple=1&action=process&json=1`
 
-        fetch(route)
-          .then((response) => response.json())
-          .then((data) => {
-            data.products.forEach((product) => {
-              products.value.push({
-                id: product.id,
-                image: product.image_front_small_url || '/logo.png',
-                brand: product.brands || 'Fiche non finalisée',
-                name: product.generic_name_fr || 'Fiche non finalisée',
-                nutriscore: product.nutriscore_grade,
-                nova: product.nova_group
-              })
-            })
+    try {
+      const response = await fetch(route)
+      const data = await response.json()
+      data.products.forEach((product) => {
+        products.value.push({
+          id: product.id,
+          image: product.image_front_small_url || '/logo.png',
+          brand: product.brands || 'Fiche non finalisée',
+          name: product.generic_name_fr || 'Fiche non finalisée',
+          nutriscore: product.nutriscore_grade,
+          nova: product.nova_group
+        })
+      })
 
-            if (method == 'form') {
-              for (let i = 1; i * 20 < data.count; i++) {
-                pages.value++
-              }
-            }
-
-            y++
-          })
-          .catch((error) => {
-            console.log(error.message)
-          })
-        resolve(y)
-      }, 300)
-    })
+      if (method === 'form') {
+        for (let i = 1; i * 20 < data.count; i++) {
+          pages.value++
+        }
+      }
+    } catch (error) {
+      console.error('Error fetching data:', error.message)
+    }
   }
 
-  $('form').addEventListener('submit', async function (e) {
+  // Handle form submission
+  $('form').addEventListener('submit', async (e) => {
     e.preventDefault()
-
     searchInput.value = $('#search-input').value
-    let regex = /^[0-9]{8,13}$/
 
+    let regex = /^[0-9]{8,13}$/
     if (regex.test(searchInput.value)) {
       router.push({ name: 'product', params: { id: searchInput.value } })
     } else {
@@ -93,13 +84,9 @@ onMounted(() => {
       method = 'form'
       window.scrollTo({ top: 0, behavior: 'smooth' })
       page.value = 1
-
-      if (aboutMeStatus.value) {
-        $('#about-me').style.height = '0px'
-      }
+      if (aboutMeStatus.value) $('#about-me').style.height = '0px'
 
       products.value.length = 0
-
       await searchProduct()
 
       setTimeout(() => {
@@ -108,17 +95,15 @@ onMounted(() => {
     }
   })
 
-  // Cacher la barre de navigation et/ou recharger les résultats :
+  // Handle scroll event to load more products
   let prevScrollpos = 0
   let refresh = true
 
   window.onscroll = async function () {
-    let h = document.documentElement,
-      b = document.body,
-      st = 'scrollTop',
-      sh = 'scrollHeight'
-
-    let currentScrollPos = ((h[st] || b[st]) / ((h[sh] || b[sh]) - h.clientHeight)) * 100
+    const h = document.documentElement
+    const b = document.body
+    const currentScrollPos =
+      ((h.scrollTop || b.scrollTop) / ((h.scrollHeight || b.scrollHeight) - h.clientHeight)) * 100
 
     if ($('#search-bar')) {
       const searchBarHeight = $('#search-bar').offsetHeight
@@ -126,7 +111,7 @@ onMounted(() => {
       if (prevScrollpos > currentScrollPos) {
         $('#search-bar').style.top = '50px'
       } else {
-        $('#search-bar').style.top = '-' + (searchBarHeight + 4) + 'px'
+        $('#search-bar').style.top = `-${searchBarHeight + 4}px`
       }
     }
 
@@ -152,7 +137,7 @@ onMounted(() => {
 })
 
 onUpdated(() => {
-  // Les modifications s'enlèvent et se remettent beaucoup trop vite sans le timer
+  // Timeout to hide the loading indicator and show the search button again
   let timer
   clearTimeout(timer)
 
@@ -164,14 +149,6 @@ onUpdated(() => {
     aboutMeStatus.value = false
   }, 500)
 })
-</script>
-
-<script>
-export default {
-  computed: {
-    ...mapStores(useProductsStore)
-  }
-}
 </script>
 
 <template>
@@ -240,8 +217,8 @@ export default {
       Vous pouvez l'utiliser pour faire de meilleurs choix alimentaires, et comme les données sont
       ouvertes, tout le monde peut les réutiliser pour tout usage.
     </span>
-    <RouterLink :to="'/about-me'" class="flex items-center w-fit mt-2"
-      >En savoir plus
+    <RouterLink :to="'/about-me'" class="flex items-center w-fit mt-2">
+      En savoir plus
       <svg class="h-[15px] w-auto ml-2" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 448 512">
         <path
           d="M438.6 278.6c12.5-12.5 12.5-32.8 0-45.3l-160-160c-12.5-12.5-32.8-12.5-45.3 0s-12.5 32.8 0 45.3L338.8 224 32 224c-17.7 0-32 14.3-32 32s14.3 32 32 32l306.7 0L233.4 393.4c-12.5 12.5-12.5 32.8 0 45.3s32.8 12.5 45.3 0l160-160z"
@@ -298,27 +275,48 @@ export default {
   border-color: black transparent var(--color-green) transparent;
 }
 
+.product {
+  width: 45%;
+  margin-left: 2.5%;
+  margin-right: 2.5%;
+  margin-bottom: 2rem;
+}
+
+@media (min-width: 768px) and (max-width: 1023px) {
+  .product {
+    width: 32%;
+  }
+
+  .product:nth-of-type(3n + 2) {
+    margin-left: 2%;
+    margin-right: 2%;
+  }
+}
+
 @media (min-width: 768px) {
   #about-me {
     height: 130px;
   }
+
+  .product {
+    margin-left: unset;
+    margin-right: unset;
+  }
 }
 
-@supports (animation-timeline: view()) {
+@media (min-width: 1024px) {
   .product {
-    animation: translate linear;
-    animation-timeline: view();
-    animation-range-end: 20%;
+    width: 18.8%;
   }
 
-  @keyframes translate {
-    from {
-      transform: translateY(50px);
-    }
+  .product:nth-of-type(5n + 2) {
+    margin-left: 1.5%;
+    margin-right: 1.5%;
+  }
 
-    to {
-      transform: translateY(0px);
-    }
+  .product:nth-of-type(5n + 4) {
+    margin-left: 1.5%;
+    margin-right: 1.5%;
   }
 }
 </style>

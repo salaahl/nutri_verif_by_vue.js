@@ -63,10 +63,6 @@ defineProps({
 </template>
 
 <style scoped>
-.product {
-  margin-bottom: 2rem;
-}
-
 .product h4 {
   white-space: nowrap;
   text-overflow: ellipsis;
@@ -122,40 +118,5 @@ defineProps({
 
 .thumbnail img {
   margin: auto;
-}
-
-@media (max-width: 767px) {
-  .product {
-    margin-left: 2.5%;
-    margin-right: 2.5%;
-    width: 45%;
-  }
-}
-
-@media (min-width: 768px) and (max-width: 1023px) {
-  .product {
-    width: 32%;
-  }
-
-  .product:nth-of-type(3n + 2) {
-    margin-left: 2%;
-    margin-right: 2%;
-  }
-}
-
-@media (min-width: 1024px) {
-  .product {
-    width: 18.8%;
-  }
-
-  .product:nth-of-type(5n + 2) {
-    margin-left: 1.5%;
-    margin-right: 1.5%;
-  }
-
-  .product:nth-of-type(5n + 4) {
-    margin-left: 1.5%;
-    margin-right: 1.5%;
-  }
 }
 </style>
