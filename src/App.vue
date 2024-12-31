@@ -101,6 +101,7 @@ main {
   font-family: 'Grand Hotel', cursive;
   font-weight: 400;
   font-style: normal;
+  transition: opacity 0.5s;
 }
 
 #logo {

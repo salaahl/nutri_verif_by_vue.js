@@ -1,14 +1,12 @@
 <script setup>
-import { onBeforeMount, onMounted, onUnmounted, computed, reactive, watch } from 'vue'
+import { onBeforeMount, computed, reactive, watch } from 'vue'
 import { useRoute, useRouter, onBeforeRouteUpdate } from 'vue-router'
-import { useAppStore } from '../stores/app.ts'
 import { useProductsStore } from '../stores/products.ts'
 import { franc } from 'franc-min'
 import ProductCard from '/src/components/ProductCard.vue'
 
 const router = useRouter()
 const route = useRoute()
-const appStore = useAppStore()
 const productsStore = useProductsStore()
 
 const product = reactive({
@@ -20,8 +18,10 @@ const product = reactive({
   lastUpdate: null,
   nutriscore: 'unknown',
   novaGroup: 'unknown',
+  quantity: null,
   ingredients: null,
   calories100g: null,
+  nutrient_levels: null,
   manufacturingPlace: null,
   productSheet: null
 })
@@ -49,8 +49,10 @@ const resetProduct = () => {
     lastUpdate: null,
     nutriscore: 'unknown',
     novaGroup: 'unknown',
+    quantity: null,
     ingredients: null,
     calories100g: null,
+    nutrient_levels: null,
     manufacturingPlace: null,
     productSheet: null
   })
@@ -77,8 +79,10 @@ const fetchProduct = async () => {
     lastUpdate: new Date(p.last_updated_t * 1000).toLocaleDateString('fr-FR'),
     nutriscore: p.nutriscore_grade || 'unknown',
     novaGroup: p.nova_group || 'unknown',
-    ingredients: p.ingredients_text_fr,
+    quantity: p.quantity,
+    ingredients: p.ingredients_text_with_allergens_fr,
     calories100g: p.nutriments?.['energy-kcal_100g'],
+    nutrient_levels: p.nutrient_levels,
     manufacturingPlace: p.manufacturing_places,
     productSheet: p.link
   })
@@ -106,15 +110,11 @@ const filteredCategories = computed(() => {
     })
 })
 
-setTimeout(() => {
-  console.log('Filtered categories:', filteredCategories.value)
-}, 1000)
-
 // Search for products by category
 const searchByCategory = async (category) => {
-  let searchInput = computed({
-    get: () => appStore.getSearchInput,
-    set: (val) => appStore.setSearchInput(val)
+  let input = computed({
+    get: () => productsStore.getInput,
+    set: (val) => productsStore.updateInput(val)
   })
 
   let page = computed({
@@ -127,7 +127,7 @@ const searchByCategory = async (category) => {
     set: (val) => productsStore.updateProducts(val)
   })
 
-  searchInput.value = category // Set the search input to the selected category
+  input.value = category // Set the search input to the selected category
   page.value = 1 // Reset the page to 1
   products.value.length = 0 // Clear the products array before adding new data
 
@@ -148,7 +148,7 @@ const searchByCategory = async (category) => {
       })
     })
 
-    router.push({ name: 'home' })
+    router.push({ name: 'search' })
   } catch (error) {
     console.error('Error fetching data:', error.message)
   }
@@ -159,7 +159,7 @@ const fetchMoreProducts = async () => {
   if (!product.categories?.length) return
 
   const fields =
-    'id,categories,image_front_url,brands,generic_name_fr,nutriscore_grade,nova_group,last_updated_t,ingredients_text_fr,nutriments,manufacturing_places,link'
+    'id,categories,image_front_url,brands,generic_name_fr,nutriscore_grade,nova_group,last_updated_t,quantity,ingredients_text_with_allergens_fr,nutriments,manufacturing_places,link'
   const url = `https://world.openfoodfacts.org/api/v2/search?categories_tags=${product.categories.slice(0, 4).join(',')}&fields=${fields}&sort_by=nutriscore_score,popularity_key&page_size=4&action=process&json=1`
   const data = await fetchData(url)
 
@@ -178,8 +178,10 @@ const fetchMoreProducts = async () => {
           lastUpdate: new Date(p.last_updated_t * 1000).toLocaleDateString('fr-FR'),
           nutriscore: p.nutriscore_grade || 'unknown',
           novaGroup: p.nova_group || 'unknown',
-          ingredients: p.ingredients_text_fr,
+          quantity: p.quantity,
+          ingredients: p.ingredients_text_with_allergens_fr,
           calories100g: p.nutriments?.['energy-kcal_100g'],
+          nutrientLevels: p.nutrient_levels,
           manufacturingPlace: p.manufacturing_places,
           productSheet: p.link
         })
@@ -261,7 +263,7 @@ watch(
             </h3>
           </div>
           <div>
-            <div>
+            <div class="scores">
               <img
                 id="nutriscore-img"
                 class="max-w-[100px] md:max-w-[115px] mt-2"
@@ -285,8 +287,34 @@ watch(
                 />
               </div>
             </div>
+            <div v-if="product.nutrient_levels" id="nutrient-levels" class="flex flex-wrap">
+              <span
+                v-for="(level, nutrient) in product.nutrient_levels"
+                :key="nutrient"
+                :class="[
+                  'mt-4 mr-2 py-2 px-3 text-sm font-semibold text-white rounded-full',
+                  level === 'low' ? 'bg-[#00bd7e]' : '',
+                  level === 'moderate' ? 'bg-yellow-500' : '',
+                  level === 'high' ? 'bg-red-500' : ''
+                ]"
+              >
+                {{
+                  nutrient === 'fat'
+                    ? 'matieres grasses'
+                    : nutrient === 'salt'
+                      ? 'sel'
+                      : nutrient === 'saturated-fat'
+                        ? 'graisses saturées'
+                        : nutrient === 'sugars'
+                          ? 'sucres'
+                          : ''
+                }}
+              </span>
+            </div>
+            <h3 v-if="product.quantity" class="mt-8 font-semibold">Quantité :</h3>
+            <h4 v-if="product.quantity" id="quantity">{{ product.quantity }}</h4>
             <h3 v-if="product.ingredients" class="mt-4 font-semibold">Ingrédients :</h3>
-            <h4 v-if="product.ingredients" id="ingredients">{{ product.ingredients }}</h4>
+            <h4 v-if="product.ingredients" v-html="product.ingredients" id="ingredients"></h4>
             <h3 v-if="product.calories100g" class="mt-4 font-semibold">
               Calories pour 100 grammes / 100 millilitres :
             </h3>
@@ -309,7 +337,7 @@ watch(
               <button
                 v-for="category in filteredCategories"
                 :key="category"
-                class="tag mt-2 bg-[indianred] text-white py-2 px-4 rounded-full mr-2"
+                class="tag mt-2 mr-2 py-2 px-3 text-sm font-semibold text-white bg-neutral-400 text-white rounded-full"
                 @click="searchByCategory(category)"
               >
                 #{{ category }}
@@ -324,7 +352,7 @@ watch(
   <aside v-if="moreProducts.length" class="mt-16">
     <section
       id="more-products"
-      class="w-full flex flex-wrap lg:flex-nowrap items-center justify-between p-8 lg:px-16 bg-white rounded-xl"
+      class="w-full flex flex-wrap lg:flex-nowrap items-center justify-between p-8 lg:px-16 bg-neutral-200 rounded-xl"
     >
       <h2 class="title w-full lg:w-1/4 text-center lg:text-left text-3xl lg:text-2xl">
         Alternatives
@@ -345,6 +373,13 @@ watch(
     </section>
   </aside>
 </template>
+
+<style>
+.allergen {
+  font-weight: bold;
+  color: indianred;
+}
+</style>
 
 <style scoped>
 #product-details-container .lds-hourglass:after {

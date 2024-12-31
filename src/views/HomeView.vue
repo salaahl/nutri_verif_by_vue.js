@@ -1,49 +1,31 @@
 <script setup>
-import { onMounted, onUpdated, computed } from 'vue'
+import { onMounted, computed, ref, onUnmounted } from 'vue'
 import { useRouter } from 'vue-router'
-import { useAppStore } from '../stores/app.ts'
 import { useProductsStore } from '../stores/products.ts'
 import ProductCard from '/src/components/ProductCard.vue'
 
 const router = useRouter()
-const appStore = useAppStore()
 const productsStore = useProductsStore()
 
-let aboutMeStatus = computed({
-  get: () => appStore.getAboutMeStatus,
-  set: (val) => appStore.setAboutMeStatus(val)
+let input = computed({
+  get: () => productsStore.getInput,
+  set: (val) => productsStore.updateInput(val)
 })
 
-let searchInput = computed({
-  get: () => appStore.getSearchInput,
-  set: (val) => appStore.setSearchInput(val)
-})
-
-let products = computed({
-  get: () => productsStore.getProducts,
-  set: (val) => productsStore.updateProducts(val)
-})
-
-let page = computed({
-  get: () => productsStore.getPage,
-  set: (val) => productsStore.updatePage(val)
-})
-
-let pages = computed({
-  get: () => productsStore.getPages,
-  set: (val) => productsStore.updatePages(val)
-})
-
-let method
+let products = ref([])
+let moreProductsLink = ref(null)
 
 // Helper function to get elements by selector
 const $ = (id) => document.querySelector(id)
 
 onMounted(() => {
+  // Hide the website name in home view
+  $('#website-name').style.opacity = 0
+
   // Function to search products from the API
   async function searchProduct() {
     const fields = 'id,image_front_small_url,brands,generic_name_fr,nutriscore_grade,nova_group'
-    const route = `https://world.openfoodfacts.org/cgi/search.pl?search_terms=${searchInput.value}&fields=${fields}&sort_by=popularity_key&page_size=20&page=${page.value}&search_simple=1&action=process&json=1`
+    const route = `https://world.openfoodfacts.org/cgi/search.pl?search_terms=${input.value}&fields=${fields}&sort_by=popularity_key&page_size=4&search_simple=1&action=process&json=1`
 
     try {
       const response = await fetch(route)
@@ -57,111 +39,46 @@ onMounted(() => {
           nutriscore: product.nutriscore_grade || 'unknown',
           nova: product.nova_group || 'unknown'
         })
-      })
 
-      if (method === 'form') {
-        for (let i = 1; i * 20 < data.count; i++) {
-          pages.value++
-        }
-      }
+        moreProductsLink.value = { name: 'Plus de résultats', to: '/search' }
+      })
     } catch (error) {
       console.error('Error fetching data:', error.message)
     }
   }
 
+  let timer
+
   // Handle form submission
-  $('form').addEventListener('submit', async (e) => {
-    e.preventDefault()
-    searchInput.value = $('#search-input').value
+  $('#search-bar').addEventListener('input', () => {
+    clearTimeout(timer)
 
-    let regex = /^[0-9]{8,13}$/
-    if (regex.test(searchInput.value)) {
-      router.push({ name: 'product', params: { id: searchInput.value } })
-    } else {
-      $('#search-bar button > svg').classList.add('hidden')
-      $('#search-bar .lds-hourglass').classList.remove('hidden')
+    timer = setTimeout(async function () {
+      products.value = []
+      input.value = $('#search-input').value
 
-      method = 'form'
-      window.scrollTo({ top: 0, behavior: 'smooth' })
-      page.value = 1
-      if (aboutMeStatus.value) {
-        $('#website-name').style.opacity = '1'
-        $('#header').style.display = 'none'
-        $('#about-me').style.height = '0'
-      }
-
-      products.value.length = 0
-      await searchProduct()
-
-      setTimeout(() => {
-        method = null
-      }, 1000)
-    }
-  })
-
-  // Handle scroll event to load more products
-  let prevScrollpos = 0
-  let refresh = true
-
-  window.onscroll = async function () {
-    const h = document.documentElement
-    const b = document.body
-    const currentScrollPos =
-      ((h.scrollTop || b.scrollTop) / ((h.scrollHeight || b.scrollHeight) - h.clientHeight)) * 100
-
-    if ($('#search-bar')) {
-      const searchBarHeight = $('#search-bar').offsetHeight
-
-      if (prevScrollpos > currentScrollPos) {
-        $('#search-bar').style.top = '50px'
+      let regex = /^[0-9]{8,13}$/
+      if (regex.test(input.value)) {
+        router.push({ name: 'product', params: { id: input.value } })
       } else {
-        $('#search-bar').style.top = `-${searchBarHeight + 4}px`
+        await searchProduct()
       }
-    }
-
-    if (
-      $('#search-results') &&
-      currentScrollPos > prevScrollpos &&
-      currentScrollPos > 70 &&
-      method !== 'form' &&
-      page.value < pages.value &&
-      refresh
-    ) {
-      refresh = false
-      $('#new-results .lds-hourglass').classList.remove('hidden')
-      page.value++
-      await searchProduct()
-
-      setTimeout(() => {
-        refresh = true
-      }, 1000)
-    }
-    prevScrollpos = currentScrollPos
-  }
+    }, 1000)
+  })
 })
 
-onUpdated(() => {
-  // Timeout to hide the loading indicator and show the search button again
-  let timer
-  clearTimeout(timer)
-
-  timer = setTimeout(() => {
-    document.querySelectorAll('.lds-hourglass').forEach((ele) => {
-      ele.classList.add('hidden')
-    })
-    $('#search-bar button > svg').classList.remove('hidden')
-    aboutMeStatus.value = false
-  }, 500)
+onUnmounted(() => {
+  $('#website-name').style.opacity = 1
 })
 </script>
 
 <template>
-  <div v-if="aboutMeStatus" id="header" class="w-full mb-16">
+  <header id="header" class="w-full mb-16">
     <h1 class="text-6xl font-light text-center">Nutri<span class="text-[#00bd7e]">Vérif</span></h1>
     <h2 class="text-lg font-thin text-center">Manger (plus) sain</h2>
-  </div>
-  <div id="search-bar" class="relative mb-16">
-    <form class="flex items-center">
+  </header>
+  <section id="search-container" class="w-full">
+    <div id="search-bar" class="relative mb-16">
       <label for="search-input" class="sr-only">Search</label>
       <div class="relative w-full">
         <div class="absolute inset-y-0 start-0 flex items-center ps-6 pointer-events-none">
@@ -179,43 +96,30 @@ onUpdated(() => {
           required
         />
       </div>
-      <button
-        type="submit"
-        class="p-2.5 ms-2 text-sm font-medium text-white bg-blue-700 rounded-full border border-blue-700 hover:bg-blue-800 focus:ring-4 focus:outline-none focus:ring-blue-300"
-      >
-        <svg
-          class="w-4 h-4"
-          aria-hidden="true"
-          xmlns="http://www.w3.org/2000/svg"
-          fill="none"
-          viewBox="0 0 20 20"
+    </div>
+    <div v-if="products.length > 0" id="search-results" class="mb-16 p-4 bg-neutral-200 rounded-lg">
+      <ProductCard
+        v-for="product in products"
+        :key="product.id"
+        :id="product.id"
+        :image="product.image"
+        :brand="product.brand"
+        :name="product.name"
+        :nutriscore="product.nutriscore"
+        :nova="product.nova"
+      />
+      <article v-if="moreProductsLink" class="product flex items-center justify-center">
+        <RouterLink
+          :key="moreProductsLink.name"
+          :to="moreProductsLink.to"
+          class="p-3 text-white font-semibold bg-gray-800 rounded-lg"
         >
-          <path
-            stroke="currentColor"
-            stroke-linecap="round"
-            stroke-linejoin="round"
-            stroke-width="2"
-            d="m19 19-4-4m0-7A7 7 0 1 1 1 8a7 7 0 0 1 14 0Z"
-          />
-        </svg>
-        <div class="lds-hourglass hidden"></div>
-        <span class="sr-only">Search</span>
-      </button>
-    </form>
-  </div>
-  <div id="search-results">
-    <ProductCard
-      v-for="product in products"
-      :key="product.id"
-      :id="product.id"
-      :image="product.image"
-      :brand="product.brand"
-      :name="product.name"
-      :nutriscore="product.nutriscore"
-      :nova="product.nova"
-    />
-  </div>
-  <div v-if="aboutMeStatus" id="about-me" class="mb-16">
+          {{ moreProductsLink.name }}
+        </RouterLink>
+      </article>
+    </div>
+  </section>
+  <section id="about-me" class="mb-16">
     <span class="py-1 font-thin">
       NutriVérif est alimentée par "Open Food Facts", une base de données de produits alimentaires
       créée par tous et pour tous.
@@ -233,12 +137,12 @@ onUpdated(() => {
         />
       </svg>
     </RouterLink>
-  </div>
-  <div v-if="aboutMeStatus" id="explanations">
+  </section>
+  <section id="explanations">
     <h2 class="title mb-8 text-2xl lg:text-3xl font-thin">
       Votre alimentation <span class="text-[indianred]">décryptée</span>
     </h2>
-    <section class="p-4 md:p-8 bg-white rounded-lg">
+    <div class="p-4 md:p-8 bg-white rounded-lg">
       <article id="nutriscore-explanation" class="w-full mr-auto mb-8 text-justify">
         <div class="flex flex-col md:flex-row md:justify-between items-center">
           <img
@@ -271,19 +175,9 @@ onUpdated(() => {
           </p>
         </div>
       </article>
-    </section>
-  </div>
-  <div id="new-results">
-    <div class="lds-hourglass hidden"></div>
-  </div>
+    </div>
+  </section>
 </template>
-
-<style>
-#website-name {
-  opacity: 0;
-  transition: opacity 0.5s;
-}
-</style>
 
 <style scoped>
 h1 {
@@ -321,23 +215,9 @@ h1 {
   flex-wrap: wrap;
 }
 
-#search-bar .lds-hourglass:after {
-  margin: 0;
-  border: 0.5rem solid #fff;
-  border-color: hsla(160, 100%, 37%, 0.6) transparent var(--color-green) transparent;
-}
-
-#new-results .lds-hourglass:after {
-  margin: 8px;
-  border: 32px solid #fff;
-  border-color: black transparent var(--color-green) transparent;
-}
-
 .product {
   width: 45%;
-  margin-left: 2.5%;
-  margin-right: 2.5%;
-  margin-bottom: 2rem;
+  margin: auto 2.5%;
 }
 
 @media (min-width: 768px) and (max-width: 1023px) {
