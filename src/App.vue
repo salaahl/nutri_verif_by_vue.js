@@ -37,7 +37,7 @@ const currentRoute = computed(() => {
     </router-view>
   </main>
 
-  <footer class="md:h-[100px] w-full py-4">
+  <footer class="md:h-[100px] w-full">
     <div
       class="flex flex-wrap justify-center items-center max-w-screen-xl mx-auto py-4 rounded-lg overflow-hidden"
     >

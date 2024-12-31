@@ -108,11 +108,14 @@ onUnmounted(() => {
         :nutriscore="product.nutriscore"
         :nova="product.nova"
       />
-      <article v-if="moreProductsLink" class="product flex items-center justify-center">
+      <article
+        v-if="moreProductsLink"
+        class="md:product w-full md:w-[18.6%] flex items-center justify-center mt-[2.5%] md:mt-0 md:mb-[5%]"
+      >
         <RouterLink
           :key="moreProductsLink.name"
           :to="moreProductsLink.to"
-          class="p-3 text-white font-semibold bg-gray-800 rounded-lg"
+          class="w-full p-3 text-center text-white font-semibold bg-gray-800 rounded-lg"
         >
           {{ moreProductsLink.name }}
         </RouterLink>
@@ -138,7 +141,7 @@ onUnmounted(() => {
       </svg>
     </RouterLink>
   </section>
-  <section id="explanations">
+  <section id="explanations" class="mb-16">
     <h2 class="title mb-8 text-2xl lg:text-3xl font-thin">
       Votre alimentation <span class="text-[indianred]">décryptée</span>
     </h2>
@@ -177,6 +180,11 @@ onUnmounted(() => {
       </article>
     </div>
   </section>
+  <section id="total-products" class="mb-16">
+    <h2 class="title text-2xl lg:text-5xl text-center">
+      + de 1 082 462 produits référencés
+    </h2>
+  </section>
 </template>
 
 <style scoped>
@@ -200,6 +208,20 @@ h1 {
   filter: contrast(0.5);
 }
 
+#search-results {
+  display: flex;
+  flex-wrap: wrap;
+}
+
+.product {
+  width: 48%;
+  margin-bottom: 5%;
+}
+
+.product:nth-of-type(2n + 1) {
+  margin-right: 4%;
+}
+
 #about-me {
   height: 250px;
   overflow: hidden;
@@ -210,41 +232,22 @@ h1 {
   background-color: hsla(160, 100%, 37%, 0.6);
 }
 
-#search-results {
-  display: flex;
-  flex-wrap: wrap;
-}
-
-.product {
-  width: 45%;
-  margin: auto 2.5%;
-}
-
-@media (min-width: 768px) and (max-width: 1023px) {
-  .product {
-    width: 32%;
-  }
-
-  .product:nth-of-type(3n + 2) {
-    margin-left: 2%;
-    margin-right: 2%;
-  }
+#total-products > .title {
+  font-family: 'Grand Hotel', cursive;
+  color: transparent;
+  background: linear-gradient(to left, #5d576b80, #2f2c36);
+  background-clip: text;
 }
 
 @media (min-width: 768px) {
-  #about-me {
-    height: 130px;
-  }
-
   .product {
+    width: 18.6%;
     margin-left: unset;
     margin-right: unset;
   }
-}
 
-@media (min-width: 1024px) {
-  .product {
-    width: 18.8%;
+  .product:nth-of-type(2n + 1) {
+    margin-right: unset;
   }
 
   .product:nth-of-type(5n + 2) {
@@ -255,6 +258,10 @@ h1 {
   .product:nth-of-type(5n + 4) {
     margin-left: 1.5%;
     margin-right: 1.5%;
+  }
+
+  #about-me {
+    height: 130px;
   }
 }
 </style>
