@@ -6,22 +6,27 @@ defineProps({
   },
   image: {
     type: String,
+    default: 'https://static.openfoodfacts.org/images/attributes/no_image.png',
     required: true
   },
   brand: {
     type: String,
+    default: 'Marque inconnue',
     required: true
   },
   name: {
     type: String,
+    default: 'Fiche non finalisée',
     required: true
   },
   nutriscore: {
     type: [Number, String],
+    default: 'unknown',
     required: false
   },
   nova: {
     type: [Number, String],
+    default: 'unknown',
     required: false
   }
 })
@@ -39,7 +44,7 @@ defineProps({
           <h4 class="message text-sm font-thin">{{ name }}</h4>
         </div>
       </div>
-      <div class="details md:flex justify-between items-center mt-4 md:mt-0">
+      <div class="details md:flex justify-between items-center mt-4">
         <img
           :src="
             'https://static.openfoodfacts.org/images/attributes/dist/nutriscore-' +

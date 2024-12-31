@@ -13,10 +13,38 @@ let input = computed({
 })
 
 let products = ref([])
+let lastProducts = ref([])
 let moreProductsLink = ref(null)
 
 // Helper function to get elements by selector
 const $ = (id) => document.querySelector(id)
+
+try {
+  fetch(
+    'https://world.openfoodfacts.org/cgi/search.pl?fields=id,image_front_small_url,brands,generic_name_fr,nutriscore_grade,nova_group,completeness&sort_by=created_t&page_size=100&action=process&json=1'
+  )
+    .then((response) => response.json())
+    .then((data) => {
+      // Trie les produits par date de création et filtre les produits avec un taux de complétude supérieur ou égal à 0.4 pour n'en garder que 5
+      let filteredProducts = data.products
+        .sort((a, b) => b.created_t - a.created_t)
+        .filter((product) => product.completeness >= 0.35)
+        .slice(0, 5)
+
+      filteredProducts.forEach((product) => {
+        lastProducts.value.push({
+          id: product.id,
+          image: product.image_front_small_url || '/logo.png',
+          brand: product.brands || 'Fiche non finalisée',
+          name: product.generic_name_fr || 'Fiche non finalisée',
+          nutriscore: product.nutriscore_grade || 'unknown',
+          nova: product.nova_group || 'unknown'
+        })
+      })
+    })
+} catch (error) {
+  console.error('Error fetching data:', error.message)
+}
 
 onMounted(() => {
   // Hide the website name in home view
@@ -97,7 +125,11 @@ onUnmounted(() => {
         />
       </div>
     </div>
-    <div v-if="products.length > 0" id="search-results" class="mb-16 p-4 bg-neutral-200 rounded-lg">
+    <div
+      v-if="products.length > 0"
+      id="search-results"
+      class="flex flex-wrap mb-16 p-4 bg-neutral-200 rounded-lg"
+    >
       <ProductCard
         v-for="product in products"
         :key="product.id"
@@ -110,7 +142,7 @@ onUnmounted(() => {
       />
       <article
         v-if="moreProductsLink"
-        class="md:product w-full md:w-[18.6%] flex items-center justify-center mt-[2.5%] md:mt-0 md:mb-[5%]"
+        class="md:product w-full md:w-[18.6%] flex items-center justify-center mt-[2.5%] md:mt-0"
       >
         <RouterLink
           :key="moreProductsLink.name"
@@ -181,9 +213,25 @@ onUnmounted(() => {
     </div>
   </section>
   <section id="total-products" class="mb-16">
-    <h2 class="title text-2xl lg:text-5xl text-center">
-      + de 1 082 462 produits référencés
+    <h2 class="title text-3xl lg:text-5xl text-center">+ de 1 082 462 produits référencés</h2>
+  </section>
+  <section id="last-products" class="mb-16">
+    <h2 class="title mb-8 text-2xl lg:text-3xl font-thin">
+      Derniers produits <span class="text-[#00bd7e]">ajoutés</span>
     </h2>
+    <div class="flex flex-wrap p-4 bg-neutral-200 rounded-lg">
+      <ProductCard
+        v-for="product in lastProducts"
+        :key="product.id"
+        :product="product"
+        :id="product.id"
+        :image="product.image"
+        :brand="product.brand"
+        :generic-name="product.generic_name"
+        :nutriscore="product.nutriscore"
+        :nova-group="product.novaGroup"
+      />
+    </div>
   </section>
 </template>
 
@@ -206,11 +254,6 @@ h1 {
   height: auto;
   width: 0.875rem;
   filter: contrast(0.5);
-}
-
-#search-results {
-  display: flex;
-  flex-wrap: wrap;
 }
 
 .product {
@@ -244,6 +287,7 @@ h1 {
     width: 18.6%;
     margin-left: unset;
     margin-right: unset;
+    margin-bottom: 0;
   }
 
   .product:nth-of-type(2n + 1) {

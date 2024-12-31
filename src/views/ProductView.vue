@@ -75,7 +75,7 @@ const fetchProduct = async () => {
     image: p.image_front_url || '/logo.png',
     brand: p.brands,
     generic_name: p.generic_name_fr,
-    categories: p.categories.split(','),
+    categories: p.categories?.split(','),
     lastUpdate: new Date(p.last_updated_t * 1000).toLocaleDateString('fr-FR'),
     nutriscore: p.nutriscore_grade || 'unknown',
     novaGroup: p.nova_group || 'unknown',
@@ -95,7 +95,7 @@ const isFrench = (text) => {
 }
 
 const filteredCategories = computed(() => {
-  if (!product.categories.length) return []
+  if (!product.categories?.length) return []
   return product.categories
     .filter((category) => {
       // Si la catégorie commence par 'fr:', elle est incluse
@@ -174,7 +174,7 @@ const fetchMoreProducts = async () => {
           image: p.image_front_url || '/logo.png',
           brand: p.brands,
           generic_name: p.generic_name_fr,
-          categories: p.categories.split(','),
+          categories: p.categories?.split(','),
           lastUpdate: new Date(p.last_updated_t * 1000).toLocaleDateString('fr-FR'),
           nutriscore: p.nutriscore_grade || 'unknown',
           novaGroup: p.nova_group || 'unknown',
