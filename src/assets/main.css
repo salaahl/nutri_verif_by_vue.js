@@ -35,7 +35,10 @@
   border-radius: 50%;
   width: 0;
   height: 0;
+  margin: 8px;
   box-sizing: border-box;
+  border: 32px solid #fff;
+  border-color: black transparent var(--color-green) transparent;
   animation: lds-hourglass 1.2s infinite;
 }
 

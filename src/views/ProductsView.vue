@@ -37,11 +37,12 @@ onMounted(() => {
   // Function to search products from the API
   async function searchProduct() {
     const fields = 'id,image_front_small_url,brands,generic_name_fr,nutriscore_grade,nova_group'
-    const route = `https://world.openfoodfacts.org/cgi/search.pl?search_terms=${input.value}&fields=${fields}&sort_by=popularity_key&page_size=20&page=${page.value}&search_simple=1&action=process&json=1`
+    const route = `https://world.openfoodfacts.org/cgi/search.pl?search_terms=${input.value}&fields=${fields}&sort_by=popularity_key,completeness&page_size=20&page=${page.value}&search_simple=1&action=process&json=1`
 
     try {
       const response = await fetch(route)
       const data = await response.json()
+
       data.products.forEach((product) => {
         products.value.push({
           id: product.id,
@@ -54,10 +55,7 @@ onMounted(() => {
       })
 
       if (method === 'form') {
-        // Calcule le nombre de pages en fonction du nombre de produits affichés
-        for (let i = 1; i * 20 < data.count; i++) {
-          pages.value++
-        }
+        pages.value = Math.ceil(data.count / 20)
       }
     } catch (error) {
       console.error('Error fetching data:', error.message)
@@ -161,7 +159,7 @@ onUpdated(() => {
           type="text"
           id="search-input"
           class="block w-full px-12 p-2.5 text-ellipsis bg-gray-50 border-4 text-gray-900 text-sm rounded-full outline-0 focus:ring-gray-400 focus:border-gray-400"
-          placeholder="Un nom de produit, un code-barres, une marque ou un type d'aliment"
+          placeholder="Entrez un nom de produit, un code-barres, une marque ou un type d'aliment"
           required
         />
       </div>

@@ -12,6 +12,16 @@ let input = computed({
   set: (val) => productsStore.updateInput(val)
 })
 
+let page = computed({
+  get: () => productsStore.getPage,
+  set: (val) => productsStore.updatePage(val)
+})
+
+let pages = computed({
+  get: () => productsStore.getPages,
+  set: (val) => productsStore.updatePages(val)
+})
+
 let products = ref([])
 let lastProducts = ref([])
 let moreProductsLink = ref(null)
@@ -21,7 +31,7 @@ const $ = (id) => document.querySelector(id)
 
 try {
   fetch(
-    'https://world.openfoodfacts.org/cgi/search.pl?fields=id,image_front_small_url,brands,generic_name_fr,nutriscore_grade,nova_group,completeness&sort_by=created_t&page_size=100&action=process&json=1'
+    'https://world.openfoodfacts.org/cgi/search.pl?fields=id,image_front_small_url,brands,generic_name_fr,nutriscore_grade,nova_group,created_t,completeness&sort_by=created_t&page_size=100&action=process&json=1'
   )
     .then((response) => response.json())
     .then((data) => {
@@ -53,7 +63,7 @@ onMounted(() => {
   // Function to search products from the API
   async function searchProduct() {
     const fields = 'id,image_front_small_url,brands,generic_name_fr,nutriscore_grade,nova_group'
-    const route = `https://world.openfoodfacts.org/cgi/search.pl?search_terms=${input.value}&fields=${fields}&sort_by=popularity_key&page_size=4&search_simple=1&action=process&json=1`
+    const route = `https://world.openfoodfacts.org/cgi/search.pl?search_terms=${input.value}&fields=${fields}&sort_by=popularity_key,completeness&page_size=4&search_simple=1&action=process&json=1`
 
     try {
       const response = await fetch(route)
@@ -68,6 +78,8 @@ onMounted(() => {
           nova: product.nova_group || 'unknown'
         })
 
+        page.value = 1
+        pages.value = Math.ceil(data.count / 20)
         moreProductsLink.value = { name: 'Plus de résultats', to: '/search' }
       })
     } catch (error) {
@@ -101,12 +113,12 @@ onUnmounted(() => {
 </script>
 
 <template>
-  <header id="header" class="w-full mb-16">
+  <section id="header" class="w-full mb-20">
     <h1 class="text-6xl font-light text-center">Nutri<span class="text-[#00bd7e]">Vérif</span></h1>
     <h2 class="text-lg font-thin text-center">Manger (plus) sain</h2>
-  </header>
-  <section id="search-container" class="w-full">
-    <div id="search-bar" class="relative mb-16">
+  </section>
+  <section id="search-container" class="w-full mb-20">
+    <div id="search-bar" class="relative mb-8">
       <label for="search-input" class="sr-only">Search</label>
       <div class="relative w-full">
         <div class="absolute inset-y-0 start-0 flex items-center ps-6 pointer-events-none">
@@ -120,7 +132,7 @@ onUnmounted(() => {
           type="text"
           id="search-input"
           class="block w-full px-12 p-2.5 text-ellipsis bg-gray-50 border-4 text-gray-900 text-sm rounded-full outline-0 focus:ring-gray-400 focus:border-gray-400"
-          placeholder="Un nom de produit, un code-barres, une marque ou un type d'aliment"
+          placeholder="Entrez un nom de produit, un code-barres, une marque ou un type d'aliment"
           required
         />
       </div>
@@ -128,7 +140,7 @@ onUnmounted(() => {
     <div
       v-if="products.length > 0"
       id="search-results"
-      class="flex flex-wrap mb-16 p-4 bg-neutral-200 rounded-lg"
+      class="flex flex-wrap p-4 bg-neutral-200 rounded-lg"
     >
       <ProductCard
         v-for="product in products"
@@ -153,8 +165,20 @@ onUnmounted(() => {
         </RouterLink>
       </article>
     </div>
+    <h3 id="total-products" class="my-8 text-2xl lg:text-3xl text-center">
+      + de 1 082 462 produits référencés
+    </h3>
   </section>
-  <section id="about-me" class="mb-16">
+  <section id="open-food-facts-video-presentation" class="mb-8">
+    <iframe
+      src="https://www.youtube.com/embed/D1jzT02IBRA"
+      class="w-full aspect-[2/1] border-[3px] rounded-xl"
+      title="Open Food Facts - Présentation"
+      allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
+      allowfullscreen
+    ></iframe>
+  </section>
+  <section id="about" class="mb-20">
     <span class="py-1 font-thin">
       NutriVérif est alimentée par "Open Food Facts", une base de données de produits alimentaires
       créée par tous et pour tous.
@@ -164,7 +188,7 @@ onUnmounted(() => {
       Vous pouvez l'utiliser pour faire de meilleurs choix alimentaires, et comme les données sont
       ouvertes, tout le monde peut les réutiliser pour tout usage.
     </span>
-    <RouterLink :to="'/about-me'" class="flex items-center w-fit mt-2">
+    <RouterLink :to="'/about'" class="flex items-center w-fit mt-2">
       En savoir plus
       <svg class="h-[15px] w-auto ml-2" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 448 512">
         <path
@@ -173,11 +197,11 @@ onUnmounted(() => {
       </svg>
     </RouterLink>
   </section>
-  <section id="explanations" class="mb-16">
+  <section id="score-explanations" class="mb-20">
     <h2 class="title mb-8 text-2xl lg:text-3xl font-thin">
       Votre alimentation <span class="text-[indianred]">décryptée</span>
     </h2>
-    <div class="p-4 md:p-8 bg-white rounded-lg">
+    <div class="py-8 px-4 md:p-8 bg-white rounded-lg">
       <article id="nutriscore-explanation" class="w-full mr-auto mb-8 text-justify">
         <div class="flex flex-col md:flex-row md:justify-between items-center">
           <img
@@ -194,7 +218,7 @@ onUnmounted(() => {
           </p>
         </div>
       </article>
-      <article id="nova-explanation" class="w-full ml-auto mb-8 text-justify">
+      <article id="nova-explanation" class="w-full ml-auto md:mb-8 text-justify">
         <div class="flex flex-col md:flex-row md:justify-between items-center">
           <img
             src="https://static.openfoodfacts.org/images/attributes/dist/nova-group-1.svg"
@@ -212,12 +236,9 @@ onUnmounted(() => {
       </article>
     </div>
   </section>
-  <section id="total-products" class="mb-16">
-    <h2 class="title text-3xl lg:text-5xl text-center">+ de 1 082 462 produits référencés</h2>
-  </section>
-  <section id="last-products" class="mb-16">
-    <h2 class="title mb-8 text-2xl lg:text-3xl font-thin">
-      Derniers produits <span class="text-[#00bd7e]">ajoutés</span>
+  <section id="last-products" class="mb-20">
+    <h2 class="title mb-8 text-2xl lg:text-3xl text-right font-thin">
+      Produits <span class="text-[#00bd7e]">récemment</span> ajoutés
     </h2>
     <div class="flex flex-wrap p-4 bg-neutral-200 rounded-lg">
       <ProductCard
@@ -265,17 +286,11 @@ h1 {
   margin-right: 4%;
 }
 
-#about-me {
-  height: 250px;
-  overflow: hidden;
-  transition: height 0.5s;
-}
-
-#about-me span {
+#about span {
   background-color: hsla(160, 100%, 37%, 0.6);
 }
 
-#total-products > .title {
+#total-products {
   font-family: 'Grand Hotel', cursive;
   color: transparent;
   background: linear-gradient(to left, #5d576b80, #2f2c36);
@@ -302,10 +317,6 @@ h1 {
   .product:nth-of-type(5n + 4) {
     margin-left: 1.5%;
     margin-right: 1.5%;
-  }
-
-  #about-me {
-    height: 130px;
   }
 }
 </style>

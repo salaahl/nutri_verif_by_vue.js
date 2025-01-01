@@ -44,7 +44,7 @@ const currentRoute = computed(() => {
       <nav class="flex flex-wrap justify-center">
         <div class="px-2 md:px-6">
           <RouterLink
-            :to="'/about-me'"
+            :to="'/about'"
             class="text-base leading-6 text-gray-500 hover:text-gray-900"
           >
             À propos de nous

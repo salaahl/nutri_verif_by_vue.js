@@ -1,5 +1,5 @@
 <script setup>
-import { onBeforeMount, computed, reactive, watch } from 'vue'
+import { onBeforeMount, computed, reactive, ref, watch } from 'vue'
 import { useRoute, useRouter, onBeforeRouteUpdate } from 'vue-router'
 import { useProductsStore } from '../stores/products.ts'
 import { franc } from 'franc-min'
@@ -27,6 +27,7 @@ const product = reactive({
 })
 
 const moreProducts = reactive([])
+const moreProductsIsLoading = ref(false)
 
 const fetchData = async (url) => {
   try {
@@ -159,14 +160,17 @@ const fetchMoreProducts = async () => {
   if (!product.categories?.length) return
 
   const fields =
-    'id,categories,image_front_url,brands,generic_name_fr,nutriscore_grade,nova_group,last_updated_t,quantity,ingredients_text_with_allergens_fr,nutriments,manufacturing_places,link'
-  const url = `https://world.openfoodfacts.org/api/v2/search?categories_tags=${product.categories.slice(0, 4).join(',')}&fields=${fields}&sort_by=nutriscore_score,popularity_key&page_size=4&action=process&json=1`
+    'id,categories,image_front_url,brands,generic_name_fr,nutriscore_grade,nova_group,last_updated_t,quantity,ingredients_text_with_allergens_fr,nutriments,manufacturing_places,link,completeness'
+  const url = `https://world.openfoodfacts.org/api/v2/search?categories_tags=${product.categories.slice(0, 1).join(',')}&fields=${fields}&sort_by=nutriscore_score,popularity_key&page_size=100&action=process&json=1`
+  moreProductsIsLoading.value = true
+
   const data = await fetchData(url)
 
   if (data?.products) {
     moreProducts.length = 0 // Reset the moreProducts array before adding new data
     data.products
-      .filter((p) => p.id !== product.id)
+      .filter((p) => p.id !== product.id && p.completeness >= 0.35)
+      .sort((a, b) => a.nutriscore_grade.localeCompare(b.nutriscore_grade))
       .slice(0, 3)
       .forEach((p) => {
         moreProducts.push({
@@ -187,6 +191,8 @@ const fetchMoreProducts = async () => {
         })
       })
   }
+
+  moreProductsIsLoading.value = false
 }
 
 // Update product when route changes
@@ -222,7 +228,7 @@ watch(
   <div
     :key="route.params.id"
     id="product-container"
-    class="md:min-h-[calc(100vh-344px)] flex flex-wrap justify-between md:flex-nowrap flex-col md:flex-row"
+    class="md:min-h-[calc(100vh-344px)] flex flex-wrap justify-between md:flex-nowrap flex-col md:flex-row md:mb-8"
   >
     <section
       id="product-images-container"
@@ -349,14 +355,20 @@ watch(
     </section>
   </div>
 
-  <aside v-if="moreProducts.length" class="mt-16">
+  <aside v-if="moreProducts.length || moreProductsIsLoading" class="mt-16">
     <section
       id="more-products"
-      class="w-full flex flex-wrap lg:flex-nowrap items-center justify-between p-8 lg:px-16 bg-neutral-200 rounded-xl"
+      class="relative w-full flex flex-wrap lg:flex-nowrap items-center justify-between p-8 lg:px-16 bg-neutral-200 rounded-xl"
     >
       <h2 class="title w-full lg:w-1/4 text-center lg:text-left text-3xl lg:text-2xl">
         Alternatives
       </h2>
+      <div
+        v-if="moreProductsIsLoading"
+        class="loader-container md:absolute h-full w-full flex justify-center items-center"
+      >
+        <div class="lds-hourglass"></div>
+      </div>
       <ProductCard
         v-for="p in moreProducts"
         :key="p.id"
@@ -382,12 +394,6 @@ watch(
 </style>
 
 <style scoped>
-#product-details-container .lds-hourglass:after {
-  margin: 8px;
-  border: 32px solid #fff;
-  border-color: black transparent var(--color-green) transparent;
-}
-
 .tag {
   transition: all 0.35s ease-in-out;
 }

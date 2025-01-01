@@ -5,7 +5,7 @@ export const useProductsStore = defineStore('products', {
     products: [],
     input: '',
     page: 1,
-    pages: 0
+    pages: 1
   }),
   actions: {
     updateProducts(payload: any) {

@@ -7,17 +7,17 @@ defineProps({
   image: {
     type: String,
     default: 'https://static.openfoodfacts.org/images/attributes/no_image.png',
-    required: true
+    required: false
   },
   brand: {
     type: String,
     default: 'Marque inconnue',
-    required: true
+    required: false
   },
   name: {
     type: String,
     default: 'Fiche non finalisée',
-    required: true
+    required: false
   },
   nutriscore: {
     type: [Number, String],
@@ -68,6 +68,7 @@ defineProps({
 
 <style scoped>
 .product {
+  aspect-ratio: 2 / 3;
   padding: 15px;
   background-color: white;
   border-radius: 10px;

@@ -3,16 +3,16 @@ import { createWebHistory, createRouter } from 'vue-router'
 import HomeView from '../views/HomeView.vue'
 import ProductsView from '../views/ProductsView.vue'
 import ProductView from '../views/ProductView.vue'
-import AboutMeView from '../views/AboutMeView.vue'
+import AboutView from '../views/AboutView.vue'
 import LegalNoticeView from '../views/LegalNoticeView.vue'
 import NotFound from '../views/NotFound.vue'
 
 const routes = [
   { path: '/', component: HomeView, name: 'home', meta: { transition: 'slide-fade' } },
   {
-    path: '/about-me',
-    component: AboutMeView,
-    name: 'about-me',
+    path: '/about',
+    component: AboutView,
+    name: 'about',
     meta: { transition: 'slide-fade' }
   },
   {
