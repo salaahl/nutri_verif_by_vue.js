@@ -141,9 +141,9 @@ const searchByCategory = async (category) => {
     data.products.forEach((product) => {
       products.value.push({
         id: product.id,
-        image: product.image_front_small_url || '/logo.png',
-        brand: product.brands || 'Fiche non finalisée',
-        name: product.generic_name_fr || 'Fiche non finalisée',
+        image: product.image_front_small_url,
+        brand: product.brands,
+        name: product.generic_name_fr,
         nutriscore: product.nutriscore_grade,
         nova: product.nova_group
       })
@@ -159,10 +159,10 @@ const searchByCategory = async (category) => {
 const fetchMoreProducts = async () => {
   if (!product.categories?.length) return
 
+  moreProductsIsLoading.value = true
   const fields =
     'id,categories,image_front_url,brands,generic_name_fr,nutriscore_grade,nova_group,last_updated_t,quantity,ingredients_text_with_allergens_fr,nutriments,manufacturing_places,link,completeness'
-  const url = `https://world.openfoodfacts.org/api/v2/search?categories_tags=${product.categories.slice(0, 1).join(',')}&fields=${fields}&sort_by=nutriscore_score,popularity_key&page_size=100&action=process&json=1`
-  moreProductsIsLoading.value = true
+  const url = `https://world.openfoodfacts.org/api/v2/search?categories_tags=${product.categories.slice(0, 5).join(',')}&fields=${fields}&sort_by=nutriscore_score,popularity_key&page_size=100&action=process&json=1`
 
   const data = await fetchData(url)
 
@@ -250,7 +250,7 @@ watch(
 
     <section id="product-details-container" class="relative w-full md:w-2/4 max-md:my-8 md:pl-6">
       <div
-        v-if="!product.lastUpdate"
+        v-if="!product.id"
         class="loader-container md:absolute h-full w-full flex justify-center items-center"
       >
         <div class="lds-hourglass"></div>
@@ -355,12 +355,12 @@ watch(
     </section>
   </div>
 
-  <aside v-if="moreProducts.length || moreProductsIsLoading" class="mt-16">
+  <aside v-if="moreProducts.length || moreProductsIsLoading" class="my-16">
     <section
       id="more-products"
-      class="relative w-full flex flex-wrap lg:flex-nowrap items-center justify-between p-8 lg:px-16 bg-neutral-200 rounded-xl"
+      class="relative w-full flex flex-wrap lg:flex-nowrap items-stretch lg:items-center justify-between p-4 md:p-8 lg:px-16 bg-neutral-200 rounded-xl"
     >
-      <h2 class="title w-full lg:w-1/4 text-center lg:text-left text-3xl lg:text-2xl">
+      <h2 class="title w-full lg:w-1/4 mb-8 lg:mb-0 text-center lg:text-left text-3xl lg:text-2xl">
         Alternatives
       </h2>
       <div
@@ -378,9 +378,6 @@ watch(
         :name="p.generic_name"
         :nutriscore="p.nutriscore"
         :nova="p.novaGroup"
-        :class="[
-          'w-full lg:w-[23%] max-w-[300px] lg:max-w-[250px] mt-8 lg:mt-0 mx-auto lg:ml-[2%]'
-        ]"
       />
     </section>
   </aside>
@@ -412,9 +409,51 @@ watch(
   color: indianred;
 }
 
+#more-products .product {
+  width: 48%;
+  margin-bottom: 5%;
+}
+
 @media (min-width: 768px) {
+  #more-products .product {
+    margin-left: unset;
+    margin-right: unset;
+    margin-bottom: 0;
+  }
+}
+
+@media (min-width: 768px) and (max-width: 1023px) {
+  #more-products .product {
+    width: 32%;
+  }
+
+  #more-products .product:nth-of-type(3n + 2) {
+    margin-left: 2%;
+    margin-right: 2%;
+  }
+}
+
+@media (min-width: 1024px) {
   #more-products > .title {
     font-size: xxx-large;
+  }
+
+  #more-products .product {
+    width: 18.6%;
+  }
+
+  #more-products .product:nth-of-type(2n + 1) {
+    margin-right: unset;
+  }
+
+  #more-products .product:nth-of-type(5n + 2) {
+    margin-left: 1.5%;
+    margin-right: 1.5%;
+  }
+
+  #more-products .product:nth-of-type(5n + 4) {
+    margin-left: 1.5%;
+    margin-right: 1.5%;
   }
 }
 </style>

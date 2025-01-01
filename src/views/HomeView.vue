@@ -25,6 +25,7 @@ let pages = computed({
 let products = ref([])
 let lastProducts = ref([])
 let moreProductsLink = ref(null)
+const moreProductsIsLoading = ref(false)
 
 // Helper function to get elements by selector
 const $ = (id) => document.querySelector(id)
@@ -44,11 +45,11 @@ try {
       filteredProducts.forEach((product) => {
         lastProducts.value.push({
           id: product.id,
-          image: product.image_front_small_url || '/logo.png',
-          brand: product.brands || 'Fiche non finalisée',
-          name: product.generic_name_fr || 'Fiche non finalisée',
-          nutriscore: product.nutriscore_grade || 'unknown',
-          nova: product.nova_group || 'unknown'
+          image: product.image_front_small_url,
+          brand: product.brands,
+          name: product.generic_name_fr,
+          nutriscore: product.nutriscore_grade,
+          nova: product.nova_group
         })
       })
     })
@@ -71,11 +72,11 @@ onMounted(() => {
       data.products.forEach((product) => {
         products.value.push({
           id: product.id,
-          image: product.image_front_small_url || '/logo.png',
-          brand: product.brands || 'Fiche non finalisée',
-          name: product.generic_name_fr || 'Fiche non finalisée',
-          nutriscore: product.nutriscore_grade || 'unknown',
-          nova: product.nova_group || 'unknown'
+          image: product.image_front_small_url,
+          brand: product.brands,
+          name: product.generic_name_fr,
+          nutriscore: product.nutriscore_grade,
+          nova: product.nova_group
         })
 
         page.value = 1
@@ -91,17 +92,19 @@ onMounted(() => {
 
   // Handle form submission
   $('#search-bar').addEventListener('input', () => {
+    products.value.length = 0
+    moreProductsIsLoading.value = true
+
     clearTimeout(timer)
 
     timer = setTimeout(async function () {
-      products.value = []
       input.value = $('#search-input').value
-
       let regex = /^[0-9]{8,13}$/
       if (regex.test(input.value)) {
         router.push({ name: 'product', params: { id: input.value } })
       } else {
         await searchProduct()
+        moreProductsIsLoading.value = false
       }
     }, 1000)
   })
@@ -138,10 +141,16 @@ onUnmounted(() => {
       </div>
     </div>
     <div
-      v-if="products.length > 0"
+      v-if="products.length > 0 || moreProductsIsLoading"
       id="search-results"
-      class="flex flex-wrap p-4 bg-neutral-200 rounded-lg"
+      class="relative flex flex-wrap p-4 bg-neutral-200 rounded-lg"
     >
+      <div
+        v-if="moreProductsIsLoading"
+        class="loader-container w-fit flex justify-center items-center m-auto"
+      >
+        <div class="lds-hourglass"></div>
+      </div>
       <ProductCard
         v-for="product in products"
         :key="product.id"
@@ -153,7 +162,7 @@ onUnmounted(() => {
         :nova="product.nova"
       />
       <article
-        v-if="moreProductsLink"
+        v-if="products.length > 0"
         class="md:product w-full md:w-[18.6%] flex items-center justify-center mt-[2.5%] md:mt-0"
       >
         <RouterLink
@@ -198,7 +207,7 @@ onUnmounted(() => {
     </RouterLink>
   </section>
   <section id="score-explanations" class="mb-20">
-    <h2 class="title mb-8 text-2xl lg:text-3xl font-thin">
+    <h2 class="title mb-8 text-2xl lg:text-3xl">
       Votre alimentation <span class="text-[indianred]">décryptée</span>
     </h2>
     <div class="py-8 px-4 md:p-8 bg-white rounded-lg">
@@ -237,7 +246,7 @@ onUnmounted(() => {
     </div>
   </section>
   <section id="last-products" class="mb-20">
-    <h2 class="title mb-8 text-2xl lg:text-3xl text-right font-thin">
+    <h2 class="title mb-8 text-2xl lg:text-3xl text-right">
       Produits <span class="text-[#00bd7e]">récemment</span> ajoutés
     </h2>
     <div class="flex flex-wrap p-4 bg-neutral-200 rounded-lg">
@@ -279,10 +288,11 @@ h1 {
 
 .product {
   width: 48%;
+  aspect-ratio: unset;
   margin-bottom: 5%;
 }
 
-.product:nth-of-type(2n + 1) {
+.product:nth-of-type(odd) {
   margin-right: 4%;
 }
 
@@ -299,24 +309,19 @@ h1 {
 
 @media (min-width: 768px) {
   .product {
-    width: 18.6%;
+    width: 19%;
     margin-left: unset;
     margin-right: unset;
     margin-bottom: 0;
   }
 
-  .product:nth-of-type(2n + 1) {
+  .product:nth-of-type(odd) {
     margin-right: unset;
   }
 
-  .product:nth-of-type(5n + 2) {
-    margin-left: 1.5%;
-    margin-right: 1.5%;
-  }
-
-  .product:nth-of-type(5n + 4) {
-    margin-left: 1.5%;
-    margin-right: 1.5%;
+  .product:nth-of-type(2n + 2) {
+    margin-left: 1.25%;
+    margin-right: 1.25%;
   }
 }
 </style>

@@ -1,5 +1,5 @@
 <script setup>
-import { onMounted, onUpdated, computed } from 'vue'
+import { onMounted, onUpdated, computed, ref } from 'vue'
 import { useRouter } from 'vue-router'
 import { useProductsStore } from '../stores/products.ts'
 import ProductCard from '/src/components/ProductCard.vue'
@@ -11,6 +11,8 @@ let products = computed({
   get: () => productsStore.getProducts,
   set: (val) => productsStore.updateProducts(val)
 })
+
+const productsIsLoading = ref(false)
 
 let input = computed({
   get: () => productsStore.getInput,
@@ -36,6 +38,7 @@ const $ = (id) => document.querySelector(id)
 onMounted(() => {
   // Function to search products from the API
   async function searchProduct() {
+    productsIsLoading.value = true
     const fields = 'id,image_front_small_url,brands,generic_name_fr,nutriscore_grade,nova_group'
     const route = `https://world.openfoodfacts.org/cgi/search.pl?search_terms=${input.value}&fields=${fields}&sort_by=popularity_key,completeness&page_size=20&page=${page.value}&search_simple=1&action=process&json=1`
 
@@ -46,11 +49,11 @@ onMounted(() => {
       data.products.forEach((product) => {
         products.value.push({
           id: product.id,
-          image: product.image_front_small_url || '/logo.png',
-          brand: product.brands || 'Fiche non finalisée',
-          name: product.generic_name_fr || 'Fiche non finalisée',
-          nutriscore: product.nutriscore_grade || 'unknown',
-          nova: product.nova_group || 'unknown'
+          image: product.image_front_small_url,
+          brand: product.brands,
+          name: product.generic_name_fr,
+          nutriscore: product.nutriscore_grade,
+          nova: product.nova_group
         })
       })
 
@@ -60,6 +63,8 @@ onMounted(() => {
     } catch (error) {
       console.error('Error fetching data:', error.message)
     }
+
+    productsIsLoading.value = false
   }
 
   searchProduct()
@@ -200,7 +205,7 @@ onUpdated(() => {
     />
   </section>
   <div id="new-results">
-    <div class="lds-hourglass hidden"></div>
+    <div v-if="productsIsLoading" class="lds-hourglass"></div>
   </div>
 </template>
 

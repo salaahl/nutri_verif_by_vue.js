@@ -35,32 +35,36 @@ defineProps({
 <template>
   <article class="product">
     <RouterLink :to="'/product/' + id" class="h-full w-full flex flex-col justify-between">
-      <div>
-        <div class="thumbnail flex justify-center items-center aspect-square border-4">
-          <img :src="image" :alt="brand + ' : ' + name" class="object-contain" />
-        </div>
+      <div class="thumbnail h-2/5 md:h-1/2 flex items-center justify-center m-auto aspect-square">
+        <img
+          :src="image"
+          :alt="brand + ' : ' + name"
+          class="h-3/4 w-3/4 object-contain object-center"
+        />
+      </div>
+      <div class="details h-3/5 md:h-1/2 flex flex-col justify-between">
         <div class="mt-2">
-          <h4 class="title lg:max-w-[75%] text-ellipsis overflow-hidden">{{ brand }}</h4>
+          <h4 class="title text-ellipsis overflow-hidden">{{ brand }}</h4>
           <h4 class="message text-sm font-thin">{{ name }}</h4>
         </div>
-      </div>
-      <div class="details md:flex justify-between items-center mt-4">
-        <img
-          :src="
-            'https://static.openfoodfacts.org/images/attributes/dist/nutriscore-' +
-            nutriscore +
-            '-new-fr.svg'
-          "
-          :alt="'Nutriscore : ' + nutriscore"
-          class="max-h-[50px]"
-        />
-        <img
-          :src="
-            'https://static.openfoodfacts.org/images/attributes/dist/nova-group-' + nova + '.svg'
-          "
-          :alt="'Groupe Nova : ' + nova"
-          class="max-h-[40px]"
-        />
+        <div class="scores md:flex justify-between items-start">
+          <img
+            :src="
+              'https://static.openfoodfacts.org/images/attributes/dist/nutriscore-' +
+              nutriscore +
+              '-new-fr.svg'
+            "
+            :alt="'Nutriscore : ' + nutriscore"
+            class="max-h-[50px]"
+          />
+          <img
+            :src="
+              'https://static.openfoodfacts.org/images/attributes/dist/nova-group-' + nova + '.svg'
+            "
+            :alt="'Groupe Nova : ' + nova"
+            class="max-h-[40px] mt-2 md:mt-0"
+          />
+        </div>
       </div>
     </RouterLink>
   </article>
@@ -68,10 +72,13 @@ defineProps({
 
 <style scoped>
 .product {
-  aspect-ratio: 2 / 3;
   padding: 15px;
-  background-color: white;
+  background-color: #f9f9f9;
   border-radius: 10px;
+  box-shadow:
+    rgba(255, 255, 255, 0.01) 0px 1px 1px 0px inset,
+    rgba(50, 50, 93, 0.025) 0px 50px 100px -20px,
+    rgba(0, 0, 0, 0.03) 0px 30px 60px -30px;
   transition: all 1s
     linear(
       0 0%,
@@ -112,8 +119,9 @@ defineProps({
 .product:hover {
   transform: translateY(-1%);
   box-shadow:
-    0px 10px 15px 0px rgb(60 64 67 / 10%),
-    0 10px 15px 0px rgb(60 64 67 / 5%);
+    rgba(255, 255, 255, 0.02) 0px 1px 1px 0px inset,
+    rgba(50, 50, 93, 0.05) 0px 50px 100px -20px,
+    rgba(0, 0, 0, 0.06) 0px 30px 60px -30px;
 }
 
 .product h4 {
@@ -123,11 +131,18 @@ defineProps({
 }
 
 .thumbnail {
-  border-radius: 999px;
+  background-color: white;
+  border-radius: 15px;
   overflow: hidden;
 }
 
 .thumbnail img {
   margin: auto;
+}
+
+@media (min-width: 768px) {
+  .product {
+    aspect-ratio: 2 / 3;
+  }
 }
 </style>
