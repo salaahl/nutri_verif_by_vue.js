@@ -202,7 +202,9 @@ onBeforeRouteUpdate((to) => {
             <h4 id="barcode">{{ product.id }}</h4>
             <h3 v-if="product.link" class="mt-4 font-semibold">Plus d'infos :</h3>
             <h4>
-              <a :href="product.link" id="link" class="underline">{{ product.link }}</a>
+              <a :href="product.link" target="_blank" id="link" class="underline">{{
+                product.link
+              }}</a>
             </h4>
             <div v-if="filteredCategories.length" id="tags" class="mt-4">
               <button
