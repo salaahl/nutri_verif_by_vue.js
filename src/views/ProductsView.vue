@@ -165,12 +165,9 @@ onMounted(() => {
 
 onUpdated(() => {
   // Timeout to hide the loading indicator and show the search button again
-  let timer: number = 500
-  clearTimeout(timer)
-
-  timer = setTimeout(() => {
+  setTimeout(() => {
     document.querySelectorAll('.lds-hourglass').forEach((ele) => {
-      (ele as HTMLElement).classList.add('hidden')
+      ;(ele as HTMLElement).classList.add('hidden')
     })
     const searchBarBtnSvg = $('#search-bar button > svg') as HTMLElement
     if (!searchBarBtnSvg) return

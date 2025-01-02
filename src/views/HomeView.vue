@@ -120,7 +120,7 @@ onMounted(() => {
     }
   }
 
-  let timer: number = 1000
+  let timer: any = null
 
   // Handle form submission
   const searchBar = $('#search-bar') as HTMLElement
