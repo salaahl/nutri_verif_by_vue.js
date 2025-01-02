@@ -1,7 +1,7 @@
 <script setup lang="ts">
 import { onMounted, onUnmounted, ref } from 'vue'
 import { useRouter } from 'vue-router'
-import { useProducts } from '/src/composables/useProducts'
+import { useProducts } from '../composables/useProducts'
 import ProductCard from '/src/components/ProductCard.vue'
 
 import gsap from 'gsap'
@@ -11,8 +11,7 @@ gsap.registerPlugin(ScrollTrigger)
 gsap.defaults({ ease: 'power1.out' })
 
 const router = useRouter()
-const { products, productsIsLoading, page, pages, searchProducts } = useProducts()
-const observerTarget = ref<HTMLElement | null>(null) // Élément cible pour l'IntersectionObserver
+const { products, productsIsLoading, searchProducts } = useProducts()
 
 // Gestion du formulaire de recherche
 const onSubmit = async (event: Event) => {

@@ -2,14 +2,13 @@
 import { onBeforeMount, computed } from 'vue'
 import { useRoute, useRouter, onBeforeRouteUpdate } from 'vue-router'
 import { franc } from 'franc-min'
-import { useProducts } from '/src/composables/useProducts'
+import { useProducts } from '../composables/useProducts'
 import ProductCard from '/src/components/ProductCard.vue'
 
 const router = useRouter()
 const route = useRoute()
 
 const {
-  input,
   searchProducts,
   productsIsLoading,
   product,
@@ -74,14 +73,14 @@ const updateProduct = async (productId: string) => {
   if (foundProduct) {
     // Clear previous product data and assign new data
     Object.assign(product, { ...foundProduct })
-    fetchSuggestedProducts(route.params.id, product.categories)
+    fetchSuggestedProducts(productId, product.categories)
   } else {
-    await fetchProduct(route.params.id)
+    await fetchProduct(productId)
   }
 }
 
 onBeforeMount(async () => {
-  await fetchProduct(route.params.id)
+  await fetchProduct(Array.isArray(route.params.id) ? route.params.id[0] : route.params.id)
 
   if (product.nutriscore !== 'a' || product.novaGroup !== 'a')
     fetchSuggestedProducts(product.id, product.categories) // Fetch similar products if Nutriscore/Nova isn't A
@@ -241,9 +240,9 @@ onBeforeRouteUpdate((to) => {
         :id="product.id"
         :image="product.image"
         :brand="product.brand"
-        :name="product.generic_name"
+        :name="product.name"
         :nutriscore="product.nutriscore"
-        :nova="product.novaGroup"
+        :nova="product.nova"
       />
     </section>
   </aside>

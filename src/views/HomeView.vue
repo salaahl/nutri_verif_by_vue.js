@@ -1,7 +1,7 @@
 <script setup lang="ts">
 import { onMounted, onUnmounted, ref } from 'vue'
 import { useRouter } from 'vue-router'
-import { useProducts } from '/src/composables/useProducts'
+import { useProducts } from '../composables/useProducts'
 import ProductCard from '/src/components/ProductCard.vue'
 
 const router = useRouter()

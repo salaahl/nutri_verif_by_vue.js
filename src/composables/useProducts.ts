@@ -106,7 +106,7 @@ export function useProducts() {
     }
   }
 
-  async function searchProducts(userInput: string, method: SearchMethod) {
+  async function searchProducts(userInput: string | null, method: SearchMethod) {
     if (userInput !== null) input.value = userInput
     if (method === 'complete') {
       products.value = [] // Réinitialiser les produits en cas de nouvelle recherche
