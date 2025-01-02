@@ -1,146 +1,49 @@
 <script setup lang="ts">
-import { onMounted, computed, ref, onUnmounted } from 'vue'
+import { onMounted, onUnmounted, ref } from 'vue'
 import { useRouter } from 'vue-router'
-import { useProductsStore } from '../stores/products'
+import { useProducts } from '/src/composables/useProducts'
 import ProductCard from '/src/components/ProductCard.vue'
 
-interface Product {
-  id: string
-  image?: string
-  brand?: string
-  name?: string
-  nutriscore?: number | string
-  nova?: number | string
-}
-
 const router = useRouter()
-const productsStore = useProductsStore()
 
-let input = computed<string>({
-  get: () => productsStore.getInput,
-  set: (val) => productsStore.updateInput(val)
-})
+const {
+  searchProducts,
+  productsIsLoading,
+  products,
+  fetchLastProduct,
+  lastProducts,
+  lastProductsIsLoading
+} = useProducts()
+const moreProductsLink = ref<{ name: string; to: string } | null>(null)
 
-let page = computed<number>({
-  get: () => productsStore.getPage,
-  set: (val) => productsStore.updatePage(val)
-})
-
-let pages = computed<number>({
-  get: () => productsStore.getPages,
-  set: (val) => productsStore.updatePages(val)
-})
-
-let products = ref<Product[]>([])
-let lastProducts = ref<Product[]>([])
-let moreProductsLink = ref<{ name: string; to: string } | null>(null)
-const moreProductsIsLoading = ref<boolean>(false)
-
-// Helper function to get elements by selector
-const $ = (id: string) => document.querySelector(id)
-
-try {
-  fetch(
-    'https://world.openfoodfacts.org/cgi/search.pl?fields=id,image_front_small_url,brands,generic_name_fr,nutriscore_grade,nova_group,created_t,completeness&sort_by=created_t&page_size=100&action=process&json=1'
-  )
-    .then((response) => response.json())
-    .then((data) => {
-      // Trie les produits par date de création et filtre les produits avec un taux de complétude supérieur ou égal à 0.4 pour n'en garder que 5
-      let filteredProducts = data.products
-        .filter((product: { completeness?: number }) => (product.completeness ?? 0) >= 0.35)
-        .sort(
-          (a: { created_t?: number }, b: { created_t?: number }) =>
-            (b?.created_t ?? 0) - (a?.created_t ?? 0)
-        )
-        .slice(0, 5)
-
-      filteredProducts.forEach(
-        (product: {
-          id?: string
-          image_front_small_url?: string
-          brands?: string
-          generic_name_fr?: string
-          nutriscore_grade?: string
-          nova_group?: string
-        }) => {
-          lastProducts.value.push({
-            id: product.id ?? 'unknown',
-            image: product.image_front_small_url ?? './logo.png',
-            brand: product.brands ?? 'Marque inconnue',
-            name: product.generic_name_fr ?? 'Fiche non finalisée',
-            nutriscore: product.nutriscore_grade ?? 'unknown',
-            nova: product.nova_group ?? 'unknown'
-          })
-        }
-      )
-    })
-} catch (error: any) {
-  console.error('Error fetching data:', error.message)
-}
+fetchLastProduct()
 
 onMounted(() => {
   // Hide the website name in home view
   const websiteName = document.querySelector('#website-name') as HTMLElement
   if (!websiteName) return
-  websiteName.style.opacity = '0'
+  websiteName.classList.add('opacity-0')
 
-  // Function to search products from the API
-  async function searchProduct() {
-    const fields = 'id,image_front_small_url,brands,generic_name_fr,nutriscore_grade,nova_group'
-    const route = `https://world.openfoodfacts.org/cgi/search.pl?search_terms=${input.value}&fields=${fields}&sort_by=popularity_key,completeness&page_size=4&search_simple=1&action=process&json=1`
+  let timer: ReturnType<typeof setTimeout>
 
-    try {
-      const response = await fetch(route)
-      const data = await response.json()
-      data.products.forEach(
-        (product: {
-          id?: string
-          image_front_small_url?: string
-          brands?: string
-          generic_name_fr?: string
-          nutriscore_grade?: string
-          nova_group?: string
-        }) => {
-          products.value.push({
-            id: product.id ?? 'unknown',
-            image: product.image_front_small_url ?? './logo.png',
-            brand: product.brands ?? 'Marque inconnue',
-            name: product.generic_name_fr ?? 'Fiche non finalisée',
-            nutriscore: product.nutriscore_grade ?? 'unknown',
-            nova: product.nova_group ?? 'unknown'
-          })
-        }
-      )
-
-      page.value = 1
-      pages.value = Math.ceil(data.count / 20)
-      moreProductsLink.value = { name: 'Plus de résultats', to: '/search' }
-    } catch (error: any) {
-      console.error('Error fetching data:', error.message)
-    }
-  }
-
-  let timer: any = null
-
-  // Handle form submission
-  const searchBar = $('#search-bar') as HTMLElement
+  const searchBar = document.querySelector('#search-bar') as HTMLElement
   if (!searchBar) return
-  searchBar.addEventListener('input', () => {
-    products.value.length = 0
-    moreProductsIsLoading.value = true
 
+  searchBar.addEventListener('input', () => {
+    moreProductsLink.value = null
+    products.value = [] // Doublon nécessaire à cause du timer
     clearTimeout(timer)
 
     timer = setTimeout(async function () {
-      const searchInput = $('#search-input') as HTMLInputElement
+      const searchInput = document.querySelector('#search-input') as HTMLInputElement
       if (!searchInput) return
-      input.value = searchInput.value
+
       let regex = /^[0-9]{8,13}$/
-      if (regex.test(input.value)) {
-        router.push({ name: 'product', params: { id: input.value } })
+      if (regex.test(searchInput.value)) {
+        router.push({ name: 'product', params: { id: searchInput.value } })
       } else {
-        await searchProduct()
-        moreProductsIsLoading.value = false
+        await searchProducts(searchInput.value, 'complete')
+        moreProductsLink.value = { name: 'Plus de résultats', to: '/search' }
       }
     }, 1000)
   })
@@ -149,7 +52,7 @@ onMounted(() => {
 onUnmounted(() => {
   const websiteName = document.querySelector('#website-name') as HTMLElement
   if (websiteName) {
-    websiteName.style.opacity = '1'
+    websiteName.classList.remove('opacity-0')
   }
 })
 </script>
@@ -180,18 +83,18 @@ onUnmounted(() => {
       </div>
     </div>
     <div
-      v-if="products.length > 0 || moreProductsIsLoading"
+      v-if="products.length > 0 || productsIsLoading"
       id="search-results"
       class="relative flex flex-wrap p-4 bg-neutral-200 rounded-lg"
     >
       <div
-        v-if="moreProductsIsLoading"
+        v-if="productsIsLoading"
         class="loader-container w-fit flex justify-center items-center m-auto"
       >
         <div class="lds-hourglass"></div>
       </div>
       <ProductCard
-        v-for="product in products"
+        v-for="product in products.slice(0, 4)"
         :key="product.id"
         :id="product.id"
         :image="product.image"
@@ -288,7 +191,13 @@ onUnmounted(() => {
     <h2 class="title mb-8 text-2xl lg:text-3xl text-right">
       Produits <span class="text-[#00bd7e]">récemment</span> ajoutés
     </h2>
-    <div class="flex flex-wrap p-4 bg-neutral-200 rounded-lg">
+    <div class="relative flex flex-wrap p-4 bg-neutral-200 rounded-lg">
+      <div
+        v-if="lastProductsIsLoading"
+        class="loader-container w-fit flex justify-center items-center m-auto"
+      >
+        <div class="lds-hourglass"></div>
+      </div>
       <ProductCard
         v-for="product in lastProducts"
         :key="product.id"
