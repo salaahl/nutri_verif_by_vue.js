@@ -4,14 +4,8 @@ import { useRouter } from 'vue-router'
 import { useProducts } from '../composables/useProducts'
 import ProductCard from '/src/components/ProductCard.vue'
 
-import gsap from 'gsap'
-import { ScrollTrigger } from 'gsap/ScrollTrigger'
-
-gsap.registerPlugin(ScrollTrigger)
-gsap.defaults({ ease: 'power1.out' })
-
 const router = useRouter()
-const { products, productsIsLoading, searchProducts } = useProducts()
+const { products, productsIsLoading, page, pages, searchProducts } = useProducts()
 
 // Gestion du formulaire de recherche
 const onSubmit = async (event: Event) => {
@@ -28,18 +22,41 @@ const onSubmit = async (event: Event) => {
   }
 }
 
+let prevScrollpos = 0
+let refresh: boolean = true
+
+const onScroll = async () => {
+  const h = document.documentElement,
+    b = document.body,
+    st = 'scrollTop',
+    sh = 'scrollHeight'
+
+  let currentScrollPos = ((h[st] || b[st]) / ((h[sh] || b[sh]) - h.clientHeight)) * 100
+
+  if (
+    currentScrollPos > prevScrollpos &&
+    currentScrollPos > 70 &&
+    page.value < pages.value &&
+    refresh
+  ) {
+    refresh = false
+    await searchProducts(null, 'scroll')
+
+    // Permet de temporiser le rafraîchissement
+    setTimeout(() => {
+      refresh = true
+    }, 1000)
+  }
+
+  prevScrollpos = currentScrollPos
+}
+
 onMounted(() => {
-  ScrollTrigger.create({
-    trigger: '#new-results',
-    start: window.innerWidth < 1024 ? '100% 100%' : '50% 100%',
-    end: window.innerWidth < 1024 ? '100% 100%' : '50% 100%',
-    markers: true,
-    onEnter: async () => await searchProducts(null, 'scroll')
-  })
+  window.addEventListener('scroll', onScroll)
 })
 
 onUnmounted(() => {
-  //
+  window.removeEventListener('scroll', onScroll)
 })
 </script>
 
@@ -99,7 +116,7 @@ onUnmounted(() => {
       :nova="product.nova"
     />
   </section>
-  <div id="new-results" class="h-[100px]">
+  <div id="new-results" class="mb-8">
     <div v-if="productsIsLoading" class="lds-hourglass"></div>
   </div>
 </template>
