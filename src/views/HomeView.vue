@@ -1,34 +1,43 @@
-<script setup>
+<script setup lang="ts">
 import { onMounted, computed, ref, onUnmounted } from 'vue'
 import { useRouter } from 'vue-router'
-import { useProductsStore } from '../stores/products.ts'
+import { useProductsStore } from '../stores/products'
 import ProductCard from '/src/components/ProductCard.vue'
+
+interface Product {
+  id: string
+  image?: string
+  brand?: string
+  name?: string
+  nutriscore?: number | string
+  nova?: number | string
+}
 
 const router = useRouter()
 const productsStore = useProductsStore()
 
-let input = computed({
+let input = computed<string>({
   get: () => productsStore.getInput,
   set: (val) => productsStore.updateInput(val)
 })
 
-let page = computed({
+let page = computed<number>({
   get: () => productsStore.getPage,
   set: (val) => productsStore.updatePage(val)
 })
 
-let pages = computed({
+let pages = computed<number>({
   get: () => productsStore.getPages,
   set: (val) => productsStore.updatePages(val)
 })
 
-let products = ref([])
-let lastProducts = ref([])
-let moreProductsLink = ref(null)
-const moreProductsIsLoading = ref(false)
+let products = ref<Product[]>([])
+let lastProducts = ref<Product[]>([])
+let moreProductsLink = ref<{ name: string; to: string } | null>(null)
+const moreProductsIsLoading = ref<boolean>(false)
 
 // Helper function to get elements by selector
-const $ = (id) => document.querySelector(id)
+const $ = (id: string) => document.querySelector(id)
 
 try {
   fetch(
@@ -38,28 +47,42 @@ try {
     .then((data) => {
       // Trie les produits par date de création et filtre les produits avec un taux de complétude supérieur ou égal à 0.4 pour n'en garder que 5
       let filteredProducts = data.products
-        .sort((a, b) => b.created_t - a.created_t)
-        .filter((product) => product.completeness >= 0.35)
+        .filter((product: { completeness?: number }) => (product.completeness ?? 0) >= 0.35)
+        .sort(
+          (a: { created_t?: number }, b: { created_t?: number }) =>
+            (b?.created_t ?? 0) - (a?.created_t ?? 0)
+        )
         .slice(0, 5)
 
-      filteredProducts.forEach((product) => {
-        lastProducts.value.push({
-          id: product.id,
-          image: product.image_front_small_url,
-          brand: product.brands,
-          name: product.generic_name_fr,
-          nutriscore: product.nutriscore_grade,
-          nova: product.nova_group
-        })
-      })
+      filteredProducts.forEach(
+        (product: {
+          id?: string
+          image_front_small_url?: string
+          brands?: string
+          generic_name_fr?: string
+          nutriscore_grade?: string
+          nova_group?: string
+        }) => {
+          lastProducts.value.push({
+            id: product.id ?? 'unknown',
+            image: product.image_front_small_url ?? './logo.png',
+            brand: product.brands ?? 'Marque inconnue',
+            name: product.generic_name_fr ?? 'Fiche non finalisée',
+            nutriscore: product.nutriscore_grade ?? 'unknown',
+            nova: product.nova_group ?? 'unknown'
+          })
+        }
+      )
     })
-} catch (error) {
+} catch (error: any) {
   console.error('Error fetching data:', error.message)
 }
 
 onMounted(() => {
   // Hide the website name in home view
-  $('#website-name').style.opacity = 0
+  const websiteName = document.querySelector('#website-name') as HTMLElement
+  if (!websiteName) return
+  websiteName.style.opacity = '0'
 
   // Function to search products from the API
   async function searchProduct() {
@@ -69,36 +92,49 @@ onMounted(() => {
     try {
       const response = await fetch(route)
       const data = await response.json()
-      data.products.forEach((product) => {
-        products.value.push({
-          id: product.id,
-          image: product.image_front_small_url,
-          brand: product.brands,
-          name: product.generic_name_fr,
-          nutriscore: product.nutriscore_grade,
-          nova: product.nova_group
-        })
+      data.products.forEach(
+        (product: {
+          id?: string
+          image_front_small_url?: string
+          brands?: string
+          generic_name_fr?: string
+          nutriscore_grade?: string
+          nova_group?: string
+        }) => {
+          products.value.push({
+            id: product.id ?? 'unknown',
+            image: product.image_front_small_url ?? './logo.png',
+            brand: product.brands ?? 'Marque inconnue',
+            name: product.generic_name_fr ?? 'Fiche non finalisée',
+            nutriscore: product.nutriscore_grade ?? 'unknown',
+            nova: product.nova_group ?? 'unknown'
+          })
+        }
+      )
 
-        page.value = 1
-        pages.value = Math.ceil(data.count / 20)
-        moreProductsLink.value = { name: 'Plus de résultats', to: '/search' }
-      })
-    } catch (error) {
+      page.value = 1
+      pages.value = Math.ceil(data.count / 20)
+      moreProductsLink.value = { name: 'Plus de résultats', to: '/search' }
+    } catch (error: any) {
       console.error('Error fetching data:', error.message)
     }
   }
 
-  let timer
+  let timer: number = 1000
 
   // Handle form submission
-  $('#search-bar').addEventListener('input', () => {
+  const searchBar = $('#search-bar') as HTMLElement
+  if (!searchBar) return
+  searchBar.addEventListener('input', () => {
     products.value.length = 0
     moreProductsIsLoading.value = true
 
     clearTimeout(timer)
 
     timer = setTimeout(async function () {
-      input.value = $('#search-input').value
+      const searchInput = $('#search-input') as HTMLInputElement
+      if (!searchInput) return
+      input.value = searchInput.value
       let regex = /^[0-9]{8,13}$/
       if (regex.test(input.value)) {
         router.push({ name: 'product', params: { id: input.value } })
@@ -111,7 +147,10 @@ onMounted(() => {
 })
 
 onUnmounted(() => {
-  $('#website-name').style.opacity = 1
+  const websiteName = document.querySelector('#website-name') as HTMLElement
+  if (websiteName) {
+    websiteName.style.opacity = '1'
+  }
 })
 </script>
 
@@ -166,11 +205,11 @@ onUnmounted(() => {
         class="md:product w-full md:w-[18.6%] flex items-center justify-center mt-[2.5%] md:mt-0"
       >
         <RouterLink
-          :key="moreProductsLink.name"
-          :to="moreProductsLink.to"
+          :key="moreProductsLink?.name"
+          :to="moreProductsLink?.to ?? ''"
           class="w-full p-3 text-center text-white font-semibold bg-gray-800 rounded-lg"
         >
-          {{ moreProductsLink.name }}
+          {{ moreProductsLink?.name }}
         </RouterLink>
       </article>
     </div>
@@ -257,9 +296,9 @@ onUnmounted(() => {
         :id="product.id"
         :image="product.image"
         :brand="product.brand"
-        :generic-name="product.generic_name"
+        :generic-name="product.name"
         :nutriscore="product.nutriscore"
-        :nova-group="product.novaGroup"
+        :nova-group="product.nova"
       />
     </div>
   </section>

@@ -1,12 +1,16 @@
-<script setup>
+<script setup lang="ts">
 import { onMounted } from 'vue'
 
 onMounted(() => {
-  document.querySelector('#not-found').style.marginTop =
-    '-' + document.querySelector('header').offsetHeight / 2 + 'px'
+  const notFound = document.querySelector('#not-found') as HTMLElement
+  const header = document.querySelector('header') as HTMLElement
+  if (!notFound || !header) return
+  notFound.style.marginTop = '-' + header.offsetHeight / 2 + 'px'
 
   setTimeout(() => {
-    document.querySelector('#not-found h3').style.backgroundSize = '100% 100%'
+    const h3 = document.querySelector('#not-found h3') as HTMLElement
+    if (!h3) return
+    h3.style.backgroundSize = '100% 100%'
   }, 1000)
 })
 </script>

@@ -1,101 +1,162 @@
-<script setup>
-import { onBeforeMount, computed, reactive, ref, watch } from 'vue'
+<script setup lang="ts">
+import { onBeforeMount, computed, reactive, ref } from 'vue'
 import { useRoute, useRouter, onBeforeRouteUpdate } from 'vue-router'
-import { useProductsStore } from '../stores/products.ts'
+import { useProductsStore } from '../stores/products'
 import { franc } from 'franc-min'
 import ProductCard from '/src/components/ProductCard.vue'
+
+interface Product {
+  id: string
+  image: string
+  brand: string
+  generic_name: string
+  categories: string[]
+  lastUpdate: string
+  nutriscore: string
+  novaGroup: string
+  quantity: string
+  ingredients: string
+  calories100g: string
+  nutrient_levels: string
+  manufacturingPlace: string
+  link: string
+}
+
+interface Products {
+  id: string
+  image?: string
+  brand?: string
+  name?: string
+  nutriscore?: number | string
+  nova?: number | string
+}
 
 const router = useRouter()
 const route = useRoute()
 const productsStore = useProductsStore()
 
-const product = reactive({
-  id: null,
-  image: null,
-  brand: null,
-  generic_name: null,
+const product = reactive<Product>({
+  id: '',
+  image: '',
+  brand: '',
+  generic_name: '',
   categories: [],
-  lastUpdate: null,
-  nutriscore: 'unknown',
-  novaGroup: 'unknown',
-  quantity: null,
-  ingredients: null,
-  calories100g: null,
-  nutrient_levels: null,
-  manufacturingPlace: null,
-  productSheet: null
+  lastUpdate: '',
+  nutriscore: '',
+  novaGroup: '',
+  quantity: '',
+  ingredients: '',
+  calories100g: '',
+  nutrient_levels: '',
+  manufacturingPlace: '',
+  link: ''
 })
 
-const moreProducts = reactive([])
-const moreProductsIsLoading = ref(false)
+const input = computed<string>({
+  get: () => productsStore.getInput,
+  set: (val) => productsStore.updateInput(val)
+})
 
-const fetchData = async (url) => {
+const page = computed<number>({
+  get: () => productsStore.getPage,
+  set: (val) => productsStore.updatePage(val)
+})
+
+const products = computed<Products[]>({
+  get: () => productsStore.getProducts,
+  set: (val) => productsStore.updateProducts(val)
+})
+
+const moreProducts = reactive<Product[]>([])
+const moreProductsIsLoading = ref<boolean>(false)
+
+const fetchData = async (url: string): Promise<any | null> => {
   try {
     const response = await fetch(url)
-    const data = await response.json()
-    return data
+    if (!response.ok) throw new Error(`status : ${response.status}`)
+    return await response.json()
   } catch (error) {
-    console.error('Erreur lors de la récupération des données :', error)
+    console.error('Erreur lors de la récupération des données : ', error)
     return null
   }
 }
 
 const resetProduct = () => {
   Object.assign(product, {
-    id: null,
-    image: null,
-    brand: null,
-    generic_name: null,
+    id: '',
+    image: '',
+    brand: '',
+    generic_name: '',
     categories: [],
-    lastUpdate: null,
+    lastUpdate: '',
     nutriscore: 'unknown',
     novaGroup: 'unknown',
-    quantity: null,
-    ingredients: null,
-    calories100g: null,
-    nutrient_levels: null,
-    manufacturingPlace: null,
-    productSheet: null
+    quantity: '',
+    ingredients: '',
+    calories100g: '',
+    nutrient_levels: [],
+    manufacturingPlace: '',
+    link: ''
   })
 }
 
-const fetchProduct = async () => {
+const fetchProduct: Function = async () => {
   resetProduct() // Reset the product data before fetching new data
 
-  const url = `https://world.openfoodfacts.org/api/v3/product/${route.params.id}.json`
-  const data = await fetchData(url)
+  const url: string = `https://world.openfoodfacts.org/api/v3/product/${route.params.id}.json`
+  const data: any = await fetchData(url)
 
-  if (!data || !data.product) {
+  if (!data?.product) {
     router.replace({ name: 'NotFound' })
     return
   }
 
-  const p = data.product
+  const productFound: {
+    id: string
+    image_front_url: string
+    brands: string
+    generic_name_fr: string
+    categories: string
+    last_updated_t: number
+    nutriscore_grade: string
+    nova_group: string
+    quantity: string
+    ingredients_text_with_allergens_fr: string
+    nutriments: {
+      'energy-kcal_100g': string
+    }
+    nutrient_levels: string
+    manufacturing_places: string
+    link: string
+  } = data.product
+
   Object.assign(product, {
-    id: p.id,
-    image: p.image_front_url || '/logo.png',
-    brand: p.brands,
-    generic_name: p.generic_name_fr,
-    categories: p.categories?.split(','),
-    lastUpdate: new Date(p.last_updated_t * 1000).toLocaleDateString('fr-FR'),
-    nutriscore: p.nutriscore_grade || 'unknown',
-    novaGroup: p.nova_group || 'unknown',
-    quantity: p.quantity,
-    ingredients: p.ingredients_text_with_allergens_fr,
-    calories100g: p.nutriments?.['energy-kcal_100g'],
-    nutrient_levels: p.nutrient_levels,
-    manufacturingPlace: p.manufacturing_places,
-    productSheet: p.link
+    id: productFound.id || 'unknown',
+    image: productFound.image_front_url || '/logo.png',
+    brand: productFound.brands || 'Marque inconnue',
+    generic_name: productFound.generic_name_fr || 'Fiche non finalisée',
+    categories: productFound.categories?.split(',') || [],
+    lastUpdate: new Date((productFound.last_updated_t ?? Date.now()) * 1000).toLocaleDateString(
+      'fr-FR'
+    ),
+    nutriscore: productFound.nutriscore_grade || 'unknown',
+    novaGroup: productFound.nova_group || 'unknown',
+    quantity: productFound.quantity || '',
+    ingredients: productFound.ingredients_text_with_allergens_fr || '',
+    calories100g: productFound.nutriments?.['energy-kcal_100g'] || '',
+    nutrient_levels: productFound.nutrient_levels || [],
+    manufacturingPlace: productFound.manufacturing_places || '',
+    link: productFound.link || ''
   })
 
-  if (product.nutriscore !== 'a') fetchMoreProducts() // Fetch similar products if Nutriscore isn't A
+  if (product.nutriscore !== 'a' || product.novaGroup !== 'a') fetchMoreProducts() // Fetch similar products if Nutriscore isn't A
 }
 
-const isFrench = (text) => {
+const isFrench = (text: string) => {
   return franc(text) === 'fra'
 }
 
-const filteredCategories = computed(() => {
+const filteredCategories = computed<string[]>(() => {
   if (!product.categories?.length) return []
   return product.categories
     .filter((category) => {
@@ -112,91 +173,112 @@ const filteredCategories = computed(() => {
 })
 
 // Search for products by category
-const searchByCategory = async (category) => {
-  let input = computed({
-    get: () => productsStore.getInput,
-    set: (val) => productsStore.updateInput(val)
-  })
-
-  let page = computed({
-    get: () => productsStore.getPage,
-    set: (val) => productsStore.updatePage(val)
-  })
-
-  let products = computed({
-    get: () => productsStore.getProducts,
-    set: (val) => productsStore.updateProducts(val)
-  })
-
+const searchByCategory: Function = async (category: string) => {
   input.value = category // Set the search input to the selected category
   page.value = 1 // Reset the page to 1
   products.value.length = 0 // Clear the products array before adding new data
 
-  const fields = 'id,image_front_small_url,brands,generic_name_fr,nutriscore_grade,nova_group'
-  const url = `https://world.openfoodfacts.org/cgi/search.pl?search_terms=${category}&fields=${fields}&sort_by=popularity_key&page_size=20&page=1&search_simple=1&action=process&json=1`
+  const fields: string =
+    'id,image_front_small_url,brands,generic_name_fr,nutriscore_grade,nova_group'
+  const url: string = `https://world.openfoodfacts.org/cgi/search.pl?search_terms=${category}&fields=${fields}&sort_by=popularity_key&page_size=20&page=1&search_simple=1&action=process&json=1`
 
   try {
-    const response = await fetch(url)
-    const data = await response.json()
-    data.products.forEach((product) => {
-      products.value.push({
-        id: product.id,
-        image: product.image_front_small_url,
-        brand: product.brands,
-        name: product.generic_name_fr,
-        nutriscore: product.nutriscore_grade,
-        nova: product.nova_group
-      })
-    })
+    const response: any = await fetch(url)
+    const data: any = await response.json()
+    data.products.forEach(
+      (product: {
+        id: string
+        image_front_small_url: string
+        brands: string
+        generic_name_fr: string
+        nutriscore_grade: string
+        nova_group: string
+      }) => {
+        products.value.push({
+          id: product.id,
+          image: product.image_front_small_url,
+          brand: product.brands,
+          name: product.generic_name_fr,
+          nutriscore: product.nutriscore_grade,
+          nova: product.nova_group
+        })
+      }
+    )
 
     router.push({ name: 'search' })
-  } catch (error) {
+  } catch (error: any) {
     console.error('Error fetching data:', error.message)
   }
 }
 
 // Fetch similar products
-const fetchMoreProducts = async () => {
+const fetchMoreProducts: Function = async () => {
   if (!product.categories?.length) return
 
   moreProductsIsLoading.value = true
-  const fields =
+  const fields: string =
     'id,categories,image_front_url,brands,generic_name_fr,nutriscore_grade,nova_group,last_updated_t,quantity,ingredients_text_with_allergens_fr,nutriments,manufacturing_places,link,completeness'
-  const url = `https://world.openfoodfacts.org/api/v2/search?categories_tags=${product.categories.slice(0, 5).join(',')}&fields=${fields}&sort_by=nutriscore_score,popularity_key&page_size=100&action=process&json=1`
+  const url: string = `https://world.openfoodfacts.org/api/v2/search?categories_tags=${product.categories.slice(0, 5).join(',')}&fields=${fields}&sort_by=nutriscore_score,nova_group,popularity_key&page_size=100&action=process&json=1`
 
   const data = await fetchData(url)
 
   if (data?.products) {
     moreProducts.length = 0 // Reset the moreProducts array before adding new data
     data.products
-      .filter((p) => p.id !== product.id && p.completeness >= 0.35)
-      .sort((a, b) => a.nutriscore_grade.localeCompare(b.nutriscore_grade))
+      .filter(
+        (p: { id: string; completeness?: number }) =>
+          p.id !== product.id && (p.completeness ?? 0) >= 0.35
+      )
+      .sort((a: { nutriscore_grade?: string }, b: { nutriscore_grade?: string }) =>
+        a.nutriscore_grade?.localeCompare(b.nutriscore_grade ?? 'unknown')
+      )
       .slice(0, 3)
-      .forEach((p) => {
-        moreProducts.push({
-          id: p.id,
-          image: p.image_front_url || '/logo.png',
-          brand: p.brands,
-          generic_name: p.generic_name_fr,
-          categories: p.categories?.split(','),
-          lastUpdate: new Date(p.last_updated_t * 1000).toLocaleDateString('fr-FR'),
-          nutriscore: p.nutriscore_grade || 'unknown',
-          novaGroup: p.nova_group || 'unknown',
-          quantity: p.quantity,
-          ingredients: p.ingredients_text_with_allergens_fr,
-          calories100g: p.nutriments?.['energy-kcal_100g'],
-          nutrientLevels: p.nutrient_levels,
-          manufacturingPlace: p.manufacturing_places,
-          productSheet: p.link
-        })
-      })
+      .forEach(
+        (product: {
+          id: string
+          image_front_url: string
+          brands: string
+          generic_name_fr: string
+          categories: string
+          last_updated_t: number
+          nutriscore_grade: string
+          nova_group: string
+          quantity: string
+          ingredients_text_with_allergens_fr: string
+          nutriments: {
+            'energy-kcal_100g': string
+          }
+          nutrient_levels: string
+          manufacturing_places: string
+          link: string
+        }) => {
+          moreProducts.push({
+            id: product.id || 'unknown',
+            image: product.image_front_url || '/logo.png',
+            brand: product.brands || 'Marque inconnue',
+            generic_name: product.generic_name_fr || 'Fiche non finalisée',
+            categories: product.categories?.split(',') || [],
+            lastUpdate: new Date((product.last_updated_t ?? Date.now()) * 1000).toLocaleDateString(
+              'fr-FR'
+            ),
+            nutriscore: product.nutriscore_grade || 'unknown',
+            novaGroup: product.nova_group || 'unknown',
+            quantity: product.quantity || '',
+            ingredients: product.ingredients_text_with_allergens_fr || '',
+            calories100g: product.nutriments?.['energy-kcal_100g'] || '',
+            nutrient_levels: product.nutrient_levels || '',
+            manufacturingPlace: product.manufacturing_places || '',
+            link: product.link || ''
+          })
+        }
+      )
   }
 
   moreProductsIsLoading.value = false
 }
 
 // Update product when route changes
-const updateProduct = async (productId) => {
+const updateProduct = async (productId: string) => {
   resetProduct() // Reset product data before updating
 
   const foundProduct = moreProducts.find((p) => p.id === productId)
@@ -213,20 +295,13 @@ const updateProduct = async (productId) => {
 onBeforeMount(fetchProduct) // Fetch product on initial mount
 
 onBeforeRouteUpdate((to) => {
-  updateProduct(to.params.id) // Update product when route changes
+  updateProduct(Array.isArray(to.params.id) ? to.params.id[0] : to.params.id) // Update product when route changes
 })
-
-watch(
-  () => route.params.id,
-  (newId) => {
-    updateProduct(newId) // Handle product updates when the route params change
-  }
-)
 </script>
 
 <template>
   <div
-    :key="route.params.id"
+    :key="Array.isArray(route.params.id) ? route.params.id[0] : route.params.id"
     id="product-container"
     class="md:min-h-[calc(100vh-344px)] flex flex-wrap justify-between md:flex-nowrap flex-col md:flex-row md:mb-8"
   >
@@ -236,7 +311,11 @@ watch(
     >
       <div class="md:w-full my-[50px]">
         <div v-if="!product.image" class="loader-container h-full flex justify-center items-center">
-          <img src="/logo.png" class="h-auto w-auto m-auto opacity-50" />
+          <img
+            src="/logo.png"
+            class="h-auto w-auto m-auto opacity-50"
+            alt="Image du produit indisponible"
+          />
         </div>
         <img
           v-if="product.image"
@@ -305,13 +384,13 @@ watch(
                 ]"
               >
                 {{
-                  nutrient === 'fat'
+                  nutrient.toString() === 'fat'
                     ? 'matieres grasses'
-                    : nutrient === 'salt'
+                    : nutrient.toString() === 'salt'
                       ? 'sel'
-                      : nutrient === 'saturated-fat'
+                      : nutrient.toString() === 'saturated-fat'
                         ? 'graisses saturées'
-                        : nutrient === 'sugars'
+                        : nutrient.toString() === 'sugars'
                           ? 'sucres'
                           : ''
                 }}
@@ -333,11 +412,9 @@ watch(
             </h4>
             <h3 v-if="product.id" class="mt-4 font-semibold">Code-barres :</h3>
             <h4 v-if="product.id" id="barcode">{{ product.id }}</h4>
-            <h3 v-if="product.productSheet" class="mt-4 font-semibold">Plus d'infos :</h3>
-            <h4 v-if="product.productSheet">
-              <a :href="product.productSheet" id="product-sheet" class="underline">{{
-                product.productSheet
-              }}</a>
+            <h3 v-if="product.link" class="mt-4 font-semibold">Plus d'infos :</h3>
+            <h4 v-if="product.link">
+              <a :href="product.link" id="link" class="underline">{{ product.link }}</a>
             </h4>
             <div v-if="filteredCategories.length" id="tags" class="mt-4">
               <button
@@ -370,14 +447,14 @@ watch(
         <div class="lds-hourglass"></div>
       </div>
       <ProductCard
-        v-for="p in moreProducts"
-        :key="p.id"
-        :id="p.id"
-        :image="p.image"
-        :brand="p.brand"
-        :name="p.generic_name"
-        :nutriscore="p.nutriscore"
-        :nova="p.novaGroup"
+        v-for="product in moreProducts"
+        :key="product.id"
+        :id="product.id"
+        :image="product.image"
+        :brand="product.brand"
+        :name="product.generic_name"
+        :nutriscore="product.nutriscore"
+        :nova="product.novaGroup"
       />
     </section>
   </aside>

@@ -6,7 +6,7 @@ defineProps({
   },
   image: {
     type: String,
-    default: 'https://static.openfoodfacts.org/images/attributes/no_image.png',
+    default: './logo.png',
     required: false
   },
   brand: {

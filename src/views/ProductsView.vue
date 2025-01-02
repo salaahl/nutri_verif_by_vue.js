@@ -1,66 +1,85 @@
-<script setup>
+<script setup lang="ts">
 import { onMounted, onUpdated, computed, ref } from 'vue'
 import { useRouter } from 'vue-router'
-import { useProductsStore } from '../stores/products.ts'
+import { useProductsStore } from '../stores/products'
 import ProductCard from '/src/components/ProductCard.vue'
+
+interface Product {
+  id: string
+  image?: string
+  brand?: string
+  name?: string
+  nutriscore?: number | string
+  nova?: number | string
+}
 
 const router = useRouter()
 const productsStore = useProductsStore()
 
-let products = computed({
+let products = computed<Product[]>({
   get: () => productsStore.getProducts,
   set: (val) => productsStore.updateProducts(val)
 })
 
-const productsIsLoading = ref(false)
+const productsIsLoading = ref<boolean>(false)
 
-let input = computed({
+let input = computed<string>({
   get: () => productsStore.getInput,
   set: (val) => productsStore.updateInput(val)
 })
 
-let page = computed({
+let page = computed<number>({
   get: () => productsStore.getPage,
   set: (val) => productsStore.updatePage(val)
 })
 
-let pages = computed({
+let pages = computed<number>({
   get: () => productsStore.getPages,
   set: (val) => productsStore.updatePages(val)
 })
 
 // Utilisé pour savoir si la requête est faite par le formulaire (nouvelle recherche) ou par le scrolling (dans quel cas j'incrémente la page)
-let method
+let method: string | null = null
 
 // Helper function to get elements by selector
-const $ = (id) => document.querySelector(id)
+const $ = (id: string) => document.querySelector(id)
 
 onMounted(() => {
   // Function to search products from the API
   async function searchProduct() {
     productsIsLoading.value = true
-    const fields = 'id,image_front_small_url,brands,generic_name_fr,nutriscore_grade,nova_group'
-    const route = `https://world.openfoodfacts.org/cgi/search.pl?search_terms=${input.value}&fields=${fields}&sort_by=popularity_key,completeness&page_size=20&page=${page.value}&search_simple=1&action=process&json=1`
+    const fields: string =
+      'id,image_front_small_url,brands,generic_name_fr,nutriscore_grade,nova_group'
+    const route: string = `https://world.openfoodfacts.org/cgi/search.pl?search_terms=${input.value}&fields=${fields}&sort_by=popularity_key,completeness&page_size=20&page=${page.value}&search_simple=1&action=process&json=1`
 
     try {
-      const response = await fetch(route)
-      const data = await response.json()
+      const response: any = await fetch(route)
+      const data: any = await response.json()
 
-      data.products.forEach((product) => {
-        products.value.push({
-          id: product.id,
-          image: product.image_front_small_url,
-          brand: product.brands,
-          name: product.generic_name_fr,
-          nutriscore: product.nutriscore_grade,
-          nova: product.nova_group
-        })
-      })
+      data.products.forEach(
+        (product: {
+          id?: string
+          image_front_small_url?: string
+          brands?: string
+          generic_name_fr?: string
+          nutriscore_grade?: string
+          nova_group?: string
+        }) => {
+          products.value.push({
+            id: product.id ?? 'unknown',
+            image: product.image_front_small_url ?? './logo.png',
+            brand: product.brands ?? 'Marque inconnue',
+            name: product.generic_name_fr ?? 'Fiche non finalisée',
+            nutriscore: product.nutriscore_grade ?? 'unknown',
+            nova: product.nova_group ?? 'unknown'
+          })
+        }
+      )
 
       if (method === 'form') {
         pages.value = Math.ceil(data.count / 20)
       }
-    } catch (error) {
+    } catch (error: any) {
       console.error('Error fetching data:', error.message)
     }
 
@@ -69,16 +88,23 @@ onMounted(() => {
 
   searchProduct()
 
-  $('form').addEventListener('submit', async (e) => {
+  const form = $('form') as HTMLFormElement
+  if (!form) return
+  form.addEventListener('submit', async (e) => {
     e.preventDefault()
-    input.value = $('#search-input').value
+    const searchInput = $('#search-input') as HTMLInputElement
+    if (!searchInput) return
+    input.value = searchInput.value
 
-    let regex = /^[0-9]{8,13}$/
+    const regex: RegExp = /^[0-9]{8,13}$/
     if (regex.test(input.value)) {
       router.push({ name: 'product', params: { id: input.value } })
     } else {
-      $('#search-bar button > svg').classList.add('hidden')
-      $('#search-bar .lds-hourglass').classList.remove('hidden')
+      const searchBarBtnSvg: HTMLElement = $('#search-bar button > svg') as HTMLElement
+      const searchBarBtnLoader: HTMLElement = $('#search-bar button .lds-hourglass') as HTMLElement
+      if (!searchBarBtnSvg || !searchBarBtnLoader) return
+      searchBarBtnSvg.classList.add('hidden')
+      searchBarBtnLoader.classList.remove('hidden')
 
       method = 'form'
       window.scrollTo({ top: 0, behavior: 'smooth' })
@@ -94,27 +120,31 @@ onMounted(() => {
     }
   })
 
-  let prevScrollpos = 0
-  let refresh = true
+  let prevScrollpos: number = 0
+  let refresh: boolean = true
 
   window.onscroll = async function () {
-    const h = document.documentElement
-    const b = document.body
-    const currentScrollPos =
+    const h: HTMLElement = document.documentElement
+    const b: HTMLElement = document.body
+    if (!h || !b) return
+    const currentScrollPos: number =
       ((h.scrollTop || b.scrollTop) / ((h.scrollHeight || b.scrollHeight) - h.clientHeight)) * 100
 
-    if ($('#search-bar')) {
-      const searchBarHeight = $('#search-bar').offsetHeight
+    const searchBar: HTMLElement = $('#search-bar') as HTMLElement
+    if (!searchBar) return
+    const searchBarHeight: number = searchBar.offsetHeight
 
-      if (prevScrollpos > currentScrollPos) {
-        $('#search-bar').style.top = '50px'
-      } else {
-        $('#search-bar').style.top = `-${searchBarHeight + 4}px`
-      }
+    if (prevScrollpos > currentScrollPos) {
+      searchBar.style.top = '50px'
+    } else {
+      searchBar.style.top = `-${searchBarHeight + 4}px`
     }
 
+    const searchResults: HTMLElement = $('#search-results') as HTMLElement
+    if (!searchResults) return
+
     if (
-      $('#search-results') &&
+      searchResults &&
       currentScrollPos > prevScrollpos &&
       currentScrollPos > 70 &&
       method !== 'form' &&
@@ -122,7 +152,6 @@ onMounted(() => {
       refresh
     ) {
       refresh = false
-      $('#new-results .lds-hourglass').classList.remove('hidden')
       page.value++
       await searchProduct()
 
@@ -136,14 +165,16 @@ onMounted(() => {
 
 onUpdated(() => {
   // Timeout to hide the loading indicator and show the search button again
-  let timer
+  let timer: number = 500
   clearTimeout(timer)
 
   timer = setTimeout(() => {
     document.querySelectorAll('.lds-hourglass').forEach((ele) => {
-      ele.classList.add('hidden')
+      (ele as HTMLElement).classList.add('hidden')
     })
-    $('#search-bar button > svg').classList.remove('hidden')
+    const searchBarBtnSvg = $('#search-bar button > svg') as HTMLElement
+    if (!searchBarBtnSvg) return
+    searchBarBtnSvg.classList.remove('hidden')
   }, 500)
 })
 </script>
