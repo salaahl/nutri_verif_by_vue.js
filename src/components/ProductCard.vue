@@ -72,6 +72,7 @@ defineProps({
 
 <style scoped>
 .product {
+  height: 280px;
   padding: 15px;
   background-color: #f9f9f9;
   border-radius: 10px;
@@ -142,6 +143,7 @@ defineProps({
 
 @media (min-width: 768px) {
   .product {
+    height: auto;
     aspect-ratio: 2 / 3;
   }
 }

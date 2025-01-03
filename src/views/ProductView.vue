@@ -236,23 +236,26 @@ onBeforeRouteUpdate((to) => {
       >
         <div class="lds-hourglass"></div>
       </div>
-      <ProductCard
-        v-for="product in suggestedProducts"
-        :key="product.id"
-        :id="product.id"
-        :image="product.image"
-        :brand="product.brand"
-        :name="product.name"
-        :nutriscore="product.nutriscore"
-        :nova="product.nova"
-      />
+      <div class="relative w-full lg:w-3/4 flex flex-wrap md:flex-nowrap justify-end">
+        <ProductCard
+          v-for="product in suggestedProducts"
+          :key="product.id"
+          :id="product.id"
+          :image="product.image"
+          :brand="product.brand"
+          :name="product.name"
+          :nutriscore="product.nutriscore"
+          :nova="product.nova"
+        />
+      </div>
     </section>
   </aside>
 </template>
 
 <style>
 .allergen {
-  font-weight: bold;
+  text-transform: lowercase;
+  font-weight: 500;
   color: indianred;
 }
 </style>
@@ -281,46 +284,23 @@ onBeforeRouteUpdate((to) => {
   margin-bottom: 5%;
 }
 
+#more-products .product:nth-of-type(odd) {
+  margin-right: 4%;
+}
+
 @media (min-width: 768px) {
-  #more-products .product {
-    margin-left: unset;
-    margin-right: unset;
-    margin-bottom: 0;
-  }
-}
-
-@media (min-width: 768px) and (max-width: 1023px) {
-  #more-products .product {
-    width: 32%;
-  }
-
-  #more-products .product:nth-of-type(3n + 2) {
-    margin-left: 2%;
-    margin-right: 2%;
-  }
-}
-
-@media (min-width: 1024px) {
   #more-products > .title {
     font-size: xxx-large;
   }
 
   #more-products .product {
-    width: 18.6%;
+    width: 24.6%;
+    margin-bottom: 0;
   }
 
-  #more-products .product:nth-of-type(2n + 1) {
-    margin-right: unset;
-  }
-
-  #more-products .product:nth-of-type(5n + 2) {
-    margin-left: 1.5%;
-    margin-right: 1.5%;
-  }
-
-  #more-products .product:nth-of-type(5n + 4) {
-    margin-left: 1.5%;
-    margin-right: 1.5%;
+  #more-products .product:nth-of-type(odd) {
+    margin-left: 1.25%;
+    margin-right: 1.25%;
   }
 }
 </style>

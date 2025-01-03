@@ -225,7 +225,7 @@ export function useProducts() {
             return b.popularity_key - a.popularity_key
           }
         )
-        .slice(0, 3)
+        .slice(0, 4)
 
       suggestedProducts.value.push(...selectedProducts.map(transformProduct))
     } catch (err: any) {
