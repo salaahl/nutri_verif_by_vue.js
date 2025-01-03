@@ -69,7 +69,10 @@ export function useProducts() {
   const lastProducts = ref<Products[]>([])
   const lastProductsIsLoading = ref(false)
   const suggestedProducts = ref<Products[]>([])
-  const input = ref('')
+  const input = computed({
+    get: () => productsStore.getInput,
+    set: (val) => productsStore.updateInput(val)
+  })
   const filter = ref('')
   const page = ref(1)
   const pages = ref(1)

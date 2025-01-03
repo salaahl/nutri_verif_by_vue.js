@@ -76,8 +76,8 @@ onUnmounted(() => {
         <input
           type="text"
           id="search-input"
-          class="block w-full px-12 p-2.5 text-ellipsis bg-gray-50 border-4 text-gray-900 text-sm rounded-full outline-0 focus:ring-gray-400 focus:border-gray-400"
           placeholder="Entrez un nom de produit, un code-barres, une marque ou un type d'aliment"
+          class="block w-full px-12 p-2.5 text-ellipsis bg-gray-50 border-4 text-gray-900 text-sm rounded-full outline-0 focus:ring-gray-400 focus:border-gray-400"
           required
         />
       </div>
@@ -110,9 +110,9 @@ onUnmounted(() => {
         <RouterLink
           :key="moreProductsLink?.name"
           :to="moreProductsLink?.to ?? ''"
-          class="w-full p-3 text-center text-white font-semibold bg-gray-800 rounded-lg"
+          class="h-full w-full flex items-center justify-center p-3 md:text-4xl text-center text-white font-semibold bg-[#00bd7e] rounded-lg"
         >
-          {{ moreProductsLink?.name }}
+          +
         </RouterLink>
       </article>
     </div>
