@@ -11,7 +11,7 @@ const { products, productsIsLoading, page, pages, searchProducts } = useProducts
 const onSubmit = async (event: Event) => {
   event.preventDefault()
   const searchInput = document.querySelector('#search-form #search-input') as HTMLInputElement
-  const searchFilter = document.querySelector('#search-form select[name="sort_by"]') as HTMLInputElement
+  const searchFilter = document.querySelector('#search-form input[name="sort_by"]') as HTMLInputElement
   if (!searchInput || !searchFilter) return
 
   const regex = /^[0-9]{8,13}$/
@@ -105,14 +105,21 @@ onUnmounted(() => {
           <span class="sr-only">Search</span>
         </button>
       </div>
-      <div class="w-full flex items-center justify-between mt-4">
-        <select name="sort_by" class="bg-transparent">
-          <option value="product_name" selected>Pertinence</option>
-          <option value="popularity_key">Popularité</option>
-          <option value="created_t">Date d'ajout</option>
-          <option value="nutriscore_score">Nutriscore</option>
-          <option value="nova_score">Groupe Nova</option>
-        </select>
+      <div class="radio-toolbar w-full flex flex-wrap items-center mt-4 md:mt-8 text-sm text-gray-700">
+        <input type="radio" name="sort_by" id="product_name" value="product_name" checked>
+        <label class="radio_label mt-2 md:mt-0 mr-4 text-sm font-semibold bg-gray-400 rounded-full" for="product_name">Pertinence</label>
+
+        <input type="radio" name="sort_by" id="popularity_key" value="popularity_key">
+        <label class="radio_label mt-2 md:mt-0 mr-4 text-sm font-semibold bg-gray-400 rounded-full" for="popularity_key">Popularité</label>
+
+        <input type="radio" name="sort_by" id="created_t" value="created_t">
+        <label class="radio_label mt-2 md:mt-0 mr-4 text-sm font-semibold bg-gray-400 rounded-full" for="created_t">Date d'ajout</label>
+
+        <input type="radio" name="sort_by" id="nutriscore_score" value="nutriscore_score">
+        <label class="radio_label mt-2 md:mt-0 mr-4 text-sm font-semibold bg-gray-400 rounded-full" for="nutriscore_score">Nutriscore</label>
+
+        <input type="radio" name="sort_by" id="nova_score" value="nova_score">
+        <label class="radio_label mt-2 md:mt-0 mr-4 text-sm font-semibold bg-gray-400 rounded-full" for="nova_score">Groupe Nova</label>
       </div>
     </form>
   </section>

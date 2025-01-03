@@ -95,6 +95,20 @@ main {
   width: 100%;
 }
 
+.radio-toolbar input[type="radio"] {
+    display: none;
+}
+
+.radio-toolbar label {
+    height: auto;
+    padding: 4px 11px;
+    color: white;
+}
+
+.radio-toolbar input[type="radio"]:checked + label {
+    background-color: var(--color-green);
+}
+
 #website-name {
   width: fit-content;
   margin: 10px auto;
