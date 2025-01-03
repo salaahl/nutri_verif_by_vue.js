@@ -5,14 +5,22 @@ import { useProducts } from '../composables/useProducts'
 import ProductCard from '/src/components/ProductCard.vue'
 
 const router = useRouter()
-const { products, productsIsLoading, page, pages, input, searchProducts } = useProducts()
+const { products, productsIsLoading, page, pages, filter, input, searchProducts } = useProducts()
+
+// Gestion du filtre de recherche
+const onFilterChange = (e: Event) => {
+  const allCheckboxes = document.querySelectorAll<HTMLInputElement>('input[type="radio"][checked]')
+  allCheckboxes.forEach((checkbox) => checkbox.removeAttribute('checked'))
+
+  const target = (e.target as HTMLElement).previousElementSibling?.setAttribute('checked', '')
+}
 
 // Gestion du formulaire de recherche
 const onSubmit = async (event: Event) => {
   event.preventDefault()
   const searchInput = document.querySelector('#search-form #search-input') as HTMLInputElement
   const searchFilter = document.querySelector(
-    '#search-form input[name="sort_by"]'
+    '#search-form input[name="sort_by"]:checked'
   ) as HTMLInputElement
   if (!searchInput || !searchFilter) return
 
@@ -36,6 +44,13 @@ const onScroll = async () => {
 
   let currentScrollPos = ((h[st] || b[st]) / ((h[sh] || b[sh]) - h.clientHeight)) * 100
 
+  const searchBar = document.querySelector('#search-bar') as HTMLElement
+  const searchBarHeight = searchBar.offsetHeight
+
+  prevScrollpos > currentScrollPos
+    ? (searchBar.style.top = '50px')
+    : (searchBar.style.top = '-' + (searchBarHeight + 4) + 'px')
+
   if (
     currentScrollPos > prevScrollpos &&
     currentScrollPos > 70 &&
@@ -55,11 +70,11 @@ const onScroll = async () => {
 }
 
 onMounted(() => {
-  window.addEventListener('more', onScroll)
+  window.addEventListener('scroll', onScroll)
 })
 
 onUnmounted(() => {
-  window.removeEventListener('more', onScroll)
+  window.removeEventListener('scroll', onScroll)
 })
 </script>
 
@@ -111,36 +126,71 @@ onUnmounted(() => {
       <div
         class="radio-toolbar w-full flex flex-wrap items-center mt-4 md:mt-6 text-sm text-gray-700"
       >
-        <input type="radio" name="sort_by" id="product_name" value="product_name" checked />
+        <input
+          type="radio"
+          name="sort_by"
+          id="product_name"
+          value="product_name"
+          :checked="filter === 'product_name' || !filter"
+        />
         <label
+          @click="onFilterChange"
           class="radio_label mt-2 md:mt-0 mr-4 text-sm font-semibold bg-gray-400 rounded-full"
           for="product_name"
           >Pertinence</label
         >
 
-        <input type="radio" name="sort_by" id="popularity_key" value="popularity_key" />
+        <input
+          type="radio"
+          name="sort_by"
+          id="popularity_key"
+          value="popularity_key"
+          :checked="filter === 'popularity_key'"
+        />
         <label
+          @click="onFilterChange"
           class="radio_label mt-2 md:mt-0 mr-4 text-sm font-semibold bg-gray-400 rounded-full"
           for="popularity_key"
           >Popularité</label
         >
 
-        <input type="radio" name="sort_by" id="created_t" value="created_t" />
+        <input
+          type="radio"
+          name="sort_by"
+          id="created_t"
+          value="created_t"
+          :checked="filter === 'created_t'"
+        />
         <label
+          @click="onFilterChange"
           class="radio_label mt-2 md:mt-0 mr-4 text-sm font-semibold bg-gray-400 rounded-full"
           for="created_t"
           >Date d'ajout</label
         >
 
-        <input type="radio" name="sort_by" id="nutriscore_score" value="nutriscore_score" />
+        <input
+          type="radio"
+          name="sort_by"
+          id="nutriscore_score"
+          value="nutriscore_score"
+          :checked="filter === 'nutriscore_score'"
+        />
         <label
+          @click="onFilterChange"
           class="radio_label mt-2 md:mt-0 mr-4 text-sm font-semibold bg-gray-400 rounded-full"
           for="nutriscore_score"
           >Nutriscore</label
         >
 
-        <input type="radio" name="sort_by" id="nova_score" value="nova_score" />
+        <input
+          type="radio"
+          name="sort_by"
+          id="nova_score"
+          value="nova_score"
+          :checked="filter === 'nova_score'"
+        />
         <label
+          @click="onFilterChange"
           class="radio_label mt-2 md:mt-0 mr-4 text-sm font-semibold bg-gray-400 rounded-full"
           for="nova_score"
           >Groupe Nova</label

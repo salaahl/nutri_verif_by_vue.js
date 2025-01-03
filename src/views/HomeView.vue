@@ -254,7 +254,6 @@ h1 {
 
 .product {
   width: 48%;
-  aspect-ratio: unset;
   margin-bottom: 5%;
 }
 

@@ -4,6 +4,7 @@ export const useProductsStore = defineStore('products', {
   state: () => ({
     products: [],
     input: '',
+    filter: '',
     page: 1,
     pages: 1
   }),
@@ -13,6 +14,9 @@ export const useProductsStore = defineStore('products', {
     },
     updateInput(payload: string) {
       this.input = payload
+    },
+    updateFilter(payload: string) {
+      this.filter = payload
     },
     updatePage(payload: number) {
       this.page = payload
@@ -27,6 +31,9 @@ export const useProductsStore = defineStore('products', {
     },
     getInput(state) {
       return state.input
+    },
+    getFilter(state) {
+      return state.filter
     },
     getPage(state) {
       return state.page

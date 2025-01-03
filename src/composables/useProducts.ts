@@ -73,7 +73,10 @@ export function useProducts() {
     get: () => productsStore.getInput,
     set: (val) => productsStore.updateInput(val)
   })
-  const filter = ref('')
+  const filter = computed({
+    get: () => productsStore.getFilter,
+    set: (val) => productsStore.updateFilter(val)
+  })
   const page = ref(1)
   const pages = ref(1)
   const error = ref<string | null>(null)
@@ -125,7 +128,7 @@ export function useProducts() {
     }
 
     const fields = 'id,image_front_small_url,brands,generic_name_fr,nutriscore_grade,nova_group'
-    const route = `${API_BASE_URL}?search_terms=${input.value}&fields=${fields}&sort_by=${filter.value}&page_size=20&page=${page.value}&search_simple=1&action=process&json=1`
+    const route = `${API_BASE_URL}?search_terms=${encodeURIComponent(input.value)}&fields=${encodeURIComponent(fields)}&sort_by=${encodeURIComponent(filter.value)}&page_size=20&page=${page.value}&search_simple=1&action=process&json=1`
 
     try {
       productsIsLoading.value = true
@@ -163,7 +166,7 @@ export function useProducts() {
   async function fetchLastProduct() {
     const fields =
       'id,image_front_small_url,brands,generic_name_fr,nutriscore_grade,nova_group,created_t,completeness'
-    const route = `${API_BASE_URL}?&fields=${fields}&sort_by=created_t&page_size=300&action=process&json=1`
+    const route = `${API_BASE_URL}?&fields=${encodeURIComponent(fields)}&sort_by=created_t&page_size=300&action=process&json=1`
     error.value = null
 
     try {
@@ -190,7 +193,7 @@ export function useProducts() {
   ) {
     const fields =
       'id,categories,image_front_url,brands,generic_name_fr,nutriscore_grade,nova_group,last_updated_t,quantity,ingredients_text_with_allergens_fr,nutriments,manufacturing_places,link,completeness,popularity_key'
-    const route = `${API_BASE_URL}?search_terms=${categories.slice(0, 5).join(',')}&fields=${fields}&sort_by=nutriscore_score,nova_group,popularity_key&page_size=300&action=process&json=1`
+    const route = `${API_BASE_URL}?search_terms=${encodeURIComponent(categories.slice(0, 5).join(','))}&fields=${encodeURIComponent(fields)}&sort_by=nutriscore_score,nova_group,popularity_key&page_size=300&action=process&json=1`
 
     try {
       suggestedProducts.value = []
@@ -252,6 +255,7 @@ export function useProducts() {
     lastProducts,
     lastProductsIsLoading,
     suggestedProducts,
+    filter,
     input,
     page,
     pages,
