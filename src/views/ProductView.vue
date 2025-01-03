@@ -40,7 +40,7 @@ const filteredCategories = computed<string[]>(() => {
 })
 
 const searchProductsByCategory: Function = async (category: string) => {
-  await searchProducts(category, 'complete')
+  await searchProducts(category, null, 'complete')
 
   router.push({ name: 'search' })
 }

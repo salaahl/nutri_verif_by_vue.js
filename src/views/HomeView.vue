@@ -42,7 +42,7 @@ onMounted(() => {
       if (regex.test(searchInput.value)) {
         router.push({ name: 'product', params: { id: searchInput.value } })
       } else {
-        await searchProducts(searchInput.value, 'complete')
+        await searchProducts(searchInput.value, null, 'complete')
         moreProductsLink.value = { name: 'Plus de résultats', to: '/search' }
       }
     }, 1000)

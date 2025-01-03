@@ -70,6 +70,7 @@ export function useProducts() {
   const lastProductsIsLoading = ref(false)
   const suggestedProducts = ref<Products[]>([])
   const input = ref('')
+  const filter = ref('')
   const page = ref(1)
   const pages = ref(1)
   const error = ref<string | null>(null)
@@ -106,8 +107,9 @@ export function useProducts() {
     }
   }
 
-  async function searchProducts(userInput: string | null, method: SearchMethod) {
+  async function searchProducts(userInput: string | null, sortBy: string | null, method: SearchMethod) {
     if (userInput !== null) input.value = userInput
+    if (sortBy !== null) filter.value = sortBy
     if (method === 'complete') {
       products.value = [] // Réinitialiser les produits en cas de nouvelle recherche
       page.value = 1
@@ -116,7 +118,7 @@ export function useProducts() {
     }
 
     const fields = 'id,image_front_small_url,brands,generic_name_fr,nutriscore_grade,nova_group'
-    const route = `${API_BASE_URL}?search_terms=${input.value}&fields=${fields}&sort_by=popularity_key,completeness&page_size=20&page=${page.value}&search_simple=1&action=process&json=1`
+    const route = `${API_BASE_URL}?search_terms=${input.value}&fields=${fields}&sort_by=${filter.value}&page_size=20&page=${page.value}&search_simple=1&action=process&json=1`
 
     try {
       productsIsLoading.value = true
