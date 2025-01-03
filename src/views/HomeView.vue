@@ -205,6 +205,23 @@ onUnmounted(() => {
       </article>
     </div>
   </section>
+  <section id="alternatives-functionality" class="mb-20">
+    <h2 class="title mb-8 text-2xl lg:text-3xl text-center">
+      Découvrez des <span class="text-[#00bd7e]">alternatives</span> plus saines
+    </h2>
+    <p class="mt-4 mb-2">
+      Vous méritez le meilleur pour votre alimentation. Si un produit a un Nutri-Score jugé trop
+      faible, notre fonctionnalité intelligente vous propose instantanément des alternatives mieux
+      notées et tout aussi savoureuses.
+    </p>
+    <img src="/product-presentation.png" alt="product image" class="h-auto mt-4" />
+    <div class="w-full lg:flex flex-row-reverse mt-8">
+      <p class="lg:w-1/4 m-auto">
+        Trouvez des options plus saines et faites de chaque choix un pas vers une meilleure santé.
+      </p>
+      <img src="/product-alternatives.png" alt="product image" class="h-auto lg:w-3/4 mt-4" />
+    </div>
+  </section>
   <section id="last-products" class="mb-20">
     <h2 class="title mb-8 text-2xl lg:text-3xl text-right">
       Produits <span class="text-[#00bd7e]">récemment</span> ajoutés
