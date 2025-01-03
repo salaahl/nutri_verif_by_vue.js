@@ -5,13 +5,15 @@ import { useProducts } from '../composables/useProducts'
 import ProductCard from '/src/components/ProductCard.vue'
 
 const router = useRouter()
-const { products, productsIsLoading, page, pages, searchProducts } = useProducts()
+const { products, productsIsLoading, page, pages, input, searchProducts } = useProducts()
 
 // Gestion du formulaire de recherche
 const onSubmit = async (event: Event) => {
   event.preventDefault()
   const searchInput = document.querySelector('#search-form #search-input') as HTMLInputElement
-  const searchFilter = document.querySelector('#search-form input[name="sort_by"]') as HTMLInputElement
+  const searchFilter = document.querySelector(
+    '#search-form input[name="sort_by"]'
+  ) as HTMLInputElement
   if (!searchInput || !searchFilter) return
 
   const regex = /^[0-9]{8,13}$/
@@ -78,6 +80,7 @@ onUnmounted(() => {
             type="text"
             id="search-input"
             class="block w-full px-12 p-2.5 text-ellipsis bg-gray-50 border-4 text-gray-900 text-sm rounded-full outline-0 focus:ring-gray-400 focus:border-gray-400"
+            :value="input"
             placeholder="Entrez un nom de produit, un code-barres, une marque ou un type d'aliment"
             required
           />
@@ -105,21 +108,43 @@ onUnmounted(() => {
           <span class="sr-only">Search</span>
         </button>
       </div>
-      <div class="radio-toolbar w-full flex flex-wrap items-center mt-4 md:mt-8 text-sm text-gray-700">
-        <input type="radio" name="sort_by" id="product_name" value="product_name" checked>
-        <label class="radio_label mt-2 md:mt-0 mr-4 text-sm font-semibold bg-gray-400 rounded-full" for="product_name">Pertinence</label>
+      <div
+        class="radio-toolbar w-full flex flex-wrap items-center mt-4 md:mt-6 text-sm text-gray-700"
+      >
+        <input type="radio" name="sort_by" id="product_name" value="product_name" checked />
+        <label
+          class="radio_label mt-2 md:mt-0 mr-4 text-sm font-semibold bg-gray-400 rounded-full"
+          for="product_name"
+          >Pertinence</label
+        >
 
-        <input type="radio" name="sort_by" id="popularity_key" value="popularity_key">
-        <label class="radio_label mt-2 md:mt-0 mr-4 text-sm font-semibold bg-gray-400 rounded-full" for="popularity_key">Popularité</label>
+        <input type="radio" name="sort_by" id="popularity_key" value="popularity_key" />
+        <label
+          class="radio_label mt-2 md:mt-0 mr-4 text-sm font-semibold bg-gray-400 rounded-full"
+          for="popularity_key"
+          >Popularité</label
+        >
 
-        <input type="radio" name="sort_by" id="created_t" value="created_t">
-        <label class="radio_label mt-2 md:mt-0 mr-4 text-sm font-semibold bg-gray-400 rounded-full" for="created_t">Date d'ajout</label>
+        <input type="radio" name="sort_by" id="created_t" value="created_t" />
+        <label
+          class="radio_label mt-2 md:mt-0 mr-4 text-sm font-semibold bg-gray-400 rounded-full"
+          for="created_t"
+          >Date d'ajout</label
+        >
 
-        <input type="radio" name="sort_by" id="nutriscore_score" value="nutriscore_score">
-        <label class="radio_label mt-2 md:mt-0 mr-4 text-sm font-semibold bg-gray-400 rounded-full" for="nutriscore_score">Nutriscore</label>
+        <input type="radio" name="sort_by" id="nutriscore_score" value="nutriscore_score" />
+        <label
+          class="radio_label mt-2 md:mt-0 mr-4 text-sm font-semibold bg-gray-400 rounded-full"
+          for="nutriscore_score"
+          >Nutriscore</label
+        >
 
-        <input type="radio" name="sort_by" id="nova_score" value="nova_score">
-        <label class="radio_label mt-2 md:mt-0 mr-4 text-sm font-semibold bg-gray-400 rounded-full" for="nova_score">Groupe Nova</label>
+        <input type="radio" name="sort_by" id="nova_score" value="nova_score" />
+        <label
+          class="radio_label mt-2 md:mt-0 mr-4 text-sm font-semibold bg-gray-400 rounded-full"
+          for="nova_score"
+          >Groupe Nova</label
+        >
       </div>
     </form>
   </section>

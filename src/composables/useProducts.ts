@@ -110,7 +110,11 @@ export function useProducts() {
     }
   }
 
-  async function searchProducts(userInput: string | null, sortBy: string | null, method: SearchMethod) {
+  async function searchProducts(
+    userInput: string | null,
+    sortBy: string | null,
+    method: SearchMethod
+  ) {
     if (userInput !== null) input.value = userInput
     if (sortBy !== null) filter.value = sortBy
     if (method === 'complete') {

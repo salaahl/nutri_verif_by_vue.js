@@ -43,10 +43,7 @@ const currentRoute = computed(() => {
     >
       <nav class="flex flex-wrap justify-center">
         <div class="px-2 md:px-6">
-          <RouterLink
-            :to="'/about'"
-            class="text-base leading-6 text-gray-500 hover:text-gray-900"
-          >
+          <RouterLink :to="'/about'" class="text-base leading-6 text-gray-500 hover:text-gray-900">
             À propos de nous
           </RouterLink>
         </div>
@@ -95,18 +92,23 @@ main {
   width: 100%;
 }
 
-.radio-toolbar input[type="radio"] {
-    display: none;
+.radio-toolbar input[type='radio'] {
+  display: none;
 }
 
 .radio-toolbar label {
-    height: auto;
-    padding: 4px 11px;
-    color: white;
+  height: auto;
+  padding: 4px 11px;
+  color: white;
+  transition: background-color 0.25s;
 }
 
-.radio-toolbar input[type="radio"]:checked + label {
-    background-color: var(--color-green);
+.radio-toolbar label:hover {
+  background-color: var(--color-green);
+}
+
+.radio-toolbar input[type='radio']:checked + label {
+  background-color: var(--color-green);
 }
 
 #website-name {

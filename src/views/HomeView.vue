@@ -4,6 +4,11 @@ import { useRouter } from 'vue-router'
 import { useProducts } from '../composables/useProducts'
 import ProductCard from '/src/components/ProductCard.vue'
 
+import gsap from 'gsap'
+import { ScrollTrigger } from 'gsap/ScrollTrigger'
+
+gsap.registerPlugin(ScrollTrigger)
+
 const router = useRouter()
 
 const {
@@ -19,6 +24,19 @@ const moreProductsLink = ref<{ name: string; to: string } | null>(null)
 fetchLastProduct()
 
 onMounted(() => {
+  // Animation des sections
+  document.querySelectorAll('section').forEach((section) => {
+    gsap.from(section, {
+      y: window.innerWidth < 768 ? '15%' : '250',
+      opacity: window.innerWidth < 768 ? 0 : 1,
+      duration: 0.4,
+      scrollTrigger: {
+        trigger: section,
+        start: window.innerWidth < 768 ? '0 85%' : '0 100%'
+      }
+    })
+  })
+
   // Hide the website name in home view
   const websiteName = document.querySelector('#website-name') as HTMLElement
   if (!websiteName) return
@@ -83,38 +101,38 @@ onUnmounted(() => {
       </div>
     </div>
     <div
-      v-if="products.length > 0 || productsIsLoading"
-      id="search-results"
-      class="relative flex flex-wrap p-4 bg-neutral-200 rounded-lg"
+      :class="`${products.length > 0 || productsIsLoading ? 'max-h-[750px] md:max-h-[400px]' : 'max-h-0'} overflow-hidden transition-all duration-300 ease-in-out`"
     >
-      <div
-        v-if="productsIsLoading"
-        class="loader-container w-fit flex justify-center items-center m-auto"
-      >
-        <div class="lds-hourglass"></div>
-      </div>
-      <ProductCard
-        v-for="product in products.slice(0, 4)"
-        :key="product.id"
-        :id="product.id"
-        :image="product.image"
-        :brand="product.brand"
-        :name="product.name"
-        :nutriscore="product.nutriscore"
-        :nova="product.nova"
-      />
-      <article
-        v-if="products.length > 0"
-        class="md:product w-full md:w-[18.6%] flex items-center justify-center mt-[2.5%] md:mt-0"
-      >
-        <RouterLink
-          :key="moreProductsLink?.name"
-          :to="moreProductsLink?.to ?? ''"
-          class="h-full w-full flex items-center justify-center p-3 md:text-4xl text-center text-white font-semibold bg-[#00bd7e] rounded-lg"
+      <div id="search-results" class="relative flex flex-wrap p-4 bg-neutral-200 rounded-lg">
+        <div
+          v-if="productsIsLoading"
+          class="loader-container w-fit flex justify-center items-center m-auto"
         >
-          +
-        </RouterLink>
-      </article>
+          <div class="lds-hourglass"></div>
+        </div>
+        <ProductCard
+          v-for="product in products.slice(0, 4)"
+          :key="product.id"
+          :id="product.id"
+          :image="product.image"
+          :brand="product.brand"
+          :name="product.name"
+          :nutriscore="product.nutriscore"
+          :nova="product.nova"
+        />
+        <article
+          v-if="products.length > 0"
+          class="md:product w-full md:w-[18.6%] flex items-center justify-center mt-[2.5%] md:mt-0"
+        >
+          <RouterLink
+            :key="moreProductsLink?.name"
+            :to="moreProductsLink?.to ?? ''"
+            class="h-full w-full flex items-center justify-center p-3 md:text-4xl text-center text-white font-semibold bg-[#00bd7e] rounded-lg"
+          >
+            +
+          </RouterLink>
+        </article>
+      </div>
     </div>
     <h3 id="total-products" class="my-8 text-2xl lg:text-3xl text-center">
       + de 1 082 462 produits référencés
