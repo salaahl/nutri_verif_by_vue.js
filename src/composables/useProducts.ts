@@ -53,7 +53,7 @@ interface APIProduct {
   link?: string
 }
 
-type SearchMethod = 'complete' | 'scroll'
+type SearchMethod = 'complete' | 'more'
 
 const API_BASE_URL = 'https://world.openfoodfacts.org/cgi/search.pl'
 
@@ -113,7 +113,7 @@ export function useProducts() {
     if (method === 'complete') {
       products.value = [] // Réinitialiser les produits en cas de nouvelle recherche
       page.value = 1
-    } else if (method === 'scroll') {
+    } else if (method === 'more') {
       page.value++
     }
 

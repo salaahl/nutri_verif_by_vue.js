@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { onMounted, onUnmounted, ref } from 'vue'
+import { onMounted, onUnmounted } from 'vue'
 import { useRouter } from 'vue-router'
 import { useProducts } from '../composables/useProducts'
 import ProductCard from '/src/components/ProductCard.vue'
@@ -41,7 +41,7 @@ const onScroll = async () => {
     refresh
   ) {
     refresh = false
-    await searchProducts(null, null, 'scroll')
+    await searchProducts(null, null, 'more')
 
     // Permet de temporiser le rafraîchissement
     setTimeout(() => {
@@ -53,11 +53,11 @@ const onScroll = async () => {
 }
 
 onMounted(() => {
-  window.addEventListener('scroll', onScroll)
+  window.addEventListener('more', onScroll)
 })
 
 onUnmounted(() => {
-  window.removeEventListener('scroll', onScroll)
+  window.removeEventListener('more', onScroll)
 })
 </script>
 
