@@ -26,11 +26,7 @@ const {
 } = useProducts()
 const moreProductsLink = ref<{ name: string; to: string } | null>(null)
 
-fetchProduct('54491472')
-fetchSuggestedProducts()
-fetchLastProduct()
-
-onMounted(() => {
+onMounted(async () => {
   // Animation des sections
   document.querySelectorAll('main > div > section').forEach((section) => {
     gsap.from(section, {
@@ -72,6 +68,10 @@ onMounted(() => {
       }
     }, 1000)
   })
+
+  await fetchProduct('54491472')
+  fetchSuggestedProducts()
+  fetchLastProduct()
 })
 
 onUnmounted(() => {
@@ -270,7 +270,7 @@ onUnmounted(() => {
               <h5>
                 <a :href="product.link" target="_blank" id="link" class="underline">{{
                   product.link
-                  }}</a>
+                }}</a>
               </h5>
             </div>
           </div>
