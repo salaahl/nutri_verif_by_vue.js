@@ -155,11 +155,11 @@ onUnmounted(() => {
     <h2 class="title mb-8 text-2xl lg:text-3xl">
       Votre alimentation <span class="text-[indianred]">décryptée</span>
     </h2>
-    <div class="py-8 px-4 md:p-8 bg-white rounded-lg">
-      <article id="nutriscore-explanation" class="w-full mr-auto mb-8 text-justify">
-        <div class="flex flex-col md:flex-row md:justify-between items-center">
+    <div class="flex flex-wrap">
+      <article id="nutriscore-explanation" class="w-full md:w-[45%] mr-auto mb-8 py-8 px-4 md:p-8 bg-white rounded-lg text-justify">
+        <div class="h-full flex flex-col md:flex-col md:justify-between items-center">
           <img src="https://static.openfoodfacts.org/images/attributes/dist/nutriscore-a.svg" alt="Nutriscore"
-            class="w-[10rem] mb-4 md:mb-0 md:mr-8" />
+            class="w-[10rem] mb-4" />
           <p class="w-full md:w-3/4 font-thin">
             Le Nutri-Score est un système d'étiquetage nutritionnel qui aide les consommateurs à identifier la qualité
             nutritionnelle des aliments. Il classe les produits de A (meilleure qualité nutritionnelle) à E (moins
@@ -169,10 +169,10 @@ onUnmounted(() => {
           </p>
         </div>
       </article>
-      <article id="nova-explanation" class="w-full ml-auto md:mb-8 text-justify">
-        <div class="flex flex-col md:flex-row-reverse md:justify-between items-center">
+      <article id="nova-explanation" class="w-full md:w-[45%] mr-auto mb-8 py-8 px-4 md:p-8 bg-white rounded-lg text-justify">
+        <div class="h-full flex flex-col md:flex-col md:justify-between items-center">
           <img src="https://static.openfoodfacts.org/images/attributes/dist/nova-group-1.svg" alt="NOVA"
-            class="w-[2.5rem] mb-4 md:mb-0 md:mr-8" />
+            class="w-[2.5rem] mb-4" />
           <p class="w-full md:w-3/4 font-thin">
             Le système NOVA évalue le degré de transformation des aliments plutôt que leur valeur nutritionnelle
             directe. Il classe les produits en quatre groupes, allant des aliments bruts ou peu transformés (groupe 1)
