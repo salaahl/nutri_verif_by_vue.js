@@ -155,12 +155,12 @@ onUnmounted(() => {
     <h2 class="title mb-8 text-2xl lg:text-3xl">
       Votre alimentation <span class="text-[indianred]">décryptée</span>
     </h2>
-    <div class="flex flex-wrap">
-      <article id="nutriscore-explanation" class="w-full md:w-[45%] mr-auto mb-8 py-8 px-4 md:p-8 bg-white rounded-lg text-justify">
+    <div class="flex flex-wrap justify-between">
+      <article id="nutriscore-explanation" class="w-full md:w-[45%] mb-8 md:mb-0 p-8 md:p-12 bg-white rounded-lg text-justify">
         <div class="h-full flex flex-col md:flex-col md:justify-between items-center">
           <img src="https://static.openfoodfacts.org/images/attributes/dist/nutriscore-a.svg" alt="Nutriscore"
-            class="w-[10rem] mb-4" />
-          <p class="w-full md:w-3/4 font-thin">
+            class="w-[10rem] mb-8" />
+          <p class="w-full font-thin">
             Le Nutri-Score est un système d'étiquetage nutritionnel qui aide les consommateurs à identifier la qualité
             nutritionnelle des aliments. Il classe les produits de A (meilleure qualité nutritionnelle) à E (moins
             favorable), en prenant en compte des critères tels que les nutriments bénéfiques (fibres, protéines) et les
@@ -169,11 +169,11 @@ onUnmounted(() => {
           </p>
         </div>
       </article>
-      <article id="nova-explanation" class="w-full md:w-[45%] mr-auto mb-8 py-8 px-4 md:p-8 bg-white rounded-lg text-justify">
+      <article id="nova-explanation" class="w-full md:w-[45%] p-8 md:p-12 bg-white rounded-lg text-justify">
         <div class="h-full flex flex-col md:flex-col md:justify-between items-center">
           <img src="https://static.openfoodfacts.org/images/attributes/dist/nova-group-1.svg" alt="NOVA"
-            class="w-[2.5rem] mb-4" />
-          <p class="w-full md:w-3/4 font-thin">
+            class="w-[2.5rem] mb-8" />
+          <p class="w-full font-thin">
             Le système NOVA évalue le degré de transformation des aliments plutôt que leur valeur nutritionnelle
             directe. Il classe les produits en quatre groupes, allant des aliments bruts ou peu transformés (groupe 1)
             aux produits ultratransformés (groupe 4). Ce système met en avant l'importance de privilégier les aliments
@@ -313,6 +313,9 @@ onUnmounted(() => {
         :nova="product.nova" />
     </div>
   </section>
+  <section id="last-section">
+    <img src="/logo.png" alt="logo de l'application" class="h-auto w-auto max-w-[300px] mx-auto mb-20 contrast-0" />
+  </section>
 </template>
 
 <style scoped>
@@ -396,7 +399,7 @@ h1 {
   }
 
   #more-products .product {
-    width: 24.6%;
+    width: 22.6%;
     margin-bottom: 0;
   }
 

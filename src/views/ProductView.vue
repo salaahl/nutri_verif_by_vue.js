@@ -10,7 +10,6 @@ const route = useRoute()
 
 const {
   searchProducts,
-  productsIsLoading,
   product,
   productIsLoading,
   fetchSuggestedProducts,
@@ -77,7 +76,7 @@ onBeforeMount(async () => {
   await fetchProduct(Array.isArray(route.params.id) ? route.params.id[0] : route.params.id)
 
   if (product.nutriscore !== 'a' || product.novaGroup !== 'a')
-    fetchSuggestedProducts(product.id, product.categories) // Fetch similar products if Nutriscore/Nova isn't A
+    fetchSuggestedProducts(product.id, product.categories)
 })
 
 onBeforeRouteUpdate((to) => {
