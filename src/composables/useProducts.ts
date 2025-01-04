@@ -69,6 +69,7 @@ export function useProducts() {
   const lastProducts = ref<Products[]>([])
   const lastProductsIsLoading = ref(false)
   const suggestedProducts = ref<Products[]>([])
+  const suggestedProductsIsLoading = ref(false)
   const input = computed({
     get: () => productsStore.getInput,
     set: (val) => productsStore.updateInput(val)
@@ -197,7 +198,7 @@ export function useProducts() {
 
     try {
       suggestedProducts.value = []
-      productsIsLoading.value = true
+      suggestedProductsIsLoading.value = true
       error.value = null
 
       const response = await fetch(route)
@@ -244,7 +245,7 @@ export function useProducts() {
     } catch (err: any) {
       error.value = err.message || 'Une erreur est survenue'
     } finally {
-      productsIsLoading.value = false
+      suggestedProductsIsLoading.value = false
     }
   }
 
@@ -256,6 +257,7 @@ export function useProducts() {
     lastProducts,
     lastProductsIsLoading,
     suggestedProducts,
+    suggestedProductsIsLoading,
     filter,
     input,
     page,

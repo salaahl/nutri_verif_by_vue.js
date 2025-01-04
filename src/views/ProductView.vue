@@ -14,6 +14,7 @@ const {
   product,
   productIsLoading,
   fetchSuggestedProducts,
+  suggestedProductsIsLoading,
   suggestedProducts,
   fetchProduct
 } = useProducts()
@@ -178,13 +179,13 @@ onBeforeRouteUpdate((to) => {
     </section>
   </div>
 
-  <aside v-if="suggestedProducts.length || productsIsLoading" class="my-16">
+  <aside v-if="suggestedProducts.length || suggestedProductsIsLoading" class="my-16">
     <section id="more-products"
       class="relative w-full flex flex-wrap lg:flex-nowrap items-stretch lg:items-center justify-between p-4 md:p-8 lg:px-16 bg-neutral-200 rounded-xl">
       <h2 class="title w-full lg:w-1/4 mb-8 lg:mb-0 text-center lg:text-left text-3xl lg:text-2xl">
         Alternatives
       </h2>
-      <div v-if="productsIsLoading" class="loader-container md:absolute h-full w-full flex justify-center items-center">
+      <div v-if="suggestedProductsIsLoading" class="loader-container md:absolute h-full w-full flex justify-center items-center">
         <div class="lds-hourglass"></div>
       </div>
       <div class="relative w-full lg:w-3/4 flex flex-wrap md:flex-nowrap justify-end">

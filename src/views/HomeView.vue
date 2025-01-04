@@ -20,6 +20,7 @@ const {
   product,
   fetchSuggestedProducts,
   suggestedProducts,
+  suggestedProductsIsLoading,
   fetchLastProduct,
   lastProductsIsLoading,
   lastProducts,
@@ -69,7 +70,7 @@ onMounted(async () => {
     }, 1000)
   })
 
-  await fetchProduct('54491472')
+  await fetchProduct('3700278403936')
   fetchSuggestedProducts()
   fetchLastProduct()
 })
@@ -160,24 +161,23 @@ onUnmounted(() => {
           <img src="https://static.openfoodfacts.org/images/attributes/dist/nutriscore-a.svg" alt="Nutriscore"
             class="w-[10rem] mb-4 md:mb-0 md:mr-8" />
           <p class="w-full md:w-3/4 font-thin">
-            Le Nutri-Score est un étiquetage nutritionnel simple qui aide les consommateurs à
-            choisir des aliments plus sains. Représenté par une échelle de A à E, avec des couleurs
-            du vert au rouge, il évalue les produits selon leur composition, en équilibrant les
-            éléments bénéfiques (fibres, protéines) et ceux à limiter (sucre, sel). Facile à
-            comprendre, il encourage une alimentation équilibrée et des choix éclairés.
+            Le Nutri-Score est un système d'étiquetage nutritionnel qui aide les consommateurs à identifier la qualité
+            nutritionnelle des aliments. Il classe les produits de A (meilleure qualité nutritionnelle) à E (moins
+            favorable), en prenant en compte des critères tels que les nutriments bénéfiques (fibres, protéines) et les
+            éléments à limiter (sucre, sel). Ce score, accompagné de couleurs, permet de faire des choix alimentaires
+            plus éclairés.
           </p>
         </div>
       </article>
       <article id="nova-explanation" class="w-full ml-auto md:mb-8 text-justify">
-        <div class="flex flex-col md:flex-row md:justify-between items-center">
+        <div class="flex flex-col md:flex-row-reverse md:justify-between items-center">
           <img src="https://static.openfoodfacts.org/images/attributes/dist/nova-group-1.svg" alt="NOVA"
             class="w-[2.5rem] mb-4 md:mb-0 md:mr-8" />
           <p class="w-full md:w-3/4 font-thin">
-            Le NOVA est un étiquetage nutritionnel simple qui aide les consommateurs à choisir des
-            aliments plus sains. Représenté par une échelle de 1 à 4, avec des couleurs du vert au
-            rouge, il évalue les produits selon leur composition, en équilibrant les éléments
-            bénéfiques (fibres, protéines) et ceux à limiter (sucre, sel). Facile à comprendre, il
-            encourage une alimentation équilibrée et des choix éclairés.
+            Le système NOVA évalue le degré de transformation des aliments plutôt que leur valeur nutritionnelle
+            directe. Il classe les produits en quatre groupes, allant des aliments bruts ou peu transformés (groupe 1)
+            aux produits ultratransformés (groupe 4). Ce système met en avant l'importance de privilégier les aliments
+            naturels et peu modifiés pour une alimentation plus saine.
           </p>
         </div>
       </article>
@@ -191,8 +191,7 @@ onUnmounted(() => {
       <span class="text-highlighted">Vous méritez le meilleur pour votre alimentation </span>
       <span>. Si un produit a un Nutri-Score jugé trop faible :</span>
     </span>
-    <div id="product-container"
-      class="md:min-h-[calc(100vh-344px)] flex flex-wrap justify-between md:flex-nowrap flex-col md:flex-row">
+    <div id="product-container" class="flex flex-wrap justify-between md:flex-nowrap flex-col md:flex-row">
       <section id="product-images-container"
         class="w-full md:w-2/4 flex items-center justify-center bg-white rounded-xl">
         <div class="md:w-full my-[50px]">
@@ -200,12 +199,12 @@ onUnmounted(() => {
           <img id="product-img" :src="product.image" :alt="product.generic_name" class="h-auto w-auto m-auto" />
         </div>
       </section>
-      <section id="product-details-container" class="relative w-full md:w-2/4 max-md:my-8 md:pl-6">
+      <section id="product-details-container" class="relative w-full md:w-2/4 max-md:mt-8 md:pl-6">
         <div v-if="productIsLoading"
           class="loader-container md:absolute h-full w-full flex justify-center items-center">
           <div class="lds-hourglass"></div>
         </div>
-        <div id="product-detail" class="h-full">
+        <div id="product-detail" class="h-full text-black/25">
           <div class="h-full flex flex-col justify-evently">
             <div>
               <h3 class="title text-xl md:text-2xl uppercase">
@@ -279,15 +278,15 @@ onUnmounted(() => {
     </div>
     <span class="inline-block my-8">
       notre fonctionnalité intelligente vous propose instantanément des alternatives
-      <span class="text-highlighted">mieux notées et tout aussi savoureuses</span>.
+      <span class="text-highlighted">mieux notées et tout aussi savoureuses</span> :
     </span>
-    <aside v-if="suggestedProducts.length || productsIsLoading">
+    <aside v-if="suggestedProducts.length || suggestedProductsIsLoading">
       <section id="more-products"
         class="relative w-full flex flex-wrap lg:flex-nowrap items-stretch lg:items-center justify-between p-4 md:p-8 lg:px-16 bg-neutral-200 rounded-xl">
         <h2 class="title w-full lg:w-1/4 mb-8 lg:mb-0 text-center lg:text-left text-3xl lg:text-2xl">
           Alternatives
         </h2>
-        <div v-if="productsIsLoading"
+        <div v-if="suggestedProductsIsLoading"
           class="loader-container md:absolute h-full w-full flex justify-center items-center">
           <div class="lds-hourglass"></div>
         </div>
