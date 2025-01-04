@@ -156,7 +156,7 @@ onUnmounted(() => {
       Votre alimentation <span class="text-[indianred]">décryptée</span>
     </h2>
     <div class="flex flex-wrap justify-between">
-      <article id="nutriscore-explanation" class="w-full md:w-[45%] mb-8 md:mb-0 p-8 md:p-12 bg-white rounded-lg text-justify">
+      <article id="nutriscore-explanation" class="w-full md:w-[48%] mb-8 md:mb-0 p-8 md:p-12 bg-white rounded-lg text-justify">
         <div class="h-full flex flex-col md:flex-col md:justify-between items-center">
           <img src="https://static.openfoodfacts.org/images/attributes/dist/nutriscore-a.svg" alt="Nutriscore"
             class="w-[10rem] mb-8" />
@@ -169,7 +169,7 @@ onUnmounted(() => {
           </p>
         </div>
       </article>
-      <article id="nova-explanation" class="w-full md:w-[45%] p-8 md:p-12 bg-white rounded-lg text-justify">
+      <article id="nova-explanation" class="w-full md:w-[48%] p-8 md:p-12 bg-white rounded-lg text-justify">
         <div class="h-full flex flex-col md:flex-col md:justify-between items-center">
           <img src="https://static.openfoodfacts.org/images/attributes/dist/nova-group-1.svg" alt="NOVA"
             class="w-[2.5rem] mb-8" />
@@ -223,13 +223,13 @@ onUnmounted(() => {
                   '-new-fr.svg'
                   " :alt="'Nutriscore : ' + product.nutriscore" />
                 <div class="flex items-end">
-                  <img id="nova-group-img" class="max-h-[50px] md:max-h-[60px] mt-2" :src="'https://static.openfoodfacts.org/images/attributes/dist/nova-group-' +
+                  <img id="nova-group-img" class="max-h-[50px] md:max-h-[60px] mt-2 opacity-25" :src="'https://static.openfoodfacts.org/images/attributes/dist/nova-group-' +
                     product.novaGroup +
                     '.svg'
                     " :alt="'Groupe Nova : ' + product.novaGroup" />
                 </div>
               </div>
-              <div v-if="product.nutrient_levels" id="nutrient-levels" class="flex flex-wrap">
+              <div v-if="product.nutrient_levels" id="nutrient-levels" class="flex flex-wrap opacity-25">
                 <span v-for="(level, nutrient) in product.nutrient_levels" :key="nutrient" :class="[
                   'mt-4 mr-2 py-2 px-3 text-sm font-semibold text-white rounded-full',
                   level === 'low' ? 'bg-[#00bd7e]' : '',
