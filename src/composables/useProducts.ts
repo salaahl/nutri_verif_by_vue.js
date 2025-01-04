@@ -15,6 +15,7 @@ interface Product {
   image: string
   brand: string
   generic_name: string
+  category: string
   categories: string[]
   lastUpdate: string
   nutriscore: string
@@ -41,6 +42,7 @@ interface APIProduct {
   image_front_url?: string
   brands?: string
   generic_name_fr?: string
+  compared_to_category?: string
   categories?: string
   last_updated_t?: number
   nutriscore_grade?: string
@@ -99,6 +101,7 @@ export function useProducts() {
       image: product.image_front_url ?? '/logo.png',
       brand: product.brands ?? '',
       generic_name: product.generic_name_fr ?? '',
+      category: product.compared_to_category ?? '',
       categories: product.categories?.split(',') ?? [],
       lastUpdate: product.last_updated_t
         ? new Date(product.last_updated_t * 1000).toLocaleDateString('fr-FR')
@@ -190,11 +193,11 @@ export function useProducts() {
 
   async function fetchSuggestedProducts(
     id: string = product.id,
-    categories: string[] = product.categories
+    category: string = product.category
   ) {
     const fields =
       'id,image_front_small_url,brands,generic_name_fr,nutriscore_grade,nova_group,completeness,popularity_key'
-    const route = `${API_BASE_URL}?search_terms=${encodeURIComponent(categories.slice(0, 5).join(','))}&fields=${encodeURIComponent(fields)}&sort_by=nutriscore_score,nova_group,popularity_key&page_size=300&action=process&json=1`
+    const route = `https://world.openfoodfacts.org/api/v2/search?categories_tags=${encodeURIComponent(category)}&fields=${encodeURIComponent(fields)}&sort_by=nutriscore_score,nova_group,popularity_key&page_size=300&action=process&json=1`
 
     try {
       suggestedProducts.value = []
@@ -207,6 +210,7 @@ export function useProducts() {
       /*
        * Les produits suggérés doivent remplir les critères suivants :
        * - Ne pas être le produit actuel
+       * - Avoir un nutriscore
        * - Avoir un nutriscore meilleur OU
        * - Avoir un nutriscore meilleur ET avoir un nova group meilleur
        * - Avoir un taux de complétude décent
@@ -217,6 +221,7 @@ export function useProducts() {
         .filter(
           (e: { id: string; nutriscore_grade: string; nova_group: number; completeness: number }) =>
             e.id !== id &&
+            e.nutriscore_grade !== 'not-applicable' &&
             e.nutriscore_grade !== 'unknown' &&
             (score.indexOf(e.nutriscore_grade) < score.indexOf(product.nutriscore) ||
               (score.indexOf(e.nutriscore_grade) === score.indexOf(product.nutriscore) &&
