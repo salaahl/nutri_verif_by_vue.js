@@ -32,7 +32,7 @@ fetchLastProduct()
 
 onMounted(() => {
   // Animation des sections
-  document.querySelectorAll('section').forEach((section) => {
+  document.querySelectorAll('main > div > section').forEach((section) => {
     gsap.from(section, {
       y: window.innerWidth < 768 ? '15%' : '250',
       opacity: window.innerWidth < 768 ? 0 : 1,
@@ -124,29 +124,31 @@ onUnmounted(() => {
       + de 1 082 462 produits référencés
     </h3>
   </section>
-  <section id="open-food-facts-video-presentation" class="mb-8">
-    <iframe src="https://www.youtube.com/embed/D1jzT02IBRA" class="w-full aspect-[2/1] border-[3px] rounded-xl"
-      title="Open Food Facts - Présentation"
-      allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
-      allowfullscreen></iframe>
-  </section>
   <section id="about" class="mb-20">
-    <span class="py-1 font-thin">
-      NutriVérif est alimentée par "Open Food Facts", une base de données de produits alimentaires
-      créée par tous et pour tous.
-    </span>
-    <div class="my-2"></div>
-    <span class="py-1 font-thin">
-      Vous pouvez l'utiliser pour faire de meilleurs choix alimentaires, et comme les données sont
-      ouvertes, tout le monde peut les réutiliser pour tout usage.
-    </span>
-    <RouterLink :to="'/about'" class="flex items-center w-fit mt-2">
-      En savoir plus
-      <svg class="h-[15px] w-auto ml-2" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 448 512">
-        <path
-          d="M438.6 278.6c12.5-12.5 12.5-32.8 0-45.3l-160-160c-12.5-12.5-32.8-12.5-45.3 0s-12.5 32.8 0 45.3L338.8 224 32 224c-17.7 0-32 14.3-32 32s14.3 32 32 32l306.7 0L233.4 393.4c-12.5 12.5-12.5 32.8 0 45.3s32.8 12.5 45.3 0l160-160z" />
-      </svg>
-    </RouterLink>
+    <article class="mb-8">
+      <iframe src="https://www.youtube.com/embed/D1jzT02IBRA" class="w-full aspect-[2/1] border-[3px] rounded-xl"
+        title="Open Food Facts - Présentation"
+        allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
+        allowfullscreen></iframe>
+    </article>
+    <article>
+      <span class="text-highlighted py-1 font-thin">
+        NutriVérif est alimentée par "Open Food Facts", une base de données de produits alimentaires
+        créée par tous et pour tous.
+      </span>
+      <div class="my-2"></div>
+      <span class="text-highlighted py-1 font-thin">
+        Vous pouvez l'utiliser pour faire de meilleurs choix alimentaires, et comme les données sont
+        ouvertes, tout le monde peut les réutiliser pour tout usage.
+      </span>
+      <RouterLink :to="'/about'" class="flex items-center w-fit mt-2">
+        En savoir plus
+        <svg class="h-[15px] w-auto ml-2" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 448 512">
+          <path
+            d="M438.6 278.6c12.5-12.5 12.5-32.8 0-45.3l-160-160c-12.5-12.5-32.8-12.5-45.3 0s-12.5 32.8 0 45.3L338.8 224 32 224c-17.7 0-32 14.3-32 32s14.3 32 32 32l306.7 0L233.4 393.4c-12.5 12.5-12.5 32.8 0 45.3s32.8 12.5 45.3 0l160-160z" />
+        </svg>
+      </RouterLink>
+    </article>
   </section>
   <section id="score-explanations" class="mb-20">
     <h2 class="title mb-8 text-2xl lg:text-3xl">
@@ -185,10 +187,10 @@ onUnmounted(() => {
     <h2 class="title mb-8 text-2xl lg:text-3xl text-center">
       Découvrez des <span class="text-[#00bd7e]">alternatives</span> plus saines
     </h2>
-    <p class="my-8">
-      Vous méritez le meilleur pour votre alimentation. Si un produit a un Nutri-Score jugé trop
-      faible,
-    </p>
+    <span class="inline-block my-8">
+      <span class="text-highlighted">Vous méritez le meilleur pour votre alimentation </span>
+      <span>. Si un produit a un Nutri-Score jugé trop faible :</span>
+    </span>
     <div id="product-container"
       class="md:min-h-[calc(100vh-344px)] flex flex-wrap justify-between md:flex-nowrap flex-col md:flex-row">
       <section id="product-images-container"
@@ -275,10 +277,10 @@ onUnmounted(() => {
         </div>
       </section>
     </div>
-    <p class="my-8">
-      notre fonctionnalité intelligente vous propose instantanément des alternatives mieux
-      notées et tout aussi savoureuses.
-    </p>
+    <span class="inline-block my-8">
+      notre fonctionnalité intelligente vous propose instantanément des alternatives
+      <span class="text-highlighted">mieux notées et tout aussi savoureuses</span>.
+    </span>
     <aside v-if="suggestedProducts.length || productsIsLoading">
       <section id="more-products"
         class="relative w-full flex flex-wrap lg:flex-nowrap items-stretch lg:items-center justify-between p-4 md:p-8 lg:px-16 bg-neutral-200 rounded-xl">
@@ -295,9 +297,9 @@ onUnmounted(() => {
         </div>
       </section>
     </aside>
-    <p class="my-8">
-      Trouvez des options plus saines et faites de chaque choix un pas vers une meilleure santé.
-    </p>
+    <span class="inline-block my-8">
+      Trouvez des options <span class="text-highlighted">plus saines</span>
+      et faites de chaque choix un pas vers une meilleure santé.</span>
   </section>
   <section id="last-products" class="mb-20">
     <h2 class="title mb-8 text-2xl lg:text-3xl text-right">
@@ -309,7 +311,7 @@ onUnmounted(() => {
       </div>
       <ProductCard v-for="product in lastProducts" :key="product.id" :product="product" :id="product.id"
         :image="product.image" :brand="product.brand" :generic-name="product.name" :nutriscore="product.nutriscore"
-        :nova-group="product.nova" />
+        :nova="product.nova" />
     </div>
   </section>
 </template>
@@ -344,7 +346,7 @@ h1 {
   margin-right: 4%;
 }
 
-#about span {
+.text-highlighted {
   background-color: hsla(160, 100%, 37%, 0.6);
 }
 
@@ -355,12 +357,12 @@ h1 {
   background-clip: text;
 }
 
-#more-products > .title {
+#more-products>.title {
   font-family: 'Grand Hotel', cursive;
   font-size: xx-large;
 }
 
-#more-products > .title::first-letter {
+#more-products>.title::first-letter {
   color: indianred;
 }
 
@@ -390,7 +392,7 @@ h1 {
     margin-right: 1.25%;
   }
 
-  #more-products > .title {
+  #more-products>.title {
     font-size: xxx-large;
   }
 

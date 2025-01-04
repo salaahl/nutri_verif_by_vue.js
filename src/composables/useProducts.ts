@@ -7,7 +7,7 @@ interface Products {
   brand: string
   name: string
   nutriscore: string
-  nova: string
+  nova: number | string
 }
 
 interface Product {
@@ -18,7 +18,7 @@ interface Product {
   categories: string[]
   lastUpdate: string
   nutriscore: string
-  novaGroup: string
+  novaGroup: number | string
   quantity: string
   ingredients: string
   calories100g: string
@@ -33,7 +33,7 @@ interface APIProducts {
   brands?: string
   generic_name_fr?: string
   nutriscore_grade?: string
-  nova_group?: string
+  nova_group?: number | string
 }
 
 interface APIProduct {
@@ -44,7 +44,7 @@ interface APIProduct {
   categories?: string
   last_updated_t?: number
   nutriscore_grade?: string
-  nova_group?: string
+  nova_group?: number | string
   quantity?: string
   ingredients_text_with_allergens_fr?: string
   nutriments?: { [key: string]: string }
@@ -85,8 +85,8 @@ export function useProducts() {
     return {
       id: product.id ?? '',
       image: product.image_front_small_url ?? './logo.png',
-      brand: product.brands ?? 'Marque inconnue',
-      name: product.generic_name_fr ?? 'Fiche incomplète',
+      brand: product.brands ?? '',
+      name: product.generic_name_fr ?? '',
       nutriscore: product.nutriscore_grade ?? 'unknown',
       nova: product.nova_group ?? 'unknown'
     }
@@ -96,8 +96,8 @@ export function useProducts() {
     return {
       id: product.id ?? '',
       image: product.image_front_url ?? '/logo.png',
-      brand: product.brands ?? 'Marque inconnue',
-      generic_name: product.generic_name_fr ?? 'Fiche incomplète',
+      brand: product.brands ?? '',
+      generic_name: product.generic_name_fr ?? '',
       categories: product.categories?.split(',') ?? [],
       lastUpdate: product.last_updated_t
         ? new Date(product.last_updated_t * 1000).toLocaleDateString('fr-FR')
@@ -192,7 +192,7 @@ export function useProducts() {
     categories: string[] = product.categories
   ) {
     const fields =
-      'id,categories,image_front_url,brands,generic_name_fr,nutriscore_grade,nova_group,last_updated_t,quantity,ingredients_text_with_allergens_fr,nutriments,manufacturing_places,link,completeness,popularity_key'
+      'id,image_front_small_url,brands,generic_name_fr,nutriscore_grade,nova_group,completeness,popularity_key'
     const route = `${API_BASE_URL}?search_terms=${encodeURIComponent(categories.slice(0, 5).join(','))}&fields=${encodeURIComponent(fields)}&sort_by=nutriscore_score,nova_group,popularity_key&page_size=300&action=process&json=1`
 
     try {
@@ -219,7 +219,8 @@ export function useProducts() {
             e.nutriscore_grade !== 'unknown' &&
             (score.indexOf(e.nutriscore_grade) < score.indexOf(product.nutriscore) ||
               (score.indexOf(e.nutriscore_grade) === score.indexOf(product.nutriscore) &&
-                e.nova_group < parseInt(product.novaGroup))) &&
+                typeof e.nova_group === 'number' &&
+                e.nova_group < Number(product.novaGroup))) &&
             e.completeness >= 0.35
         )
         .sort(
@@ -239,7 +240,7 @@ export function useProducts() {
         )
         .slice(0, 4)
 
-      suggestedProducts.value.push(...selectedProducts.map(transformProduct))
+      suggestedProducts.value.push(...selectedProducts.map(transformProducts))
     } catch (err: any) {
       error.value = err.message || 'Une erreur est survenue'
     } finally {

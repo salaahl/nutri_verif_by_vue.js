@@ -68,15 +68,8 @@ const resetProduct = () => {
 const updateProduct = async (productId: string) => {
   resetProduct()
 
-  const foundProduct = suggestedProducts.value.find((p: { id: string }) => p.id === productId)
-
-  if (foundProduct) {
-    // Clear previous product data and assign new data
-    Object.assign(product, { ...foundProduct })
-    fetchSuggestedProducts(productId, product.categories)
-  } else {
-    await fetchProduct(productId)
-  }
+  await fetchProduct(productId)
+  fetchSuggestedProducts(productId, product.categories)
 }
 
 onBeforeMount(async () => {
@@ -92,42 +85,24 @@ onBeforeRouteUpdate((to) => {
 </script>
 
 <template>
-  <div
-    :key="Array.isArray(route.params.id) ? route.params.id[0] : route.params.id"
-    id="product-container"
-    class="md:min-h-[calc(100vh-344px)] flex flex-wrap justify-between md:flex-nowrap flex-col md:flex-row md:mb-8"
-  >
-    <section
-      id="product-images-container"
-      class="w-full md:w-2/4 flex items-center justify-center bg-white rounded-xl"
-    >
+  <div :key="Array.isArray(route.params.id) ? route.params.id[0] : route.params.id" id="product-container"
+    class="md:min-h-[calc(100vh-344px)] flex flex-wrap justify-between md:flex-nowrap flex-col md:flex-row md:mb-8">
+    <section id="product-images-container" class="w-full md:w-2/4 flex items-center justify-center bg-white rounded-xl">
       <div class="md:w-full my-[50px]">
-        <div
-          v-if="productIsLoading"
-          class="loader-container h-full flex justify-center items-center"
-        ></div>
-        <img
-          id="product-img"
-          :src="product.image"
-          :alt="product.generic_name"
-          class="h-auto w-auto m-auto"
-        />
+        <div v-if="productIsLoading" class="loader-container h-full flex justify-center items-center"></div>
+        <img id="product-img" :src="product.image" :alt="product.generic_name" class="h-auto w-auto m-auto" />
       </div>
     </section>
 
     <section id="product-details-container" class="relative w-full md:w-2/4 max-md:my-8 md:pl-6">
-      <div
-        v-if="productIsLoading"
-        class="loader-container md:absolute h-full w-full flex justify-center items-center"
-      >
+      <div v-if="productIsLoading" class="loader-container md:absolute h-full w-full flex justify-center items-center">
         <div class="lds-hourglass"></div>
       </div>
       <div id="product-detail" class="h-full">
         <div class="h-full flex flex-col justify-evently">
           <div>
             <h1 class="title text-xl md:text-2xl uppercase">
-              <span v-if="product.brand" id="brand" class="text-[#00bd7e]"
-                >{{ product.brand }} -
+              <span v-if="product.brand" id="brand" class="text-[#00bd7e]">{{ product.brand }} -
               </span>
               <span v-if="product.generic_name" id="generic-name">{{ product.generic_name }}</span>
             </h1>
@@ -137,40 +112,24 @@ onBeforeRouteUpdate((to) => {
           </div>
           <div>
             <div class="scores">
-              <img
-                id="nutriscore-img"
-                class="max-w-[100px] md:max-w-[115px] mt-2"
-                :src="
-                  'https://static.openfoodfacts.org/images/attributes/dist/nutriscore-' +
-                  product.nutriscore +
-                  '-new-fr.svg'
-                "
-                :alt="'Nutriscore : ' + product.nutriscore"
-              />
+              <img id="nutriscore-img" class="max-w-[100px] md:max-w-[115px] mt-2" :src="'https://static.openfoodfacts.org/images/attributes/dist/nutriscore-' +
+                product.nutriscore +
+                '-new-fr.svg'
+                " :alt="'Nutriscore : ' + product.nutriscore" />
               <div class="flex items-end">
-                <img
-                  id="nova-group-img"
-                  class="max-h-[50px] md:max-h-[60px] mt-2"
-                  :src="
-                    'https://static.openfoodfacts.org/images/attributes/dist/nova-group-' +
-                    product.novaGroup +
-                    '.svg'
-                  "
-                  :alt="'Groupe Nova : ' + product.novaGroup"
-                />
+                <img id="nova-group-img" class="max-h-[50px] md:max-h-[60px] mt-2" :src="'https://static.openfoodfacts.org/images/attributes/dist/nova-group-' +
+                  product.novaGroup +
+                  '.svg'
+                  " :alt="'Groupe Nova : ' + product.novaGroup" />
               </div>
             </div>
             <div v-if="product.nutrient_levels" id="nutrient-levels" class="flex flex-wrap">
-              <span
-                v-for="(level, nutrient) in product.nutrient_levels"
-                :key="nutrient"
-                :class="[
-                  'mt-4 mr-2 py-2 px-3 text-sm font-semibold text-white rounded-full',
-                  level === 'low' ? 'bg-[#00bd7e]' : '',
-                  level === 'moderate' ? 'bg-yellow-500' : '',
-                  level === 'high' ? 'bg-red-500' : ''
-                ]"
-              >
+              <span v-for="(level, nutrient) in product.nutrient_levels" :key="nutrient" :class="[
+                'mt-4 mr-2 py-2 px-3 text-sm font-semibold text-white rounded-full',
+                level === 'low' ? 'bg-[#00bd7e]' : '',
+                level === 'moderate' ? 'bg-yellow-500' : '',
+                level === 'high' ? 'bg-red-500' : ''
+              ]">
                 {{
                   nutrient.toString() === 'fat'
                     ? 'matieres grasses'
@@ -204,15 +163,12 @@ onBeforeRouteUpdate((to) => {
             <h4>
               <a :href="product.link" target="_blank" id="link" class="underline">{{
                 product.link
-              }}</a>
+                }}</a>
             </h4>
             <div v-if="filteredCategories.length" id="tags" class="mt-4">
-              <button
-                v-for="category in filteredCategories"
-                :key="category"
+              <button v-for="category in filteredCategories" :key="category"
                 class="tag mt-2 mr-2 py-2 px-3 text-sm font-semibold text-white bg-neutral-400 text-white rounded-full"
-                @click="searchProductsByCategory(category)"
-              >
+                @click="searchProductsByCategory(category)">
                 #{{ category }}
               </button>
             </div>
@@ -223,30 +179,17 @@ onBeforeRouteUpdate((to) => {
   </div>
 
   <aside v-if="suggestedProducts.length || productsIsLoading" class="my-16">
-    <section
-      id="more-products"
-      class="relative w-full flex flex-wrap lg:flex-nowrap items-stretch lg:items-center justify-between p-4 md:p-8 lg:px-16 bg-neutral-200 rounded-xl"
-    >
+    <section id="more-products"
+      class="relative w-full flex flex-wrap lg:flex-nowrap items-stretch lg:items-center justify-between p-4 md:p-8 lg:px-16 bg-neutral-200 rounded-xl">
       <h2 class="title w-full lg:w-1/4 mb-8 lg:mb-0 text-center lg:text-left text-3xl lg:text-2xl">
         Alternatives
       </h2>
-      <div
-        v-if="productsIsLoading"
-        class="loader-container md:absolute h-full w-full flex justify-center items-center"
-      >
+      <div v-if="productsIsLoading" class="loader-container md:absolute h-full w-full flex justify-center items-center">
         <div class="lds-hourglass"></div>
       </div>
       <div class="relative w-full lg:w-3/4 flex flex-wrap md:flex-nowrap justify-end">
-        <ProductCard
-          v-for="product in suggestedProducts"
-          :key="product.id"
-          :id="product.id"
-          :image="product.image"
-          :brand="product.brand"
-          :name="product.name"
-          :nutriscore="product.nutriscore"
-          :nova="product.nova"
-        />
+        <ProductCard v-for="product in suggestedProducts" :key="product.id" :id="product.id" :image="product.image"
+          :brand="product.brand" :name="product.name" :nutriscore="product.nutriscore" :nova="product.nova" />
       </div>
     </section>
   </aside>
@@ -270,12 +213,12 @@ onBeforeRouteUpdate((to) => {
   background-color: whitesmoke;
 }
 
-#more-products > .title {
+#more-products>.title {
   font-family: 'Grand Hotel', cursive;
   font-size: xx-large;
 }
 
-#more-products > .title::first-letter {
+#more-products>.title::first-letter {
   color: indianred;
 }
 
@@ -289,7 +232,7 @@ onBeforeRouteUpdate((to) => {
 }
 
 @media (min-width: 768px) {
-  #more-products > .title {
+  #more-products>.title {
     font-size: xxx-large;
   }
 

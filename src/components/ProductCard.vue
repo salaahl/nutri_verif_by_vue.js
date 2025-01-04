@@ -6,7 +6,7 @@ interface ProductProps {
   image?: string;
   brand?: string;
   name?: string;
-  nutriscore?: number | string;
+  nutriscore?: string;
   nova?: number | string;
 }
 
