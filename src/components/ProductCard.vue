@@ -1,46 +1,23 @@
 <script setup lang="ts">
-defineProps({
-  id: {
-    type: String,
-    required: true
-  },
-  image: {
-    type: String,
-    default: './logo.png',
-    required: false
-  },
-  brand: {
-    type: String,
-    default: 'Marque inconnue',
-    required: false
-  },
-  name: {
-    type: String,
-    default: 'Fiche non finalisée',
-    required: false
-  },
-  nutriscore: {
-    type: [Number, String],
-    default: 'unknown',
-    required: false
-  },
-  nova: {
-    type: [Number, String],
-    default: 'unknown',
-    required: false
-  }
-})
+import { defineProps } from 'vue';
+
+interface ProductProps {
+  id: string;
+  image?: string;
+  brand?: string;
+  name?: string;
+  nutriscore?: number | string;
+  nova?: number | string;
+}
+
+defineProps<ProductProps>();
 </script>
 
 <template>
   <article class="product">
     <RouterLink :to="'/product/' + id" class="h-full w-full flex flex-col justify-between">
       <div class="thumbnail h-2/5 md:h-1/2 flex items-center justify-center m-auto aspect-square">
-        <img
-          :src="image"
-          :alt="brand + ' : ' + name"
-          class="h-3/4 w-3/4 object-contain object-center"
-        />
+        <img :src="image" :alt="brand + ' : ' + name" class="h-3/4 w-3/4 object-contain object-center" />
       </div>
       <div class="details h-3/5 md:h-1/2 flex flex-col justify-between">
         <div class="mt-2">
@@ -48,22 +25,12 @@ defineProps({
           <h4 class="message text-sm font-thin">{{ name }}</h4>
         </div>
         <div class="scores md:flex justify-between items-start">
-          <img
-            :src="
-              'https://static.openfoodfacts.org/images/attributes/dist/nutriscore-' +
-              nutriscore +
-              '-new-fr.svg'
-            "
-            :alt="'Nutriscore : ' + nutriscore"
-            class="max-h-[50px]"
-          />
-          <img
-            :src="
-              'https://static.openfoodfacts.org/images/attributes/dist/nova-group-' + nova + '.svg'
-            "
-            :alt="'Groupe Nova : ' + nova"
-            class="max-h-[40px] mt-2 md:mt-0"
-          />
+          <img :src="'https://static.openfoodfacts.org/images/attributes/dist/nutriscore-' +
+            nutriscore +
+            '-new-fr.svg'
+            " :alt="'Nutriscore : ' + nutriscore" class="max-h-[50px]" />
+          <img :src="'https://static.openfoodfacts.org/images/attributes/dist/nova-group-' + nova + '.svg'
+            " :alt="'Groupe Nova : ' + nova" class="max-h-[40px] mt-2 md:mt-0" />
         </div>
       </div>
     </RouterLink>
@@ -80,9 +47,7 @@ defineProps({
     rgba(255, 255, 255, 0.01) 0px 1px 1px 0px inset,
     rgba(50, 50, 93, 0.025) 0px 50px 100px -20px,
     rgba(0, 0, 0, 0.03) 0px 30px 60px -30px;
-  transition: all 1s
-    linear(
-      0 0%,
+  transition: all 1s linear(0 0%,
       0.22 2.1%,
       0.86 6.5%,
       1.11 8.6%,
@@ -113,8 +78,7 @@ defineProps({
       1 68.1%,
       1.01 72.2%,
       1 86.7%,
-      1 100%
-    );
+      1 100%);
 }
 
 .product:hover {
