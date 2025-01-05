@@ -70,7 +70,7 @@ onMounted(async () => {
     }, 1000)
   })
 
-  await fetchProduct('3033491482953')
+  await fetchProduct('8000500310427')
   fetchSuggestedProducts()
   fetchLastProduct()
 })
