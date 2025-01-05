@@ -154,28 +154,37 @@ onBeforeRouteUpdate((to) => {
               </div>
             </div>
             <div v-if="product.nutrient_levels" id="nutrient-levels" class="flex flex-wrap">
-              <span
+              <div
                 v-for="(level, nutrient) in product.nutrient_levels"
                 :key="nutrient"
                 :class="[
-                  'mt-4 mr-2 py-2 px-3 text-sm font-semibold text-white rounded-full',
+                  'nutrient mt-4 mr-2 py-2 px-3 rounded-full',
                   level === 'low' ? 'bg-[#00bd7e]' : '',
                   level === 'moderate' ? 'bg-yellow-500' : '',
                   level === 'high' ? 'bg-red-500' : ''
                 ]"
               >
-                {{
-                  nutrient.toString() === 'fat'
-                    ? 'matieres grasses'
-                    : nutrient.toString() === 'salt'
-                      ? 'sel'
-                      : nutrient.toString() === 'saturated-fat'
-                        ? 'graisses saturées'
-                        : nutrient.toString() === 'sugars'
-                          ? 'sucres'
-                          : ''
-                }}
-              </span>
+                <span class="text-sm font-semibold text-white">
+                  {{
+                    nutrient.toString() === 'fat'
+                      ? 'matieres grasses'
+                      : nutrient.toString() === 'salt'
+                        ? 'sel'
+                        : nutrient.toString() === 'saturated-fat'
+                          ? 'graisses saturées'
+                          : nutrient.toString() === 'sugars'
+                            ? 'sucres'
+                            : ''
+                  }}
+                </span>
+                <span class="text-sm font-semibold text-white">{{
+                  level === 'low'
+                    ? 'valeur faible'
+                    : level === 'moderate'
+                      ? 'valeur modérée'
+                      : 'valeur élevée'
+                }}</span>
+              </div>
             </div>
             <h3 v-if="product.quantity" class="mt-8 font-semibold">Quantité :</h3>
             <h4 id="quantity">{{ product.quantity }}</h4>
@@ -254,6 +263,15 @@ onBeforeRouteUpdate((to) => {
 </style>
 
 <style scoped>
+.nutrient:hover span:nth-of-type(1),
+.nutrient span:nth-of-type(2) {
+  display: none;
+}
+
+.nutrient:hover span:nth-of-type(2) {
+  display: inline;
+}
+
 .tag {
   transition: all 0.35s ease-in-out;
 }

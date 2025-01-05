@@ -360,11 +360,9 @@ onUnmounted(() => {
     <aside v-if="suggestedProducts.length || suggestedProductsIsLoading">
       <section
         id="more-products"
-        class="relative w-full flex flex-wrap lg:flex-nowrap items-stretch lg:items-center justify-between p-4 md:p-8 lg:px-16 bg-neutral-200 rounded-xl"
+        class="relative w-full flex flex-wrap lg:flex-nowrap items-stretch lg:items-center justify-between p-4 bg-neutral-200 rounded-xl"
       >
-        <h2
-          class="title w-full lg:w-1/4 mb-8 lg:mb-0 text-center lg:text-left text-3xl lg:text-2xl"
-        >
+        <h2 class="title w-full lg:w-1/4 mt-4 mb-8 lg:m-0 text-center text-3xl lg:text-2xl">
           Alternatives
         </h2>
         <div
