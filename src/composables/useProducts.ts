@@ -87,7 +87,7 @@ export function useProducts() {
   function transformProducts(product: APIProducts): Products {
     return {
       id: product.id ?? '',
-      image: product.image_front_small_url ?? './logo.png',
+      image: product.image_front_small_url ?? '/logo.png',
       brand: product.brands ?? '',
       name: product.generic_name_fr ?? '',
       nutriscore: product.nutriscore_grade ?? 'unknown',

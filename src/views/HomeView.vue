@@ -185,7 +185,7 @@ onUnmounted(() => {
         id="nutriscore-explanation"
         class="w-full md:w-[48%] mb-8 md:mb-0 p-8 md:p-12 bg-white rounded-lg text-justify"
       >
-        <div class="h-full flex flex-col md:flex-col md:justify-between items-center">
+        <div class="h-full flex flex-col md:flex-col items-center">
           <img
             src="https://static.openfoodfacts.org/images/attributes/dist/nutriscore-a.svg"
             alt="Nutriscore"
@@ -205,7 +205,7 @@ onUnmounted(() => {
         id="nova-explanation"
         class="w-full md:w-[48%] p-8 md:p-12 bg-white rounded-lg text-justify"
       >
-        <div class="h-full flex flex-col md:flex-col md:justify-between items-center">
+        <div class="h-full flex flex-col md:flex-col items-center">
           <img
             src="https://static.openfoodfacts.org/images/attributes/dist/nova-group-1.svg"
             alt="NOVA"
