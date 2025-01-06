@@ -111,7 +111,7 @@ onUnmounted(() => {
     <div
       :class="`${products.length > 0 || productsIsLoading ? 'max-h-[750px] md:max-h-[400px]' : 'max-h-0'} overflow-hidden transition-all duration-300 ease-in-out`"
     >
-      <div id="search-results" class="relative flex flex-wrap p-4 bg-neutral-200 rounded-lg">
+      <div id="search-results" class="relative flex flex-wrap justify-between p-4 bg-neutral-200 rounded-lg">
         <div
           v-if="productsIsLoading"
           class="loader-container w-fit flex justify-center items-center m-auto"
