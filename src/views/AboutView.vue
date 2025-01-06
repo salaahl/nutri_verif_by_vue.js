@@ -1,18 +1,30 @@
-<script setup>
+<script setup lang="ts">
 import { onMounted, onUnmounted } from 'vue'
 
 onMounted(() => {
-  document.querySelector('#website-name > span').style.color = 'red'
-  document.querySelector('body').style.backgroundColor = 'hsla(160, 100%, 37%, 0.6)'
+  const websiteName = document.querySelector('#website-name > span') as HTMLElement
+  if (!document.querySelector('.title > span')) return
+  websiteName.style.color = 'red'
+
+  const body = document.querySelector('body') as HTMLElement
+  if (!body) return
+  body.style.backgroundColor = 'hsla(160, 100%, 37%, 0.6)'
 
   setTimeout(() => {
-    document.querySelector('.title > span').style.backgroundSize = '100% 100%'
+    const title = document.querySelector('.title > span') as HTMLElement
+    if (!title) return
+    title.style.backgroundSize = '100% 100%'
   }, 1000)
 })
 
 onUnmounted(() => {
-  document.querySelector('#website-name > span').style.color = 'hsla(160, 100%, 37%, 1)'
-  document.querySelector('body').style.backgroundColor = 'rgb(255, 255, 255, 1)'
+  const websiteName = document.querySelector('#website-name > span') as HTMLElement
+  if (!websiteName) return
+  websiteName.style.color = 'hsla(160, 100%, 37%, 1)'
+
+  const body = document.querySelector('body') as HTMLElement
+  if (!body) return
+  body.style.backgroundColor = 'whitesmoke'
 })
 </script>
 

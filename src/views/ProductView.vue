@@ -1,95 +1,118 @@
-<script setup>
-import { onBeforeMount, onMounted, onUnmounted, reactive } from 'vue'
-import { useRouter } from 'vue-router'
+<script setup lang="ts">
+import { onBeforeMount, computed } from 'vue'
+import { useRoute, useRouter, onBeforeRouteUpdate } from 'vue-router'
+import { franc } from 'franc-min'
+import { useProducts } from '../composables/useProducts'
+import ProductCard from '/src/components/ProductCard.vue'
 
 const router = useRouter()
-const route =
-  'https://world.openfoodfacts.org/api/v3/product/' +
-  router.currentRoute.value.fullPath.split('/').pop() +
-  '.json'
+const route = useRoute()
 
-let product = reactive([
-  {
-    image: null,
-    brand: null,
-    generic_name: null,
-    lastUpdate: null,
-    nutriscore: null,
-    novaGroup: null,
-    barcode: null,
-    ingredients: null,
-    calories100g: null,
-    manufacturingPlace: null,
-    productSheet: null
-  }
-])
+const {
+  searchProducts,
+  product,
+  productIsLoading,
+  fetchSuggestedProducts,
+  suggestedProductsIsLoading,
+  suggestedProducts,
+  fetchProduct
+} = useProducts()
 
-const novaGroupText = [
-  'Aliments non transformés ou transformés minimalement',
-  'Ingrédients culinaires transformés',
-  'Aliments transformés',
-  'Produits alimentaires et boissons ultra-transformés'
-]
+const isFrench = (text: string) => {
+  return franc(text) === 'fra'
+}
 
-onBeforeMount(() => {
-  fetch(route)
-    .then((response) => response.json())
-    .then((data) => {
-      product.image = data.product.image_front_url || '/logo.png'
-      product.brand = data.product.brands
-      product.generic_name = data.product.generic_name_fr
-      product.lastUpdate = new Date(data.product.last_updated_t * 1000).toLocaleDateString('fr-FR')
-      product.nutriscore = data.product.nutriscore_grade
-      product.novaGroup = data.product.nova_group
-      product.barcode = data.code
-      product.ingredients = data.product.ingredients_text_fr
-      product.calories100g = data.product.nutriments['energy-kcal_100g']
-      product.manufacturingPlace = data.product.manufacturing_places
-      product.productSheet = data.product.link
+const filteredCategories = computed<string[]>(() => {
+  if (!product.categories?.length) return []
 
-      document
-        .querySelectorAll('.loader-container')
-        .forEach((loader) => (loader.style.display = 'none'))
+  return product.categories
+    .filter((category: string) => {
+      // Si la catégorie commence par 'fr:', elle est incluse
+      // Si elle ne commence pas par 'fr:', on vérifie si c'est du français
+      return category.trim().startsWith('fr:') || isFrench(category)
     })
-    .catch((error) => {
-      console.log(error.message)
-      router.replace({ name: 'NotFound' })
+    .map((category: string) => {
+      // Si la catégorie commence par 'fr:', on enlève le préfixe 'fr:'
+      return category.trim().startsWith('fr:')
+        ? category.trim().replace(/fr:/, '').trim()
+        : category
     })
 })
 
-onMounted(() => {
-  document.querySelector('body').style.backgroundColor = 'rgb(243, 244, 246, 1)'
+const searchProductsByCategory: Function = async (category: string) => {
+  await searchProducts(category, null, 'complete')
+
+  router.push({ name: 'search' })
+}
+
+const resetProduct = () => {
+  Object.assign(product, {
+    id: '',
+    image: '',
+    brand: '',
+    generic_name: '',
+    categories: [],
+    lastUpdate: '',
+    nutriscore: 'unknown',
+    novaGroup: 'unknown',
+    quantity: '',
+    ingredients: '',
+    calories100g: '',
+    nutrient_levels: [],
+    manufacturingPlace: '',
+    link: ''
+  })
+}
+
+// Update product when route changes
+const updateProduct = async (productId: string) => {
+  resetProduct()
+
+  await fetchProduct(productId)
+  fetchSuggestedProducts(productId, product.category)
+}
+
+onBeforeMount(async () => {
+  await fetchProduct(Array.isArray(route.params.id) ? route.params.id[0] : route.params.id)
+
+  if (product.nutriscore !== 'a' || product.novaGroup !== 'a')
+    fetchSuggestedProducts(product.id, product.category)
 })
 
-onUnmounted(() => {
-  document.querySelector('body').style.backgroundColor = 'rgb(255, 255, 255, 1)'
+onBeforeRouteUpdate((to) => {
+  updateProduct(Array.isArray(to.params.id) ? to.params.id[0] : to.params.id) // Update product when route changes
 })
 </script>
 
 <template>
   <div
+    :key="Array.isArray(route.params.id) ? route.params.id[0] : route.params.id"
     id="product-container"
-    class="md:min-h-[calc(100vh-344px)] flex flex-wrap justify-between md:flex-nowrap flex-col md:flex-row"
+    class="md:min-h-[calc(100vh-344px)] flex flex-wrap justify-between md:flex-nowrap flex-col md:flex-row md:mb-8"
   >
     <section
       id="product-images-container"
       class="w-full md:w-2/4 flex items-center justify-center bg-white rounded-xl"
     >
-      <div class="md:w-full md:min-w-[auto] my-[50px] md:m-0">
-        <div class="loader-container h-full flex justify-center items-center">
-          <img src="/logo.png" class="h-auto w-auto m-auto opacity-50 md:object-none" />
-        </div>
+      <div class="md:w-full my-[50px]">
+        <div
+          v-if="productIsLoading"
+          class="loader-container h-full flex justify-center items-center"
+        ></div>
         <img
-          v-if="product.image"
           id="product-img"
           :src="product.image"
           :alt="product.generic_name"
-          class="h-auto w-auto m-auto md:object-none"
+          class="h-auto w-auto m-auto"
         />
       </div>
     </section>
+
     <section id="product-details-container" class="relative w-full md:w-2/4 max-md:my-8 md:pl-6">
-      <div class="loader-container md:absolute h-full w-full flex justify-center items-center">
+      <div
+        v-if="productIsLoading"
+        class="loader-container md:absolute h-full w-full flex justify-center items-center"
+      >
         <div class="lds-hourglass"></div>
       </div>
       <div id="product-detail" class="h-full">
@@ -106,7 +129,7 @@ onUnmounted(() => {
             </h3>
           </div>
           <div>
-            <div>
+            <div class="scores">
               <img
                 id="nutriscore-img"
                 class="max-w-[100px] md:max-w-[115px] mt-2"
@@ -128,42 +151,167 @@ onUnmounted(() => {
                   "
                   :alt="'Groupe Nova : ' + product.novaGroup"
                 />
-                <h4 v-if="product.novaGroup" id="nova-group-text" class="ml-2">
-                  {{ '(' + novaGroupText[product.novaGroup - 1] + ')' }}
-                </h4>
               </div>
             </div>
+            <div v-if="product.nutrient_levels" id="nutrient-levels" class="flex flex-wrap">
+              <div
+                v-for="(level, nutrient) in product.nutrient_levels"
+                :key="nutrient"
+                :class="[
+                  'nutrient mt-4 mr-2 py-2 px-3 rounded-full',
+                  level === 'low' ? 'bg-[#00bd7e]' : '',
+                  level === 'moderate' ? 'bg-yellow-500' : '',
+                  level === 'high' ? 'bg-red-500' : ''
+                ]"
+              >
+                <span class="text-sm font-semibold text-white">
+                  {{
+                    nutrient.toString() === 'fat'
+                      ? 'matieres grasses'
+                      : nutrient.toString() === 'salt'
+                        ? 'sel'
+                        : nutrient.toString() === 'saturated-fat'
+                          ? 'graisses saturées'
+                          : nutrient.toString() === 'sugars'
+                            ? 'sucres'
+                            : ''
+                  }}
+                </span>
+                <span class="text-sm font-semibold text-white">{{
+                  level === 'low'
+                    ? 'valeur faible'
+                    : level === 'moderate'
+                      ? 'valeur modérée'
+                      : 'valeur élevée'
+                }}</span>
+              </div>
+            </div>
+            <h3 v-if="product.quantity" class="mt-8 font-semibold">Quantité :</h3>
+            <h4 id="quantity">{{ product.quantity }}</h4>
             <h3 v-if="product.ingredients" class="mt-4 font-semibold">Ingrédients :</h3>
-            <h4 v-if="product.ingredients" id="ingredients">{{ product.ingredients }}</h4>
+            <h4 v-html="product.ingredients" id="ingredients"></h4>
             <h3 v-if="product.calories100g" class="mt-4 font-semibold">
-              Calories pour 100 grammes :
+              Calories pour 100 grammes / 100 millilitres :
             </h3>
-            <h4 v-if="product.calories100g" id="calories-100g">{{ product.calories100g }}</h4>
+            <h4 id="calories-100g">{{ product.calories100g }}</h4>
             <h3 v-if="product.manufacturingPlace" class="mt-4 font-semibold">
               Lieu de fabrication :
             </h3>
-            <h4 v-if="product.manufacturingPlace" id="manufacturing-place">
+            <h4 id="manufacturing-place">
               {{ product.manufacturingPlace }}
             </h4>
-            <h3 v-if="product.barcode" class="mt-4 font-semibold">Code-barres :</h3>
-            <h4 v-if="product.barcode" id="barcode">{{ product.barcode }}</h4>
-            <h3 v-if="product.productSheet" class="mt-4 font-semibold">Plus d'infos :</h3>
-            <h4 v-if="product.productSheet">
-              <a :href="product.productSheet" id="product-sheet" class="underline">{{
-                product.productSheet
+            <h3 v-if="product.id" class="mt-4 font-semibold">Code-barres :</h3>
+            <h4 id="barcode">{{ product.id }}</h4>
+            <h3 v-if="product.link" class="mt-4 font-semibold">Plus d'infos :</h3>
+            <h4>
+              <a :href="product.link" target="_blank" id="link" class="underline">{{
+                product.link
               }}</a>
             </h4>
+            <div v-if="filteredCategories.length" id="tags" class="mt-4">
+              <button
+                v-for="category in filteredCategories"
+                :key="category"
+                class="tag mt-2 mr-2 py-2 px-3 text-sm font-semibold text-white bg-neutral-400 text-white rounded-full"
+                @click="searchProductsByCategory(category)"
+              >
+                #{{ category }}
+              </button>
+            </div>
           </div>
         </div>
       </div>
     </section>
   </div>
+
+  <aside v-if="suggestedProducts.length || suggestedProductsIsLoading" class="my-16">
+    <section
+      id="more-products"
+      class="relative w-full flex flex-wrap lg:flex-nowrap items-stretch lg:items-center justify-between p-4 md:p-8 lg:px-16 bg-neutral-200 rounded-xl"
+    >
+      <h2 class="title w-full lg:w-1/4 mb-8 lg:mb-0 text-center lg:text-left text-3xl lg:text-2xl">
+        Alternatives
+      </h2>
+      <div
+        v-if="suggestedProductsIsLoading"
+        class="loader-container md:absolute h-full w-full flex justify-center items-center"
+      >
+        <div class="lds-hourglass"></div>
+      </div>
+      <div class="relative w-full lg:w-3/4 flex flex-wrap md:flex-nowrap justify-end">
+        <ProductCard
+          v-for="product in suggestedProducts"
+          :key="product.id"
+          :id="product.id"
+          :image="product.image"
+          :brand="product.brand"
+          :name="product.name"
+          :nutriscore="product.nutriscore"
+          :nova="product.nova"
+        />
+      </div>
+    </section>
+  </aside>
 </template>
 
 <style>
-#product-details-container .lds-hourglass:after {
-  margin: 8px;
-  border: 32px solid #fff;
-  border-color: black transparent var(--color-green) transparent;
+.allergen {
+  text-transform: lowercase;
+  font-weight: 500;
+  color: indianred;
+}
+</style>
+
+<style scoped>
+.nutrient:hover span:nth-of-type(1),
+.nutrient span:nth-of-type(2) {
+  display: none;
+}
+
+.nutrient:hover span:nth-of-type(2) {
+  display: inline;
+}
+
+.tag {
+  transition: all 0.35s ease-in-out;
+}
+
+.tag:hover {
+  color: #000;
+  background-color: whitesmoke;
+}
+
+#more-products > .title {
+  font-family: 'Grand Hotel', cursive;
+  font-size: xx-large;
+}
+
+#more-products > .title::first-letter {
+  color: indianred;
+}
+
+#more-products .product {
+  width: 48%;
+  margin-bottom: 5%;
+}
+
+#more-products .product:nth-of-type(odd) {
+  margin-right: 4%;
+}
+
+@media (min-width: 768px) {
+  #more-products > .title {
+    font-size: xxx-large;
+  }
+
+  #more-products .product {
+    width: 23.75%;
+    margin-bottom: 0;
+  }
+
+  #more-products .product:nth-of-type(odd) {
+    margin-left: 1.25%;
+    margin-right: 1.25%;
+  }
 }
 </style>

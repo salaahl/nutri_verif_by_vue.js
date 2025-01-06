@@ -30,23 +30,20 @@ const currentRoute = computed(() => {
   <main class="content-center">
     <router-view v-slot="{ Component, route }">
       <transition :name="route.meta.transition || 'slide-fade'">
-        <div :key="route.name" class="md:min-h-[calc(100vh-272px)] flex flex-col justify-center">
+        <div :key="route.name" class="min-h-[calc(100vh-272px)] flex flex-col justify-center">
           <component :is="Component" />
         </div>
       </transition>
     </router-view>
   </main>
 
-  <footer class="md:h-[100px] w-full py-4">
+  <footer class="md:h-[100px] w-full">
     <div
       class="flex flex-wrap justify-center items-center max-w-screen-xl mx-auto py-4 rounded-lg overflow-hidden"
     >
       <nav class="flex flex-wrap justify-center">
         <div class="px-2 md:px-6">
-          <RouterLink
-            :to="'/about-me'"
-            class="text-base leading-6 text-gray-500 hover:text-gray-900"
-          >
+          <RouterLink :to="'/about'" class="text-base leading-6 text-gray-500 hover:text-gray-900">
             À propos de nous
           </RouterLink>
         </div>
@@ -95,12 +92,32 @@ main {
   width: 100%;
 }
 
+.radio-toolbar input[type='radio'] {
+  display: none;
+}
+
+.radio-toolbar label {
+  height: auto;
+  padding: 4px 11px;
+  color: white;
+  transition: background-color 0.25s;
+}
+
+.radio-toolbar label:hover {
+  background-color: var(--color-green);
+}
+
+.radio-toolbar input[type='radio']:checked + label {
+  background-color: var(--color-green);
+}
+
 #website-name {
   width: fit-content;
   margin: 10px auto;
   font-family: 'Grand Hotel', cursive;
   font-weight: 400;
   font-style: normal;
+  transition: opacity 0.5s;
 }
 
 #logo {
