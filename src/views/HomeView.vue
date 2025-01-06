@@ -86,7 +86,7 @@ onUnmounted(() => {
 <template>
   <section id="header" class="w-full mb-20">
     <h1 class="text-6xl font-light text-center">Nutri<span class="text-[#00bd7e]">Vérif</span></h1>
-    <h2 class="text-lg font-thin text-center">Manger (plus) sain</h2>
+    <h3 class="text-lg font-thin text-center">Manger (plus) sain</h3>
   </section>
   <section id="search-container" class="w-full mb-20">
     <div id="search-bar" class="relative mb-8">
@@ -146,7 +146,7 @@ onUnmounted(() => {
       + de 1 082 462 produits référencés
     </h3>
   </section>
-  <section id="about" class="mb-20">
+  <section id="about" class="mb-24">
     <article class="mb-8">
       <iframe
         src="https://www.youtube.com/embed/D1jzT02IBRA"
@@ -176,8 +176,8 @@ onUnmounted(() => {
       </RouterLink>
     </article>
   </section>
-  <section id="score-explanations" class="mb-20">
-    <h2 class="title mb-8 text-2xl lg:text-3xl">
+  <section id="score-explanations" class="mb-24">
+    <h2 class="title mb-12 text-2xl lg:text-3xl">
       Votre alimentation <span class="text-[indianred]">décryptée</span>
     </h2>
     <div class="flex flex-wrap justify-between">
@@ -222,11 +222,11 @@ onUnmounted(() => {
       </article>
     </div>
   </section>
-  <section id="alternatives-functionality" class="mb-20">
-    <h2 class="title mb-8 text-2xl lg:text-3xl text-center">
+  <section id="alternatives-functionality" class="mb-24">
+    <h2 class="title mb-12 text-2xl lg:text-3xl text-center">
       Découvrez des <span class="text-[#00bd7e]">alternatives</span> plus saines
     </h2>
-    <span class="inline-block my-8">
+    <span class="inline-block mb-8">
       <span class="text-highlighted">Vous méritez le meilleur pour votre alimentation </span>
       <span>. Si un produit a un Nutri-Score jugé trop faible :</span>
     </span>
@@ -390,8 +390,8 @@ onUnmounted(() => {
       choix un pas vers une meilleure santé.</span
     >
   </section>
-  <section id="last-products" class="mb-20">
-    <h2 class="title mb-8 text-2xl lg:text-3xl text-right">
+  <section id="last-products" class="mb-24">
+    <h2 class="title mb-12 text-2xl lg:text-3xl text-right">
       Produits <span class="text-[#00bd7e]">récemment</span> ajoutés
     </h2>
     <div class="relative flex flex-wrap justify-between p-4 bg-neutral-200 rounded-lg">
@@ -418,7 +418,7 @@ onUnmounted(() => {
     <img
       src="/logo.png"
       alt="logo de l'application"
-      class="h-auto w-auto max-w-[300px] mx-auto mb-20 contrast-0"
+      class="h-auto w-auto max-w-[300px] mx-auto mb-24 contrast-0"
     />
   </section>
 </template>
@@ -480,6 +480,13 @@ h1 {
 
 #more-products .product:nth-of-type(odd) {
   margin-right: 4%;
+}
+
+#product-detail > div > div:nth-of-type(1),
+#product-detail .scores > div,
+#product-detail > div > div:nth-of-type(2) > *:nth-child(n + 2) {
+  filter: blur(1.5px);
+  pointer-events: none;
 }
 
 @media (min-width: 768px) {
