@@ -111,7 +111,10 @@ onUnmounted(() => {
     <div
       :class="`${products.length > 0 || productsIsLoading ? 'max-h-[750px] md:max-h-[400px]' : 'max-h-0'} overflow-hidden transition-all duration-300 ease-in-out`"
     >
-      <div id="search-results" class="relative flex flex-wrap justify-between p-4 bg-neutral-200 rounded-lg">
+      <div
+        id="search-results"
+        class="relative flex flex-wrap justify-between p-4 bg-neutral-200 rounded-lg"
+      >
         <div
           v-if="productsIsLoading"
           class="loader-container w-fit flex justify-center items-center m-auto"
@@ -360,7 +363,7 @@ onUnmounted(() => {
     <aside v-if="suggestedProducts.length || suggestedProductsIsLoading">
       <section
         id="more-products"
-        class="relative w-full flex flex-wrap lg:flex-nowrap items-stretch lg:items-center justify-between p-4 bg-neutral-200 rounded-xl"
+        class="relative min-h-[125px] w-full flex flex-wrap lg:flex-nowrap items-stretch lg:items-center justify-between p-4 bg-neutral-200 rounded-xl"
       >
         <h2 class="title w-full lg:w-1/4 mt-4 mb-8 lg:m-0 text-center text-3xl lg:text-2xl">
           Alternatives

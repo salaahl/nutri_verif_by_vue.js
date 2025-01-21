@@ -227,7 +227,7 @@ onBeforeRouteUpdate((to) => {
   <aside v-if="suggestedProducts.length || suggestedProductsIsLoading" class="my-16">
     <section
       id="more-products"
-      class="relative w-full flex flex-wrap lg:flex-nowrap items-stretch lg:items-center justify-between p-4 md:p-8 lg:px-16 bg-neutral-200 rounded-xl"
+      class="relative min-h-[125px] w-full flex flex-wrap lg:flex-nowrap items-stretch lg:items-center justify-between p-4 md:p-8 lg:px-16 bg-neutral-200 rounded-xl"
     >
       <h2 class="title w-full lg:w-1/4 mb-8 lg:mb-0 text-center lg:text-left text-3xl lg:text-2xl">
         Alternatives
