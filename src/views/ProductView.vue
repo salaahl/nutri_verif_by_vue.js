@@ -9,6 +9,7 @@ const router = useRouter()
 const route = useRoute()
 
 const {
+  productsIsLoading,
   searchProducts,
   product,
   productIsLoading,
@@ -40,7 +41,9 @@ const filteredCategories = computed<string[]>(() => {
 })
 
 const searchProductsByCategory: Function = async (category: string) => {
+  productsIsLoading.value = true
   await searchProducts(category, null, 'complete')
+  productsIsLoading.value = false
 
   router.push({ name: 'search' })
 }
@@ -208,7 +211,13 @@ onBeforeRouteUpdate((to) => {
                 product.link
               }}</a>
             </h4>
-            <div v-if="filteredCategories.length" id="tags" class="mt-4">
+            <div v-if="filteredCategories.length" id="tags" class="relative mt-4">
+              <div
+                v-if="productsIsLoading"
+                class="loader-container absolute h-full w-full flex justify-center items-center bg-[whitesmoke]"
+              >
+                <div class="lds-hourglass"></div>
+              </div>
               <button
                 v-for="category in filteredCategories"
                 :key="category"
