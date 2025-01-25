@@ -39,6 +39,15 @@ body {
   transition: background-color var(--transition-delay-double);
 }
 
+h1,
+h2,
+h3,
+h4,
+h5,
+h6 {
+  text-wrap-style: pretty;
+}
+
 @media (min-width: 768px) {
   :root {
     --app-padding-x: 2rem;
