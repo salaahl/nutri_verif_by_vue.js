@@ -239,7 +239,10 @@ onBeforeRouteUpdate((to) => {
                     </tr>
                   </thead>
                   <tbody>
-                    <tr class="border-b border-gray-200">
+                    <tr
+                      v-if="product.nutriments['energy-kcal_serving']"
+                      class="border-b border-gray-200"
+                    >
                       <th
                         scope="row"
                         class="px-6 py-4 font-medium text-gray-900 whitespace-nowrap bg-gray-50"
@@ -261,7 +264,7 @@ onBeforeRouteUpdate((to) => {
                         }}
                       </td>
                     </tr>
-                    <tr class="border-b border-gray-200">
+                    <tr v-if="product.nutriments['fat_serving']" class="border-b border-gray-200">
                       <th
                         scope="row"
                         class="px-6 py-4 font-medium text-gray-900 whitespace-nowrap bg-gray-50"
@@ -283,7 +286,10 @@ onBeforeRouteUpdate((to) => {
                         }}
                       </td>
                     </tr>
-                    <tr class="border-b border-gray-200">
+                    <tr
+                      v-if="product.nutriments['saturated-fat_serving']"
+                      class="border-b border-gray-200"
+                    >
                       <th
                         scope="row"
                         class="px-6 py-4 font-medium text-gray-900 whitespace-nowrap bg-gray-50"
@@ -306,7 +312,10 @@ onBeforeRouteUpdate((to) => {
                         }}
                       </td>
                     </tr>
-                    <tr class="border-b border-gray-200">
+                    <tr
+                      v-if="product.nutriments['carbohydrates_serving']"
+                      class="border-b border-gray-200"
+                    >
                       <th
                         scope="row"
                         class="px-6 py-4 font-medium text-gray-900 whitespace-nowrap bg-gray-50"
@@ -329,7 +338,10 @@ onBeforeRouteUpdate((to) => {
                         }}
                       </td>
                     </tr>
-                    <tr class="border-b border-gray-200">
+                    <tr
+                      v-if="product.nutriments['sugars_serving']"
+                      class="border-b border-gray-200"
+                    >
                       <th
                         scope="row"
                         class="px-6 py-4 font-medium text-gray-900 whitespace-nowrap bg-gray-50"
@@ -351,7 +363,7 @@ onBeforeRouteUpdate((to) => {
                         }}
                       </td>
                     </tr>
-                    <tr class="border-b border-gray-200">
+                    <tr v-if="product.nutriments['salt_serving']" class="border-b border-gray-200">
                       <th
                         scope="row"
                         class="px-6 py-4 font-medium text-gray-900 whitespace-nowrap bg-gray-50"
@@ -373,7 +385,7 @@ onBeforeRouteUpdate((to) => {
                         }}
                       </td>
                     </tr>
-                    <tr class="border-b border-gray-200">
+                    <tr v-if="product.nutriments['fiber_serving']" class="border-b border-gray-200">
                       <th
                         scope="row"
                         class="px-6 py-4 font-medium text-gray-900 whitespace-nowrap bg-gray-50"
@@ -395,7 +407,10 @@ onBeforeRouteUpdate((to) => {
                         }}
                       </td>
                     </tr>
-                    <tr class="border-b border-gray-200">
+                    <tr
+                      v-if="product.nutriments['proteins_serving']"
+                      class="border-b border-gray-200"
+                    >
                       <th
                         scope="row"
                         class="px-6 py-4 font-medium text-gray-900 whitespace-nowrap bg-gray-50"
