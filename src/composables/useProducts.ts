@@ -21,8 +21,9 @@ interface Product {
   nutriscore: string
   novaGroup: number | string
   quantity: string
+  serving_size: string
   ingredients: string
-  calories100g: string
+  nutriments: { [key: string]: string }
   nutrient_levels: string
   manufacturingPlace: string
   link: string
@@ -48,6 +49,7 @@ interface APIProduct {
   nutriscore_grade?: string
   nova_group?: number | string
   quantity?: string
+  serving_size?: string
   ingredients_text_with_allergens_fr?: string
   nutriments?: { [key: string]: string }
   nutrient_levels?: string
@@ -109,8 +111,9 @@ export function useProducts() {
       nutriscore: product.nutriscore_grade ?? 'unknown',
       novaGroup: product.nova_group ?? 'unknown',
       quantity: product.quantity ?? '',
+      serving_size: product.serving_size ?? '',
       ingredients: product.ingredients_text_with_allergens_fr ?? '',
-      calories100g: product.nutriments?.['energy-kcal_100g'] ?? '',
+      nutriments: product.nutriments ?? {},
       nutrient_levels: product.nutrient_levels ?? '',
       manufacturingPlace: product.manufacturing_places ?? '',
       link: product.link ?? ''
