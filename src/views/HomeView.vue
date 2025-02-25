@@ -333,10 +333,6 @@ onUnmounted(() => {
               <h5 id="quantity">{{ product.quantity }}</h5>
               <h4 v-if="product.ingredients" class="mt-4 font-semibold">Ingrédients :</h4>
               <h5 v-html="product.ingredients" id="ingredients"></h5>
-              <h4 v-if="product.calories100g" class="mt-4 font-semibold">
-                Calories pour 100 grammes / 100 millilitres :
-              </h4>
-              <h5 id="calories-100g">{{ product.calories100g }}</h5>
               <h4 v-if="product.manufacturingPlace" class="mt-4 font-semibold">
                 Lieu de fabrication :
               </h4>

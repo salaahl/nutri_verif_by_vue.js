@@ -74,6 +74,32 @@ export function useProducts() {
   const lastProductsIsLoading = ref(false)
   const suggestedProducts = ref<Products[]>([])
   const suggestedProductsIsLoading = ref(false)
+  const ajrSelected = ref<string>('women')
+  const ajrValues = computed(() => {
+    if (ajrSelected.value === 'women') {
+      return {
+        energy: 2000,
+        fat: 70,
+        saturatedFat: 20,
+        carbohydrates: 260,
+        sugars: 90,
+        salt: 6,
+        fiber: 25,
+        proteins: 50
+      }
+    } else {
+      return {
+        energy: 2500,
+        fat: 95,
+        saturatedFat: 30,
+        carbohydrates: 300,
+        sugars: 120,
+        salt: 6,
+        fiber: 30,
+        proteins: 50
+      }
+    }
+  })
   const input = computed({
     get: () => productsStore.getInput,
     set: (val) => productsStore.updateInput(val)
@@ -266,6 +292,8 @@ export function useProducts() {
     lastProductsIsLoading,
     suggestedProducts,
     suggestedProductsIsLoading,
+    ajrSelected,
+    ajrValues,
     filter,
     input,
     page,

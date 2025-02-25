@@ -16,36 +16,10 @@ const {
   fetchSuggestedProducts,
   suggestedProductsIsLoading,
   suggestedProducts,
-  fetchProduct
+  fetchProduct,
+  ajrSelected,
+  ajrValues
 } = useProducts()
-
-const ajrSelected = ref<string>('women')
-
-const ajrValues = computed(() => {
-  if (ajrSelected.value === 'women') {
-    return {
-      energy: 2000,
-      fat: 70,
-      saturatedFat: 20,
-      carbohydrates: 260,
-      sugars: 90,
-      salt: 6,
-      fiber: 25,
-      proteins: 50
-    }
-  } else {
-    return {
-      energy: 2500,
-      fat: 95,
-      saturatedFat: 30,
-      carbohydrates: 300,
-      sugars: 120,
-      salt: 6,
-      fiber: 30,
-      proteins: 50
-    }
-  }
-})
 
 const isFrench = (text: string) => {
   return franc(text) === 'fra'
@@ -124,7 +98,7 @@ onBeforeRouteUpdate((to) => {
   >
     <section
       id="product-images-container"
-      class="w-full md:w-2/4 flex items-center justify-center bg-white rounded-xl"
+      class="md:sticky top-[5vh] md:h-[90vh] w-full md:w-2/4 flex items-center justify-center bg-white rounded-xl"
     >
       <div class="md:w-full my-[50px]">
         <div
