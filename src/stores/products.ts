@@ -6,7 +6,8 @@ export const useProductsStore = defineStore('products', {
     input: '',
     filter: '',
     page: 1,
-    pages: 1
+    pages: 1,
+    ajrSelected: 'women'
   }),
   actions: {
     updateProducts(payload: any) {
@@ -23,6 +24,9 @@ export const useProductsStore = defineStore('products', {
     },
     updatePages(payload: number) {
       this.pages = payload
+    },
+    updateAjrSelected(payload: string) {
+      this.ajrSelected = payload
     }
   },
   getters: {
@@ -40,6 +44,9 @@ export const useProductsStore = defineStore('products', {
     },
     getPages(state) {
       return state.pages
+    },
+    getAjrSelected(state) {
+      return state.ajrSelected
     }
   }
 })

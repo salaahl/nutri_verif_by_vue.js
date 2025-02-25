@@ -74,8 +74,11 @@ export function useProducts() {
   const lastProductsIsLoading = ref(false)
   const suggestedProducts = ref<Products[]>([])
   const suggestedProductsIsLoading = ref(false)
-  const ajrSelected = ref<string>('women')
-  const ajrValues = computed(() => {
+  const ajrSelected = computed<string>({
+    get: () => productsStore.getAjrSelected,
+    set: (val) => productsStore.updateAjrSelected(val)
+  })
+  const ajrValues = computed<{ [key: string]: number }>(() => {
     if (ajrSelected.value === 'women') {
       return {
         energy: 2000,
@@ -100,16 +103,16 @@ export function useProducts() {
       }
     }
   })
-  const input = computed({
+  const input = computed<string>({
     get: () => productsStore.getInput,
     set: (val) => productsStore.updateInput(val)
   })
-  const filter = computed({
+  const filter = computed<string>({
     get: () => productsStore.getFilter,
     set: (val) => productsStore.updateFilter(val)
   })
-  const page = ref(1)
-  const pages = ref(1)
+  const page = ref<number>(1)
+  const pages = ref<number>(1)
   const error = ref<string | null>(null)
 
   function transformProducts(product: APIProducts): Products {
