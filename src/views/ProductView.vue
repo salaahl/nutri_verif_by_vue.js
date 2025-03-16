@@ -489,7 +489,9 @@ onBeforeRouteUpdate((to) => {
       >
         <div class="lds-hourglass"></div>
       </div>
-      <div class="relative w-full lg:w-3/4 flex flex-wrap md:flex-nowrap justify-end">
+      <div
+        class="relative w-full lg:w-3/4 flex flex-wrap md:flex-nowrap md:justify-center lg:justify-end"
+      >
         <ProductCard
           v-for="product in suggestedProducts"
           :key="product.id"
