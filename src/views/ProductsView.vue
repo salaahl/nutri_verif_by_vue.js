@@ -226,7 +226,7 @@ onUnmounted(() => {
   margin-right: auto;
   padding-top: 20px;
   padding-bottom: 20px;
-  background: whitesmoke;
+  background: rgb(245, 245, 245, 0.8);
   border-radius: 10px;
   z-index: 99;
   transition: top 0.25s;
