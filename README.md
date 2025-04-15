@@ -38,7 +38,7 @@ Aider les utilisateurs à :
 
 ```bash
 # Cloner le repo
-git clone https://github.com/ton-profil/nutriverif.git
+git clone https://github.com/salaahl/nutri_verif_by_vue.js
 cd nutriverif
 
 # Installer les dépendances
