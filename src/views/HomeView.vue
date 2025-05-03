@@ -146,7 +146,7 @@ onUnmounted(() => {
       </div>
     </div>
     <h3 id="total-products" class="my-8 text-2xl lg:text-3xl text-center">
-      + de 1 082 462 produits référencés
+      + de 3 819 363 produits référencés
     </h3>
   </section>
   <section id="about" class="mb-24">
@@ -239,7 +239,7 @@ onUnmounted(() => {
     >
       <section
         id="product-images-container"
-        class="w-full md:w-2/4 flex items-center justify-center bg-white rounded-xl"
+        class="w-full md:w-2/4 flex items-center justify-center bg-white rounded-[32px]"
       >
         <div class="md:w-full my-[50px]">
           <div
@@ -343,7 +343,7 @@ onUnmounted(() => {
               <h5 id="barcode">{{ product.id }}</h5>
               <h4 v-if="product.link" class="mt-4 font-semibold">Plus d'infos :</h4>
               <h5>
-                <a :href="product.link" target="_blank" id="link" class="underline">{{
+                <a :href="product.link" target="_blank" id="link" class="underline break-words">{{
                   product.link
                 }}</a>
               </h5>
@@ -512,6 +512,14 @@ h1 {
   #more-products .product:nth-of-type(odd) {
     margin-left: 1.25%;
     margin-right: 1.25%;
+  }
+}
+
+@media (min-width: 1440px) {
+  #alternatives-functionality {
+    padding: 2rem;
+    background-color: rgb(238, 238, 238);
+    border-radius: 0.5rem;
   }
 }
 </style>

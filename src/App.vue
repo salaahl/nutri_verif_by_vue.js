@@ -141,7 +141,7 @@ main {
 
 footer > div,
 #back-link svg {
-  backdrop-filter: contrast(0.95);
+  background-color: white;
 }
 
 @media (min-width: 768px) {

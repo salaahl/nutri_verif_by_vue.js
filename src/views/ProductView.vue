@@ -98,7 +98,7 @@ onBeforeRouteUpdate((to) => {
   >
     <section
       id="product-images-container"
-      class="md:sticky top-[5vh] md:h-[90vh] w-full md:w-2/4 flex items-center justify-center bg-white rounded-xl"
+      class="md:sticky top-[5vh] md:h-[90vh] w-full md:w-2/4 flex items-center justify-center bg-white rounded-[32px]"
     >
       <div class="md:w-full my-[50px]">
         <div
