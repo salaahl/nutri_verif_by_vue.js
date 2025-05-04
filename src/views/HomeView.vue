@@ -513,9 +513,7 @@ h1 {
     margin-left: 1.25%;
     margin-right: 1.25%;
   }
-}
 
-@media (min-width: 1440px) {
   #alternatives-functionality {
     padding: 2rem;
     background-color: rgb(238, 238, 238);
