@@ -1,7 +1,6 @@
 <script setup lang="ts">
 import { onBeforeMount, computed } from 'vue'
 import { useRoute, useRouter, onBeforeRouteUpdate } from 'vue-router'
-import { franc } from 'franc-min'
 import { useProducts } from '../composables/useProducts'
 import ProductCard from '/src/components/ProductCard.vue'
 
@@ -22,25 +21,12 @@ const {
   ajrValues
 } = useProducts()
 
-const isFrench = (text: string) => {
-  return franc(text) === 'fra'
-}
-
 const filteredCategories = computed<string[]>(() => {
   if (!product.categories?.length) return []
 
   return product.categories
-    .filter((category: string) => {
-      // Si la catégorie commence par 'fr:', elle est incluse
-      // Si elle ne commence pas par 'fr:', on vérifie si c'est du français
-      return category.trim().startsWith('fr:') || isFrench(category)
-    })
-    .map((category: string) => {
-      // Si la catégorie commence par 'fr:', on enlève le préfixe 'fr:'
-      return category.trim().startsWith('fr:')
-        ? category.trim().replace(/fr:/, '').trim()
-        : category
-    })
+    .filter((category: string) => category.trim().startsWith('fr:'))
+    .map((category: string) => category.trim().replace(/^fr:/, '').replace(/-/g, ' ').trim())
 })
 
 const searchProductsByCategory: Function = async (category: string) => {
@@ -129,7 +115,9 @@ onBeforeRouteUpdate((to) => {
               <span v-if="product.brand" id="brand" class="font-semibold text-[#00bd7e]"
                 >{{ product.brand }} -
               </span>
-              <span v-if="product.generic_name" id="generic-name" class="font-semibold">{{ product.generic_name }}</span>
+              <span v-if="product.generic_name" id="generic-name" class="font-semibold">{{
+                product.generic_name
+              }}</span>
             </h1>
             <h3 v-if="product.lastUpdate" class="mt-2 text-sm">
               Dernière mise à jour : <span id="last-update">{{ product.lastUpdate }}</span>
@@ -199,9 +187,7 @@ onBeforeRouteUpdate((to) => {
           <h3 v-if="product.quantity" class="mt-6 font-semibold">Quantité :</h3>
           <h4 id="quantity">{{ product.quantity }}</h4>
           <div v-if="product.nutriments" id="nutriments" class="mt-6">
-            <div
-              class="radio-toolbar w-full flex flex-wrap items-center text-sm text-gray-700"
-            >
+            <div class="radio-toolbar w-full flex flex-wrap items-center text-sm text-gray-700">
               <input
                 type="radio"
                 name="ajr_selected"
