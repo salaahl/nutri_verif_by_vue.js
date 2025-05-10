@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { onBeforeMount, computed, ref } from 'vue'
+import { onBeforeMount, computed } from 'vue'
 import { useRoute, useRouter, onBeforeRouteUpdate } from 'vue-router'
 import { franc } from 'franc-min'
 import { useProducts } from '../composables/useProducts'
@@ -17,6 +17,7 @@ const {
   suggestedProductsIsLoading,
   suggestedProducts,
   fetchProduct,
+  novaDescription,
   ajrSelected,
   ajrValues
 } = useProducts()
@@ -125,350 +126,348 @@ onBeforeRouteUpdate((to) => {
         <div class="h-full flex flex-col justify-evently">
           <div>
             <h1 class="title text-xl md:text-2xl uppercase">
-              <span v-if="product.brand" id="brand" class="text-[#00bd7e]"
+              <span v-if="product.brand" id="brand" class="font-semibold text-[#00bd7e]"
                 >{{ product.brand }} -
               </span>
-              <span v-if="product.generic_name" id="generic-name">{{ product.generic_name }}</span>
+              <span v-if="product.generic_name" id="generic-name" class="font-semibold">{{ product.generic_name }}</span>
             </h1>
-            <h3 v-if="product.lastUpdate" class="text-sm">
+            <h3 v-if="product.lastUpdate" class="mt-2 text-sm">
               Dernière mise à jour : <span id="last-update">{{ product.lastUpdate }}</span>
             </h3>
           </div>
-          <div>
-            <div class="scores">
-              <img
-                id="nutriscore-img"
-                class="max-w-[100px] md:max-w-[115px] mt-2"
-                :src="
-                  'https://static.openfoodfacts.org/images/attributes/dist/nutriscore-' +
-                  product.nutriscore +
-                  '-new-fr.svg'
-                "
-                :alt="'Nutriscore : ' + product.nutriscore"
+          <div class="scores mt-8">
+            <img
+              id="nutriscore-img"
+              class="max-w-[100px] md:max-w-[115px]"
+              :src="
+                'https://static.openfoodfacts.org/images/attributes/dist/nutriscore-' +
+                product.nutriscore +
+                '-new-fr.svg'
+              "
+              :alt="'Nutriscore : ' + product.nutriscore"
+            />
+            <img
+              id="nova-group-img"
+              class="max-h-[50px] md:max-h-[60px] mt-2"
+              :src="
+                'https://static.openfoodfacts.org/images/attributes/dist/nova-group-' +
+                product.novaGroup +
+                '.svg'
+              "
+              :alt="'Groupe Nova : ' + product.novaGroup"
+            />
+            <div
+              v-if="novaDescription[product.novaGroup as '1' | '2' | '3' | '4']"
+              class="text-sm mt-2"
+            >
+              ({{ novaDescription[product.novaGroup as '1' | '2' | '3' | '4'] }})
+            </div>
+          </div>
+          <div v-if="product.nutrient_levels" id="nutrient-levels" class="flex flex-wrap mt-2">
+            <div
+              v-for="(level, nutrient) in product.nutrient_levels"
+              :key="nutrient"
+              :class="[
+                'nutrient mt-4 mr-2 py-2 px-3 rounded-full',
+                level === 'low' ? 'bg-[#00bd7e]' : '',
+                level === 'moderate' ? 'bg-yellow-500' : '',
+                level === 'high' ? 'bg-red-500' : ''
+              ]"
+            >
+              <span class="text-sm font-semibold text-white">
+                {{
+                  nutrient.toString() === 'fat'
+                    ? 'matieres grasses'
+                    : nutrient.toString() === 'salt'
+                      ? 'sel'
+                      : nutrient.toString() === 'saturated-fat'
+                        ? 'graisses saturées'
+                        : nutrient.toString() === 'sugars'
+                          ? 'sucres'
+                          : ''
+                }}
+              </span>
+              <span class="text-sm font-semibold text-white">{{
+                level === 'low'
+                  ? 'valeur faible'
+                  : level === 'moderate'
+                    ? 'valeur modérée'
+                    : 'valeur élevée'
+              }}</span>
+            </div>
+          </div>
+          <h3 v-if="product.quantity" class="mt-6 font-semibold">Quantité :</h3>
+          <h4 id="quantity">{{ product.quantity }}</h4>
+          <div v-if="product.nutriments" id="nutriments" class="mt-6">
+            <div
+              class="radio-toolbar w-full flex flex-wrap items-center text-sm text-gray-700"
+            >
+              <input
+                type="radio"
+                name="ajr_selected"
+                id="ajr-women"
+                value="women"
+                :checked="ajrSelected === 'women' || !ajrSelected"
               />
-              <div class="flex items-end">
-                <img
-                  id="nova-group-img"
-                  class="max-h-[50px] md:max-h-[60px] mt-2"
-                  :src="
-                    'https://static.openfoodfacts.org/images/attributes/dist/nova-group-' +
-                    product.novaGroup +
-                    '.svg'
-                  "
-                  :alt="'Groupe Nova : ' + product.novaGroup"
-                />
-              </div>
-            </div>
-            <div v-if="product.nutrient_levels" id="nutrient-levels" class="flex flex-wrap">
-              <div
-                v-for="(level, nutrient) in product.nutrient_levels"
-                :key="nutrient"
-                :class="[
-                  'nutrient mt-4 mr-2 py-2 px-3 rounded-full',
-                  level === 'low' ? 'bg-[#00bd7e]' : '',
-                  level === 'moderate' ? 'bg-yellow-500' : '',
-                  level === 'high' ? 'bg-red-500' : ''
-                ]"
+              <label
+                @click="ajrSelected = 'women'"
+                class="radio_label mt-2 md:mt-0 mr-4 text-sm font-semibold bg-gray-400 rounded-full"
+                for="ajr-women"
+                >Femme</label
               >
-                <span class="text-sm font-semibold text-white">
-                  {{
-                    nutrient.toString() === 'fat'
-                      ? 'matieres grasses'
-                      : nutrient.toString() === 'salt'
-                        ? 'sel'
-                        : nutrient.toString() === 'saturated-fat'
-                          ? 'graisses saturées'
-                          : nutrient.toString() === 'sugars'
-                            ? 'sucres'
-                            : ''
-                  }}
-                </span>
-                <span class="text-sm font-semibold text-white">{{
-                  level === 'low'
-                    ? 'valeur faible'
-                    : level === 'moderate'
-                      ? 'valeur modérée'
-                      : 'valeur élevée'
-                }}</span>
-              </div>
-            </div>
-            <h3 v-if="product.quantity" class="mt-8 font-semibold">Quantité :</h3>
-            <h4 id="quantity">{{ product.quantity }}</h4>
-            <div v-if="product.nutriments" id="nutriments" class="mt-8">
-              <div
-                class="radio-toolbar w-full flex flex-wrap items-center mt-4 md:mt-6 text-sm text-gray-700"
-              >
-                <input
-                  type="radio"
-                  name="ajr_selected"
-                  id="ajr-women"
-                  value="women"
-                  :checked="ajrSelected === 'women' || !ajrSelected"
-                />
-                <label
-                  @click="ajrSelected = 'women'"
-                  class="radio_label mt-2 md:mt-0 mr-4 text-sm font-semibold bg-gray-400 rounded-full"
-                  for="ajr-women"
-                  >Femme</label
-                >
 
-                <input
-                  type="radio"
-                  name="ajr_selected"
-                  id="ajr-men"
-                  value="men"
-                  :checked="ajrSelected === 'men'"
-                />
-                <label
-                  @click="ajrSelected = 'men'"
-                  class="radio_label mt-2 md:mt-0 mr-4 text-sm font-semibold bg-gray-400 rounded-full"
-                  for="ajr-men"
-                  >Homme</label
-                >
-              </div>
-              <div class="relative mt-4 overflow-x-auto shadow-md sm:rounded-lg">
-                <table class="w-full text-sm text-left rtl:text-right text-pretty text-gray-500">
-                  <thead class="text-xs text-gray-700 uppercase">
-                    <tr>
-                      <th scope="col" class="px-6 py-3 bg-gray-50">Valeurs nutritionnelles</th>
-                      <th scope="col" class="hidden lg:table-cell px-6 py-3">Pour 100g / 100ml</th>
-                      <th scope="col" class="px-6 py-3 bg-gray-50">
-                        Par portion ({{ product.serving_size }})
-                      </th>
-                      <th scope="col" class="px-6 py-3">Ajr*</th>
-                    </tr>
-                  </thead>
-                  <tbody>
-                    <tr
-                      v-if="product.nutriments['energy-kcal_serving']"
-                      class="border-b border-gray-200"
-                    >
-                      <th
-                        scope="row"
-                        class="px-6 py-4 font-medium text-gray-900 whitespace-nowrap bg-gray-50"
-                      >
-                        Energie
-                      </th>
-                      <td class="hidden lg:table-cell px-6 py-4">
-                        {{ product.nutriments['energy-kcal_100g'] + ' kcal' }}
-                      </td>
-                      <td class="px-6 py-4 bg-gray-50">
-                        {{ product.nutriments['energy-kcal_serving'] + ' kcal' }}
-                      </td>
-                      <td class="px-6 py-4">
-                        {{
-                          (
-                            (Number(product.nutriments['energy-kcal_serving']) / ajrValues.energy) *
-                            100
-                          ).toFixed(0) + '%'
-                        }}
-                      </td>
-                    </tr>
-                    <tr v-if="product.nutriments['fat_serving']" class="border-b border-gray-200">
-                      <th
-                        scope="row"
-                        class="px-6 py-4 font-medium text-gray-900 whitespace-nowrap bg-gray-50"
-                      >
-                        Matieres grasses
-                      </th>
-                      <td class="hidden lg:table-cell px-6 py-4">
-                        {{ product.nutriments['fat_100g'] + ' g' }}
-                      </td>
-                      <td class="px-6 py-4 bg-gray-50">
-                        {{ product.nutriments['fat_serving'] + ' g' }}
-                      </td>
-                      <td class="px-6 py-4">
-                        {{
-                          (
-                            (Number(product.nutriments['fat_serving']) / ajrValues.fat) *
-                            100
-                          ).toFixed(0) + '%'
-                        }}
-                      </td>
-                    </tr>
-                    <tr
-                      v-if="product.nutriments['saturated-fat_serving']"
-                      class="border-b border-gray-200"
-                    >
-                      <th
-                        scope="row"
-                        class="px-6 py-4 font-medium text-gray-900 whitespace-nowrap bg-gray-50"
-                      >
-                        Graisses saturées
-                      </th>
-                      <td class="hidden lg:table-cell px-6 py-4">
-                        {{ product.nutriments['saturated-fat_100g'] + ' g' }}
-                      </td>
-                      <td class="px-6 py-4 bg-gray-50">
-                        {{ product.nutriments['saturated-fat_serving'] + ' g' }}
-                      </td>
-                      <td class="px-6 py-4">
-                        {{
-                          (
-                            (Number(product.nutriments['saturated-fat_serving']) /
-                              ajrValues.saturatedFat) *
-                            100
-                          ).toFixed(0) + '%'
-                        }}
-                      </td>
-                    </tr>
-                    <tr
-                      v-if="product.nutriments['carbohydrates_serving']"
-                      class="border-b border-gray-200"
-                    >
-                      <th
-                        scope="row"
-                        class="px-6 py-4 font-medium text-gray-900 whitespace-nowrap bg-gray-50"
-                      >
-                        Glucides
-                      </th>
-                      <td class="hidden lg:table-cell px-6 py-4">
-                        {{ product.nutriments['carbohydrates_100g'] + ' g' }}
-                      </td>
-                      <td class="px-6 py-4 bg-gray-50">
-                        {{ product.nutriments['carbohydrates_serving'] + ' g' }}
-                      </td>
-                      <td class="px-6 py-4">
-                        {{
-                          (
-                            (Number(product.nutriments['carbohydrates_serving']) /
-                              ajrValues.carbohydrates) *
-                            100
-                          ).toFixed(0) + '%'
-                        }}
-                      </td>
-                    </tr>
-                    <tr
-                      v-if="product.nutriments['sugars_serving']"
-                      class="border-b border-gray-200"
-                    >
-                      <th
-                        scope="row"
-                        class="px-6 py-4 font-medium text-gray-900 whitespace-nowrap bg-gray-50"
-                      >
-                        Sucres
-                      </th>
-                      <td class="hidden lg:table-cell px-6 py-4">
-                        {{ product.nutriments['sugars_100g'] + ' g' }}
-                      </td>
-                      <td class="px-6 py-4 bg-gray-50">
-                        {{ product.nutriments['sugars_serving'] + ' g' }}
-                      </td>
-                      <td class="px-6 py-4">
-                        {{
-                          (
-                            (Number(product.nutriments['sugars_serving']) / ajrValues.sugars) *
-                            100
-                          ).toFixed(0) + '%'
-                        }}
-                      </td>
-                    </tr>
-                    <tr v-if="product.nutriments['salt_serving']" class="border-b border-gray-200">
-                      <th
-                        scope="row"
-                        class="px-6 py-4 font-medium text-gray-900 whitespace-nowrap bg-gray-50"
-                      >
-                        Sel
-                      </th>
-                      <td class="hidden lg:table-cell px-6 py-4">
-                        {{ product.nutriments['salt_100g'] + ' g' }}
-                      </td>
-                      <td class="px-6 py-4 bg-gray-50">
-                        {{ product.nutriments['salt_serving'] + ' g' }}
-                      </td>
-                      <td class="px-6 py-4">
-                        {{
-                          (
-                            (Number(product.nutriments['salt_serving']) / ajrValues.salt) *
-                            100
-                          ).toFixed(0) + '%'
-                        }}
-                      </td>
-                    </tr>
-                    <tr v-if="product.nutriments['fiber_serving']" class="border-b border-gray-200">
-                      <th
-                        scope="row"
-                        class="px-6 py-4 font-medium text-gray-900 whitespace-nowrap bg-gray-50"
-                      >
-                        Fibres
-                      </th>
-                      <td class="hidden lg:table-cell px-6 py-4">
-                        {{ product.nutriments['fiber_100g'] + ' g' }}
-                      </td>
-                      <td class="px-6 py-4 bg-gray-50">
-                        {{ product.nutriments['fiber_serving'] + ' g' }}
-                      </td>
-                      <td class="px-6 py-4">
-                        {{
-                          (
-                            (Number(product.nutriments['fiber_serving']) / ajrValues.fiber) *
-                            100
-                          ).toFixed(0) + '%'
-                        }}
-                      </td>
-                    </tr>
-                    <tr
-                      v-if="product.nutriments['proteins_serving']"
-                      class="border-b border-gray-200"
-                    >
-                      <th
-                        scope="row"
-                        class="px-6 py-4 font-medium text-gray-900 whitespace-nowrap bg-gray-50"
-                      >
-                        Proteines
-                      </th>
-                      <td class="hidden lg:table-cell px-6 py-4">
-                        {{ product.nutriments['proteins_100g'] + ' g' }}
-                      </td>
-                      <td class="px-6 py-4 bg-gray-50">
-                        {{ product.nutriments['proteins_serving'] + ' g' }}
-                      </td>
-                      <td class="px-6 py-4">
-                        {{
-                          (
-                            (Number(product.nutriments['proteins_serving']) / ajrValues.proteins) *
-                            100
-                          ).toFixed(0) + '%'
-                        }}
-                      </td>
-                    </tr>
-                  </tbody>
-                </table>
-              </div>
-              <span class="text-xs text-gray-700 mt-2"> * Apports Journaliers Recommandés </span>
-            </div>
-            <h3 v-if="product.ingredients" class="mt-8 font-semibold">Ingrédients :</h3>
-            <h4 v-html="product.ingredients" id="ingredients"></h4>
-            <h3 v-if="product.manufacturingPlace" class="mt-4 font-semibold">
-              Lieu de fabrication :
-            </h3>
-            <h4 id="manufacturing-place">
-              {{ product.manufacturingPlace }}
-            </h4>
-            <h3 v-if="product.id" class="mt-4 font-semibold">Code-barres :</h3>
-            <h4 id="barcode">{{ product.id }}</h4>
-            <h3 v-if="product.link" class="mt-4 font-semibold">Plus d'infos :</h3>
-            <h4>
-              <a :href="product.link" target="_blank" id="link" class="underline">{{
-                product.link
-              }}</a>
-            </h4>
-            <div v-if="filteredCategories.length" id="tags" class="relative mt-4">
-              <div
-                v-if="productsIsLoading"
-                class="loader-container absolute h-full w-full flex justify-center items-center bg-[whitesmoke]"
+              <input
+                type="radio"
+                name="ajr_selected"
+                id="ajr-men"
+                value="men"
+                :checked="ajrSelected === 'men'"
+              />
+              <label
+                @click="ajrSelected = 'men'"
+                class="radio_label mt-2 md:mt-0 mr-4 text-sm font-semibold bg-gray-400 rounded-full"
+                for="ajr-men"
+                >Homme</label
               >
-                <div class="lds-hourglass"></div>
-              </div>
-              <button
-                v-for="category in filteredCategories"
-                :key="category"
-                class="tag mt-2 mr-2 py-2 px-3 text-sm font-semibold text-white bg-neutral-400 text-white rounded-full"
-                @click="searchProductsByCategory(category)"
-              >
-                #{{ category }}
-              </button>
             </div>
+            <div class="relative mt-4 overflow-x-auto shadow-md rounded-lg">
+              <table class="w-full text-sm text-left rtl:text-right text-pretty text-gray-500">
+                <thead class="text-xs text-gray-700 uppercase">
+                  <tr>
+                    <th scope="col" class="px-6 py-3 bg-gray-50">Valeurs nutritionnelles</th>
+                    <th scope="col" class="hidden lg:table-cell px-6 py-3">Pour 100g / 100ml</th>
+                    <th scope="col" class="px-6 py-3 bg-gray-50">
+                      Par portion ({{ product.serving_size }})
+                    </th>
+                    <th scope="col" class="px-6 py-3">Ajr*</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  <tr
+                    v-if="product.nutriments['energy-kcal_serving']"
+                    class="border-b border-gray-200"
+                  >
+                    <th
+                      scope="row"
+                      class="px-6 py-4 font-medium text-gray-900 whitespace-nowrap bg-gray-50"
+                    >
+                      Energie
+                    </th>
+                    <td class="hidden lg:table-cell px-6 py-4">
+                      {{ product.nutriments['energy-kcal_100g'] + ' kcal' }}
+                    </td>
+                    <td class="px-6 py-4 bg-gray-50">
+                      {{ product.nutriments['energy-kcal_serving'] + ' kcal' }}
+                    </td>
+                    <td class="px-6 py-4">
+                      {{
+                        (
+                          (Number(product.nutriments['energy-kcal_serving']) / ajrValues.energy) *
+                          100
+                        ).toFixed(0) + '%'
+                      }}
+                    </td>
+                  </tr>
+                  <tr v-if="product.nutriments['fat_serving']" class="border-b border-gray-200">
+                    <th
+                      scope="row"
+                      class="px-6 py-4 font-medium text-gray-900 whitespace-nowrap bg-gray-50"
+                    >
+                      Matieres grasses
+                    </th>
+                    <td class="hidden lg:table-cell px-6 py-4">
+                      {{ product.nutriments['fat_100g'] + ' g' }}
+                    </td>
+                    <td class="px-6 py-4 bg-gray-50">
+                      {{ product.nutriments['fat_serving'] + ' g' }}
+                    </td>
+                    <td class="px-6 py-4">
+                      {{
+                        ((Number(product.nutriments['fat_serving']) / ajrValues.fat) * 100).toFixed(
+                          0
+                        ) + '%'
+                      }}
+                    </td>
+                  </tr>
+                  <tr
+                    v-if="product.nutriments['saturated-fat_serving']"
+                    class="border-b border-gray-200"
+                  >
+                    <th
+                      scope="row"
+                      class="px-6 py-4 font-medium text-gray-900 whitespace-nowrap bg-gray-50"
+                    >
+                      Graisses saturées
+                    </th>
+                    <td class="hidden lg:table-cell px-6 py-4">
+                      {{ product.nutriments['saturated-fat_100g'] + ' g' }}
+                    </td>
+                    <td class="px-6 py-4 bg-gray-50">
+                      {{ product.nutriments['saturated-fat_serving'] + ' g' }}
+                    </td>
+                    <td class="px-6 py-4">
+                      {{
+                        (
+                          (Number(product.nutriments['saturated-fat_serving']) /
+                            ajrValues.saturatedFat) *
+                          100
+                        ).toFixed(0) + '%'
+                      }}
+                    </td>
+                  </tr>
+                  <tr
+                    v-if="product.nutriments['carbohydrates_serving']"
+                    class="border-b border-gray-200"
+                  >
+                    <th
+                      scope="row"
+                      class="px-6 py-4 font-medium text-gray-900 whitespace-nowrap bg-gray-50"
+                    >
+                      Glucides
+                    </th>
+                    <td class="hidden lg:table-cell px-6 py-4">
+                      {{ product.nutriments['carbohydrates_100g'] + ' g' }}
+                    </td>
+                    <td class="px-6 py-4 bg-gray-50">
+                      {{ product.nutriments['carbohydrates_serving'] + ' g' }}
+                    </td>
+                    <td class="px-6 py-4">
+                      {{
+                        (
+                          (Number(product.nutriments['carbohydrates_serving']) /
+                            ajrValues.carbohydrates) *
+                          100
+                        ).toFixed(0) + '%'
+                      }}
+                    </td>
+                  </tr>
+                  <tr v-if="product.nutriments['sugars_serving']" class="border-b border-gray-200">
+                    <th
+                      scope="row"
+                      class="px-6 py-4 font-medium text-gray-900 whitespace-nowrap bg-gray-50"
+                    >
+                      Sucres
+                    </th>
+                    <td class="hidden lg:table-cell px-6 py-4">
+                      {{ product.nutriments['sugars_100g'] + ' g' }}
+                    </td>
+                    <td class="px-6 py-4 bg-gray-50">
+                      {{ product.nutriments['sugars_serving'] + ' g' }}
+                    </td>
+                    <td class="px-6 py-4">
+                      {{
+                        (
+                          (Number(product.nutriments['sugars_serving']) / ajrValues.sugars) *
+                          100
+                        ).toFixed(0) + '%'
+                      }}
+                    </td>
+                  </tr>
+                  <tr v-if="product.nutriments['salt_serving']" class="border-b border-gray-200">
+                    <th
+                      scope="row"
+                      class="px-6 py-4 font-medium text-gray-900 whitespace-nowrap bg-gray-50"
+                    >
+                      Sel
+                    </th>
+                    <td class="hidden lg:table-cell px-6 py-4">
+                      {{ product.nutriments['salt_100g'] + ' g' }}
+                    </td>
+                    <td class="px-6 py-4 bg-gray-50">
+                      {{ product.nutriments['salt_serving'] + ' g' }}
+                    </td>
+                    <td class="px-6 py-4">
+                      {{
+                        (
+                          (Number(product.nutriments['salt_serving']) / ajrValues.salt) *
+                          100
+                        ).toFixed(0) + '%'
+                      }}
+                    </td>
+                  </tr>
+                  <tr v-if="product.nutriments['fiber_serving']" class="border-b border-gray-200">
+                    <th
+                      scope="row"
+                      class="px-6 py-4 font-medium text-gray-900 whitespace-nowrap bg-gray-50"
+                    >
+                      Fibres
+                    </th>
+                    <td class="hidden lg:table-cell px-6 py-4">
+                      {{ product.nutriments['fiber_100g'] + ' g' }}
+                    </td>
+                    <td class="px-6 py-4 bg-gray-50">
+                      {{ product.nutriments['fiber_serving'] + ' g' }}
+                    </td>
+                    <td class="px-6 py-4">
+                      {{
+                        (
+                          (Number(product.nutriments['fiber_serving']) / ajrValues.fiber) *
+                          100
+                        ).toFixed(0) + '%'
+                      }}
+                    </td>
+                  </tr>
+                  <tr
+                    v-if="product.nutriments['proteins_serving']"
+                    class="border-b border-gray-200"
+                  >
+                    <th
+                      scope="row"
+                      class="px-6 py-4 font-medium text-gray-900 whitespace-nowrap bg-gray-50"
+                    >
+                      Proteines
+                    </th>
+                    <td class="hidden lg:table-cell px-6 py-4">
+                      {{ product.nutriments['proteins_100g'] + ' g' }}
+                    </td>
+                    <td class="px-6 py-4 bg-gray-50">
+                      {{ product.nutriments['proteins_serving'] + ' g' }}
+                    </td>
+                    <td class="px-6 py-4">
+                      {{
+                        (
+                          (Number(product.nutriments['proteins_serving']) / ajrValues.proteins) *
+                          100
+                        ).toFixed(0) + '%'
+                      }}
+                    </td>
+                  </tr>
+                </tbody>
+              </table>
+            </div>
+            <span class="text-xs text-gray-700 mt-2"> * Apports Journaliers Recommandés </span>
+          </div>
+          <h3 v-if="product.ingredients" class="mt-6 font-semibold">Ingrédients :</h3>
+          <h4 v-html="product.ingredients" id="ingredients"></h4>
+          <h3 v-if="product.manufacturingPlace" class="mt-4 font-semibold">
+            Lieu de fabrication :
+          </h3>
+          <h4 id="manufacturing-place">
+            {{ product.manufacturingPlace }}
+          </h4>
+          <h3 v-if="product.id" class="mt-4 font-semibold">Code-barres :</h3>
+          <h4 id="barcode">{{ product.id }}</h4>
+          <h3 v-if="product.link" class="mt-4 font-semibold">Plus d'infos :</h3>
+          <h4>
+            <a :href="product.link" target="_blank" id="link" class="underline">{{
+              product.link
+            }}</a>
+          </h4>
+          <div v-if="filteredCategories.length" id="tags" class="relative mt-4">
+            <div
+              v-if="productsIsLoading"
+              class="loader-container absolute h-full w-full flex justify-center items-center bg-[whitesmoke]"
+            >
+              <div class="lds-hourglass"></div>
+            </div>
+            <button
+              v-for="category in filteredCategories"
+              :key="category"
+              class="tag mt-2 mr-2 py-2 px-3 text-sm font-semibold text-white bg-neutral-400 text-white rounded-full"
+              @click="searchProductsByCategory(category)"
+            >
+              #{{ category }}
+            </button>
           </div>
         </div>
       </div>

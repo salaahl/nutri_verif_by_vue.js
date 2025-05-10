@@ -78,6 +78,12 @@ export function useProducts() {
     get: () => productsStore.getAjrSelected,
     set: (val) => productsStore.updateAjrSelected(val)
   })
+  const novaDescription = {
+    '1': 'Aliments non transformés / minimalement',
+    '2': 'Ingrédients culinaires transformés',
+    '3': 'Aliments transformés',
+    '4': 'Produits ultra-transformés'
+  }
   const ajrValues = computed<{ [key: string]: number }>(() => {
     if (ajrSelected.value === 'women') {
       return {
@@ -296,6 +302,7 @@ export function useProducts() {
     suggestedProducts,
     suggestedProductsIsLoading,
     ajrSelected,
+    novaDescription,
     ajrValues,
     filter,
     input,

@@ -98,7 +98,7 @@ main {
 
 .radio-toolbar label {
   height: auto;
-  padding: 4px 11px;
+  padding: 6px 12px;
   color: white;
   transition: background-color 0.25s;
 }
