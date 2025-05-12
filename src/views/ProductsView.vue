@@ -81,7 +81,7 @@ onUnmounted(() => {
 </script>
 
 <template>
-  <section id="search-bar" class="relative mb-16">
+  <section id="search-bar" class="relative mb-8 lg:mb-12">
     <form @submit="onSubmit" id="search-form" class="relative">
       <div class="w-full flex items-center justify-between">
         <label for="search-input" class="sr-only">Search</label>
@@ -126,7 +126,7 @@ onUnmounted(() => {
         </button>
       </div>
       <div
-        class="radio-toolbar w-full flex flex-wrap items-center mt-4 md:mt-6 text-sm text-gray-700"
+        class="radio-toolbar w-full flex flex-wrap items-center mt-2 md:mt-6 text-sm text-gray-700"
       >
         <input
           type="radio"

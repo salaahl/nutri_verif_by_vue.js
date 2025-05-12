@@ -34,7 +34,7 @@ onUnmounted(() => {
   >
     A propos de nous <span class="text-xs">(et un peu d'Open Food Facts)</span>
   </h1>
-  <p class="md:text-center">
+  <p class="text-center">
     NutriVérif est une application web de food checking alimentée par la base de données d'Open Food
     Facts et developpée par
     <a
@@ -49,7 +49,7 @@ onUnmounted(() => {
     nutritionnelles et autres juteuses informations que l'on peut trouver sur les labels de ces
     produits.
   </p>
-  <p class="md:text-center">
+  <p class="text-center">
     Open Food Facts est une association à but non-lucratif composée de volontaires. Plus de 100.000
     contributeurs comme vous ont ajouté plus de 3 000 000 produits de 150 pays. Les données sur la
     nourriture sont d'intérêt public et doivent être libres et ouvertes. La base de données complète
