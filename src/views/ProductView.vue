@@ -104,9 +104,9 @@ onBeforeRouteUpdate((to) => {
   >
     <section
       id="product-images-container"
-      class="md:sticky top-[5vh] md:h-[90vh] w-full md:w-2/4 flex items-center justify-center bg-white rounded-[32px]"
+      class="md:sticky top-[5vh] md:h-[90vh] w-full md:w-2/4 flex items-center justify-center aspect-square md:aspect-auto bg-white rounded-[32px]"
     >
-      <div class="md:w-full my-[50px]">
+      <div class="flex md:w-full">
         <div
           v-if="productIsLoading"
           class="loader-container h-full flex justify-center items-center"
@@ -115,7 +115,7 @@ onBeforeRouteUpdate((to) => {
           id="product-img"
           :src="product.image"
           :alt="product.generic_name"
-          class="h-auto max-h-72 lg:max-h-full w-auto m-auto"
+          class="h-auto max-h-72 lg:max-h-full w-auto max-w-[70%] m-auto"
         />
       </div>
     </section>

@@ -39,7 +39,7 @@ const currentRoute = computed(() => {
 
   <footer class="md:h-[100px] w-full">
     <div
-      class="flex flex-wrap justify-center items-center max-w-screen-xl mx-auto py-4 rounded-lg overflow-hidden"
+      class="flex flex-wrap justify-center items-center max-w-screen-xl mx-auto my-4 py-4 rounded-lg overflow-hidden"
     >
       <nav class="flex flex-wrap justify-center">
         <div class="px-2 md:px-6">
@@ -141,7 +141,7 @@ main {
 
 footer > div,
 #back-link svg {
-  background-color: white;
+  backdrop-filter: contrast(0.95);
 }
 
 @media (min-width: 768px) {
