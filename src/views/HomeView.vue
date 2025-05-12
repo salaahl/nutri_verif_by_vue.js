@@ -230,7 +230,7 @@ onUnmounted(() => {
       Découvrez des <span class="text-[#00bd7e]">alternatives</span> plus saines
     </h2>
     <span class="inline-block mb-8">
-      <span class="text-highlighted">Vous méritez le meilleur pour votre alimentation </span>
+      <span class="text-highlighted red">Vous méritez le meilleur pour votre alimentation </span>
       <span>. Si un produit a un Nutri-Score jugé trop faible :</span>
     </span>
     <div
@@ -354,7 +354,7 @@ onUnmounted(() => {
     </div>
     <span class="inline-block my-8">
       notre fonctionnalité intelligente vous propose instantanément des alternatives
-      <span class="text-highlighted">mieux notées et tout aussi savoureuses</span> :
+      <span class="text-highlighted red">mieux notées et tout aussi savoureuses</span> :
     </span>
     <aside v-if="suggestedProducts.length || suggestedProductsIsLoading">
       <section
@@ -385,7 +385,7 @@ onUnmounted(() => {
       </section>
     </aside>
     <span class="inline-block my-8">
-      Trouvez des options <span class="text-highlighted">plus saines</span> et faites de chaque
+      Trouvez des options <span class="text-highlighted red">plus saines</span> et faites de chaque
       choix un pas vers une meilleure santé.</span
     >
   </section>
@@ -454,6 +454,10 @@ h1 {
 
 .text-highlighted {
   background-color: hsla(160, 100%, 37%, 0.6);
+}
+
+.text-highlighted.red {
+  background-color: rgb(205, 92, 92, 0.8);
 }
 
 #total-products {
