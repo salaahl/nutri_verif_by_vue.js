@@ -250,7 +250,7 @@ onUnmounted(() => {
             id="product-img"
             :src="product.image"
             :alt="product.generic_name"
-            class="h-auto w-auto m-auto"
+            class="h-auto max-h-72 lg:max-h-full w-auto m-auto"
           />
         </div>
       </section>

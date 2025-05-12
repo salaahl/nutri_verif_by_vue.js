@@ -98,7 +98,7 @@ main {
 
 .radio-toolbar label {
   height: auto;
-  padding: 6px 12px;
+  padding: 8px 14px;
   color: white;
   transition: background-color 0.25s;
 }
@@ -134,8 +134,8 @@ main {
 }
 
 #back-link svg {
-  height: 40px;
-  padding: 10px;
+  height: 50px;
+  padding: 15px;
   border-radius: 999px;
 }
 

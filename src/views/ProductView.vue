@@ -21,6 +21,25 @@ const {
   ajrValues
 } = useProducts()
 
+const nutrimentsKeys = [
+  'energy-kcal-100g',
+  'fat-100g',
+  'saturated-fat-100g',
+  'carbohydrates-100g',
+  'sugars-100g',
+  'salt-100g',
+  'fiber-100g',
+  'proteins-100g',
+  'energy-kcal_serving',
+  'fat_serving',
+  'saturated-fat_serving',
+  'carbohydrates_serving',
+  'sugars_serving',
+  'salt_serving',
+  'fiber_serving',
+  'proteins_serving'
+]
+
 const filteredCategories = computed<string[]>(() => {
   if (!product.categories?.length) return []
 
@@ -96,7 +115,7 @@ onBeforeRouteUpdate((to) => {
           id="product-img"
           :src="product.image"
           :alt="product.generic_name"
-          class="h-auto w-auto m-auto"
+          class="h-auto max-h-72 lg:max-h-full w-auto m-auto"
         />
       </div>
     </section>
@@ -111,7 +130,7 @@ onBeforeRouteUpdate((to) => {
       <div id="product-detail" class="h-full">
         <div class="h-full flex flex-col justify-evently">
           <div>
-            <h1 class="title text-xl md:text-2xl uppercase">
+            <h1 class="title text-xl md:text-2xl">
               <span v-if="product.brand" id="brand" class="font-semibold text-[#00bd7e]"
                 >{{ product.brand }} -
               </span>
@@ -146,7 +165,7 @@ onBeforeRouteUpdate((to) => {
             />
             <div
               v-if="novaDescription[product.novaGroup as '1' | '2' | '3' | '4']"
-              class="text-sm mt-2"
+              class="text-xs mt-2"
             >
               ({{ novaDescription[product.novaGroup as '1' | '2' | '3' | '4'] }})
             </div>
@@ -186,7 +205,11 @@ onBeforeRouteUpdate((to) => {
           </div>
           <h3 v-if="product.quantity" class="mt-6 font-semibold">Quantité :</h3>
           <h4 id="quantity">{{ product.quantity }}</h4>
-          <div v-if="product.nutriments" id="nutriments" class="mt-6">
+          <div
+            v-if="nutrimentsKeys.some((nutriment) => nutriment in product.nutriments)"
+            id="nutriments"
+            class="mt-6"
+          >
             <div class="radio-toolbar w-full flex flex-wrap items-center text-sm text-gray-700">
               <input
                 type="radio"
