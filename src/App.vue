@@ -70,13 +70,8 @@ const currentRoute = computed(() => {
   transition: all 0.45s ease-in;
 }
 
-.slide-fade-leave-active {
-  position: absolute;
-  transition: opacity 0.15s ease-out;
-}
-
 .slide-fade-enter-from {
-  transform: translateX(60px);
+  transform: translateX(20px);
 }
 
 .slide-fade-enter-from,
