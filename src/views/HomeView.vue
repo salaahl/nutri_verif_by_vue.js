@@ -25,7 +25,6 @@ const {
   lastProductsIsLoading,
   lastProducts
 } = useProducts()
-const moreProductsLink = ref<{ name: string; to: string } | null>(null)
 
 onMounted(async () => {
   // Animation des sections
@@ -52,7 +51,6 @@ onMounted(async () => {
   if (!searchBar) return
 
   searchBar.addEventListener('input', () => {
-    moreProductsLink.value = null
     products.value = [] // Doublon nécessaire à cause du timer
     clearTimeout(timer)
 
@@ -65,7 +63,6 @@ onMounted(async () => {
         router.push({ name: 'product', params: { id: searchInput.value } })
       } else {
         await searchProducts(searchInput.value, null, 'complete')
-        moreProductsLink.value = { name: 'Plus de résultats', to: '/search' }
       }
     }, 1000)
   })
@@ -132,12 +129,12 @@ onUnmounted(() => {
           :nova="product.nova"
         />
         <article
-          v-if="products.length > 0"
+          v-if="products.length > 4"
           class="md:product w-full md:w-[18.6%] flex items-center justify-center mt-[2.5%] md:mt-0"
         >
           <RouterLink
-            :key="moreProductsLink?.name"
-            :to="moreProductsLink?.to ?? ''"
+            :key="'Plus de résultats'"
+            :to="'/search'"
             class="h-full w-full flex items-center justify-center p-3 md:text-4xl text-center text-white font-semibold bg-[#00bd7e] rounded-lg"
           >
             +
