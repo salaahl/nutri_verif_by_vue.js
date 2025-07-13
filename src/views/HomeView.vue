@@ -110,7 +110,7 @@ onUnmounted(() => {
     >
       <div
         id="search-results"
-        class="relative flex flex-wrap justify-between p-4 bg-neutral-200 rounded-lg"
+        class="relative flex flex-wrap justify-between md:justify-start p-4 bg-neutral-200 rounded-lg"
       >
         <div
           v-if="productsIsLoading"
@@ -358,7 +358,9 @@ onUnmounted(() => {
         id="more-products"
         class="relative min-h-[125px] w-full flex flex-wrap lg:flex-nowrap items-stretch lg:items-center justify-between p-4 bg-neutral-200 rounded-xl"
       >
-        <h2 class="title w-full lg:w-1/4 mt-4 mb-8 lg:m-0 text-center text-3xl lg:text-2xl">
+        <h2
+          class="title w-full lg:w-1/4 mt-4 mb-8 lg:ml-[-0.75rem] lg:m-0 text-center text-3xl lg:text-2xl"
+        >
           Alternatives
         </h2>
         <div
@@ -367,7 +369,7 @@ onUnmounted(() => {
         >
           <div class="lds-hourglass"></div>
         </div>
-        <div class="relative w-full lg:w-3/4 flex flex-wrap md:flex-nowrap justify-end">
+        <div class="relative w-full lg:w-3/4 flex flex-wrap md:flex-nowrap lg:justify-end">
           <ProductCard
             v-for="product in suggestedProducts"
             :key="product.id"
@@ -390,7 +392,9 @@ onUnmounted(() => {
     <h2 class="title mb-12 text-2xl lg:text-3xl text-right">
       Produits <span class="text-[#00bd7e]">récemment</span> ajoutés
     </h2>
-    <div class="relative flex flex-wrap justify-between p-4 bg-neutral-200 rounded-lg">
+    <div
+      class="relative flex flex-wrap justify-between md:justify-start p-4 bg-neutral-200 rounded-lg"
+    >
       <div
         v-if="lastProductsIsLoading"
         class="loader-container w-fit flex justify-center items-center m-auto"
@@ -492,13 +496,17 @@ h1 {
 @media (min-width: 768px) {
   .product {
     width: 19%;
-    margin-left: unset;
-    margin-right: unset;
     margin-bottom: 0;
   }
 
   .product:nth-of-type(odd) {
     margin-right: unset;
+  }
+
+  #search-results .product:nth-of-type(even),
+  #last-products .product:nth-of-type(even) {
+    margin-left: 1.25%;
+    margin-right: 1.25%;
   }
 
   #more-products > .title {
@@ -510,9 +518,19 @@ h1 {
     margin-bottom: 0;
   }
 
-  #more-products .product:nth-of-type(odd) {
-    margin-left: 1.25%;
-    margin-right: 1.25%;
+  #more-products .product:nth-child(1),
+  #more-products .product:nth-child(4) {
+    margin-left: unset;
+    margin-right: unset;
+  }
+
+  #more-products .product:nth-child(2) {
+    margin-left: 1.75%;
+  }
+
+  #more-products .product:nth-child(3) {
+    margin-left: 1.75%;
+    margin-right: 1.75%;
   }
 
   #alternatives-functionality {
