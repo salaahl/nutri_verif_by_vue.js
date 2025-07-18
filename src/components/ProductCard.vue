@@ -1,23 +1,34 @@
 <script setup lang="ts">
-import { defineProps } from 'vue';
+import { defineProps } from 'vue'
+import { useRoute } from 'vue-router'
+
+const route = useRoute()
 
 interface ProductProps {
-  id: string;
-  image?: string;
-  brand?: string;
-  name?: string;
-  nutriscore?: string;
-  nova?: number | string;
+  id: string
+  image?: string
+  brand?: string
+  name?: string
+  nutriscore?: string
+  nova?: number | string
 }
 
-defineProps<ProductProps>();
+defineProps<ProductProps>()
 </script>
 
 <template>
   <article class="product">
-    <RouterLink :to="'/product/' + id" class="h-full w-full flex flex-col justify-between">
+    <RouterLink
+      :replace="route.path.startsWith('/product/') ? true : false"
+      :to="'/product/' + id"
+      class="h-full w-full flex flex-col justify-between"
+    >
       <div class="thumbnail h-2/5 md:h-1/2 flex items-center justify-center m-auto aspect-square">
-        <img :src="image" :alt="brand + ' : ' + name" class="h-3/4 w-3/4 object-contain object-center" />
+        <img
+          :src="image"
+          :alt="brand + ' : ' + name"
+          class="h-3/4 w-3/4 object-contain object-center"
+        />
       </div>
       <div class="details h-3/5 md:h-1/2 flex flex-col justify-between">
         <div class="mt-2">
@@ -25,12 +36,22 @@ defineProps<ProductProps>();
           <h4 class="message text-sm font-thin">{{ name }}</h4>
         </div>
         <div class="scores md:flex justify-between items-start">
-          <img :src="'https://static.openfoodfacts.org/images/attributes/dist/nutriscore-' +
-            nutriscore +
-            '-new-fr.svg'
-            " :alt="'Nutriscore : ' + nutriscore" class="max-h-[50px]" />
-          <img :src="'https://static.openfoodfacts.org/images/attributes/dist/nova-group-' + nova + '.svg'
-            " :alt="'Groupe Nova : ' + nova" class="max-h-[40px] mt-2 md:mt-0" />
+          <img
+            :src="
+              'https://static.openfoodfacts.org/images/attributes/dist/nutriscore-' +
+              nutriscore +
+              '-new-fr.svg'
+            "
+            :alt="'Nutriscore : ' + nutriscore"
+            class="max-h-[50px]"
+          />
+          <img
+            :src="
+              'https://static.openfoodfacts.org/images/attributes/dist/nova-group-' + nova + '.svg'
+            "
+            :alt="'Groupe Nova : ' + nova"
+            class="max-h-[40px] mt-2 md:mt-0"
+          />
         </div>
       </div>
     </RouterLink>
@@ -47,7 +68,9 @@ defineProps<ProductProps>();
     rgba(255, 255, 255, 0.01) 0px 1px 1px 0px inset,
     rgba(50, 50, 93, 0.025) 0px 50px 100px -20px,
     rgba(0, 0, 0, 0.03) 0px 30px 60px -30px;
-  transition: all 1s linear(0 0%,
+  transition: all 1s
+    linear(
+      0 0%,
       0.22 2.1%,
       0.86 6.5%,
       1.11 8.6%,
@@ -78,7 +101,8 @@ defineProps<ProductProps>();
       1 68.1%,
       1.01 72.2%,
       1 86.7%,
-      1 100%);
+      1 100%
+    );
 }
 
 .product:hover {
