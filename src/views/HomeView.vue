@@ -428,6 +428,10 @@ h1 {
   font-family: 'Grand Hotel', cursive;
 }
 
+h2::first-letter {
+  font-weight: bold;
+}
+
 #search-bar {
   position: sticky;
   width: 100%;

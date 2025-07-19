@@ -21,11 +21,13 @@
     >.
   </p>
   <p>
-    Les serveurs sont gérés par la société Heroku, Inc.<br />
-    Siège social Heroku : 321 11th Street San Francisco, CA Etats-Unis<br />
-    Les serveurs sont situés au sein de l'Union européenne.<br />
-    Courriel : privacy@heroku.com<br />
-    Téléphone : +1 (866) 278-1349<br />
+    Les serveurs sont gérés par la société Render, Inc.<br />
+    Siège social de Render : 340 S Lemon Ave #7160, Walnut, CA 91789, États-Unis<br />
+    Les serveurs sont situés au sein de l'Union européenne, conformément aux obligations de
+    protection des données personnelles.<br />
+    Courriel : privacy@render.com<br />
+    Pour tout contact, veuillez utiliser le formulaire de contact disponible sur leur site officiel
+    : https://render.com
   </p>
   <p>
     Le site utilise des cookies essentiels au bon fonctionnement du site. Ces cookies ne collectent
