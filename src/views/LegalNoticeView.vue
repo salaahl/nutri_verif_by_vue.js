@@ -11,16 +11,6 @@
     >.
   </p>
   <p>
-    Le directeur de publication est
-    <a
-      href="https://www.linkedin.com/in/salaha-sokhona/"
-      class="underline"
-      target="_blank"
-      rel="noopener noreferrer"
-      >Salaha Sokhona</a
-    >.
-  </p>
-  <p>
     Les serveurs sont gérés par la société Render, Inc.<br />
     Siège social de Render : 340 S Lemon Ave #7160, Walnut, CA 91789, États-Unis<br />
     Les serveurs sont situés au sein de l'Union européenne, conformément aux obligations de
