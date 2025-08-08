@@ -40,7 +40,7 @@ onMounted(async () => {
     })
   })
 
-  // Hide the website name in home view
+  // Retirer le nom du site sur la page d'accueil
   const websiteName = document.querySelector('#website-name') as HTMLElement
   if (!websiteName) return
   websiteName.classList.add('opacity-0')
