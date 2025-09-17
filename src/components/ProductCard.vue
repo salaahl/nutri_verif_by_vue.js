@@ -1,8 +1,14 @@
 <script setup lang="ts">
 import { defineProps } from 'vue'
-import { useRoute } from 'vue-router'
+import { useRoute, useRouter } from 'vue-router'
+import { useProducts } from '../composables/useProducts'
 
 const route = useRoute()
+const router = useRouter()
+const {
+  productsIsLoading,
+  searchProducts,
+} = useProducts()
 
 interface ProductProps {
   id: string
@@ -11,9 +17,18 @@ interface ProductProps {
   name?: string
   nutriscore?: string
   nova?: number | string
+  category: string
 }
 
 defineProps<ProductProps>()
+
+const searchProductsByCategory: Function = async (category: string) => {
+  productsIsLoading.value = true
+  await searchProducts(category, null, 'complete')
+  productsIsLoading.value = false
+
+  router.push({ name: 'search' })
+}
 </script>
 
 <template>
@@ -24,7 +39,14 @@ defineProps<ProductProps>()
       class="h-full w-full flex flex-col justify-between"
     >
       <div class="thumbnail h-2/5 md:h-1/2 flex items-center justify-center m-auto aspect-square">
+        <div
+          v-if="productsIsLoading"
+          class="loader-container w-fit flex justify-center items-center m-auto"
+        >
+          <div class="lds-hourglass"></div>
+        </div>
         <img
+          v-if="!productsIsLoading"
           :src="image"
           :alt="brand + ' : ' + name"
           class="h-3/4 w-3/4 object-contain object-center"
@@ -35,7 +57,7 @@ defineProps<ProductProps>()
           <h4 class="title text-ellipsis overflow-hidden">{{ brand }}</h4>
           <h4 class="message text-sm font-thin">{{ name }}</h4>
         </div>
-        <div class="scores md:flex justify-between items-start">
+        <div class="scores">
           <img
             :src="
               'https://static.openfoodfacts.org/images/attributes/dist/nutriscore-' +
@@ -43,15 +65,25 @@ defineProps<ProductProps>()
               '-new-fr.svg'
             "
             :alt="'Nutriscore : ' + nutriscore"
-            class="max-h-[50px]"
+            class="max-h-[40px]"
           />
-          <img
-            :src="
-              'https://static.openfoodfacts.org/images/attributes/dist/nova-group-' + nova + '.svg'
-            "
-            :alt="'Groupe Nova : ' + nova"
-            class="max-h-[40px] mt-2 md:mt-0"
-          />
+          <div class="flex justify-between items-end mt-1">
+            <img
+              :src="
+                'https://static.openfoodfacts.org/images/attributes/dist/nova-group-' + nova + '.svg'
+              "
+              :alt="'Groupe Nova : ' + nova"
+              class="max-h-[30px]"
+            />
+            <!-- ".prevent" permet d'éviter la remontée du clic au RouterLink -->
+            <button
+              v-if="category !== ''"
+              class="product-card-tag max-h-[30px] ml-2 py-1 px-2 truncate text-xs font-semibold bg-white rounded-full"
+              @click.prevent="searchProductsByCategory(category.trim().split(':')[1].replace(/-/g, ' ').trim())"
+            >
+              #{{ category.trim().split(':')[1].replace(/-/g, ' ').trim() }}
+            </button>
+          </div>
         </div>
       </div>
     </RouterLink>
@@ -127,6 +159,21 @@ defineProps<ProductProps>()
 
 .thumbnail img {
   margin: auto;
+}
+
+.product-card-tag {
+  color: black;
+  background-color: white;
+  box-shadow:
+    rgba(255, 255, 255, 0.02) 0px 1px 1px 0px inset,
+    rgba(50, 50, 93, 0.05) 0px 50px 100px -20px,
+    rgba(0, 0, 0, 0.06) 0px 30px 60px -30px;
+  transition: all 0.15s ease-in-out;
+}
+
+.product-card-tag:hover {
+  color: white;
+  background-color: rgb(0, 189, 126);
 }
 
 @media (min-width: 768px) {

@@ -164,6 +164,7 @@ onUnmounted(() => {
           :name="product.name"
           :nutriscore="product.nutriscore"
           :nova="product.nova"
+          :category="product.category"
         />
         <article
           v-if="products.length > 4"
@@ -420,6 +421,7 @@ onUnmounted(() => {
             :name="product.name"
             :nutriscore="product.nutriscore"
             :nova="product.nova"
+            :category="product.category"
           />
         </div>
       </section>
@@ -452,6 +454,7 @@ onUnmounted(() => {
         :generic-name="product.name"
         :nutriscore="product.nutriscore"
         :nova="product.nova"
+        :category="product.category"
       />
     </div>
   </section>

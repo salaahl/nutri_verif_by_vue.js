@@ -210,6 +210,7 @@ onUnmounted(() => {
       :name="product.name"
       :nutriscore="product.nutriscore"
       :nova="product.nova"
+      :category="product.category"
     />
   </section>
   <div id="new-results" class="mb-8">

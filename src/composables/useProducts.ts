@@ -8,6 +8,7 @@ interface Products {
   name: string
   nutriscore: string
   nova: number | string
+  category: string
 }
 
 interface Product {
@@ -36,6 +37,7 @@ interface APIProducts {
   generic_name_fr?: string
   nutriscore_grade?: string
   nova_group?: number | string
+  compared_to_category?: string
 }
 
 interface APIProduct {
@@ -128,7 +130,8 @@ export function useProducts() {
       brand: product.brands ?? '',
       name: product.generic_name_fr ?? '',
       nutriscore: product.nutriscore_grade ?? 'unknown',
-      nova: product.nova_group ?? 'unknown'
+      nova: product.nova_group ?? 'unknown',
+      category: product.compared_to_category ?? ''
     }
   }
 
@@ -169,7 +172,7 @@ export function useProducts() {
       page.value++
     }
 
-    const fields = 'id,image_front_small_url,brands,generic_name_fr,nutriscore_grade,nova_group'
+    const fields = 'id,image_front_small_url,brands,generic_name_fr,nutriscore_grade,nova_group,compared_to_category'
     const route = `${API_BASE_URL}?search_terms=${encodeURIComponent(input.value)}&fields=${encodeURIComponent(fields)}&purchase_places_tags=france&sort_by=${encodeURIComponent(filter.value)}&page_size=20&page=${page.value}&search_simple=1&action=process&json=1`
 
     try {
@@ -207,7 +210,7 @@ export function useProducts() {
 
   async function fetchLastProduct() {
     const fields =
-      'id,image_front_small_url,brands,generic_name_fr,nutriscore_grade,nova_group,created_t,completeness'
+      'id,image_front_small_url,brands,generic_name_fr,nutriscore_grade,nova_group,compared_to_category,created_t,completeness'
     const route = `${API_BASE_URL}?&fields=${encodeURIComponent(fields)}&purchase_places_tags=france&sort_by=created_t&page_size=300&action=process&json=1`
     error.value = null
 
@@ -234,7 +237,7 @@ export function useProducts() {
     category: string = product.category
   ) {
     const fields =
-      'id,image_front_small_url,brands,generic_name_fr,nutriscore_grade,nova_group,completeness,popularity_key'
+      'id,image_front_small_url,brands,generic_name_fr,nutriscore_grade,nova_group,compared_to_category,completeness,popularity_key'
     const route = `https://world.openfoodfacts.org/api/v2/search?categories_tags=${encodeURIComponent(category)}&fields=${encodeURIComponent(fields)}&purchase_places_tags=france&sort_by=nutriscore_score,nova_group,popularity_key&page_size=300&action=process&json=1`
 
     try {
