@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { onMounted, onUnmounted, ref } from 'vue'
+import { onMounted, onUnmounted } from 'vue'
 import { useRouter } from 'vue-router'
 import { useProducts } from '../composables/useProducts'
 import ProductCard from '/src/components/ProductCard.vue'
@@ -45,8 +45,45 @@ onMounted(async () => {
   if (!websiteName) return
   websiteName.classList.add('opacity-0')
 
-  let timer: ReturnType<typeof setTimeout>
+  // Affichage conditionnel de la vidéo Youtube
+  const videoContainer = document.getElementById("video-container") as HTMLElement
+  const cookieAuthorisation = document.getElementById("accept-cookies") as HTMLElement
+  
+  cookieAuthorisation.addEventListener("click", function () {
+    if(!confirm(
+      "Cette vidéo est hébergée par YouTube. Son affichage sur ce site implique le dépôt de cookies par YouTube (Google).\n\nCes cookies sont uniquement liés à la lecture de la vidéo et n’ont pas d’effet sur vos autres services Google.\n\nVoulez-vous les accepter et afficher la vidéo ?"
+    )) {
+      return;
+    }
+    localStorage.setItem("cookiesAccepted", "true");
 
+    // Remplacement du bouton par l'iframe YouTube
+    videoContainer.innerHTML = `
+      <iframe
+        src="https://www.youtube.com/embed/D1jzT02IBRA"
+        class="h-full w-full"
+        title="Open Food Facts - Présentation"
+        allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
+        allowfullscreen
+      ></iframe>
+    `;
+  });
+
+  // Vérification si l'utilisateur a déjà accepté
+  if (localStorage.getItem("cookiesAccepted") === "true") {
+    videoContainer.innerHTML = `
+      <iframe
+        src="https://www.youtube.com/embed/D1jzT02IBRA"
+        class="h-full w-full"
+        title="Open Food Facts - Présentation"
+        allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
+        allowfullscreen
+      ></iframe>
+    `;
+  }
+
+  // Searchbar
+  let timer: ReturnType<typeof setTimeout>
   const searchBar = document.querySelector('#search-bar') as HTMLElement
   if (!searchBar) return
 
@@ -148,13 +185,17 @@ onUnmounted(() => {
   </section>
   <section id="about" class="mb-24">
     <article class="mb-8">
-      <iframe
-        src="https://www.youtube.com/embed/D1jzT02IBRA"
-        class="w-full aspect-[2/1] border-[3px] rounded-xl"
-        title="Open Food Facts - Présentation"
-        allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
-        allowfullscreen
-      ></iframe>
+      <div id="video-container" class="w-full aspect-[2/1] border-[3px] rounded-xl overflow-hidden">
+        <div class="cookies h-full w-full flex items-center justify-center">
+          <button 
+            id="accept-cookies"
+          >
+            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 640 640" class="h-[75px] w-[75px]">
+              <path fill="whitesmoke" d="M187.2 100.9C174.8 94.1 159.8 94.4 147.6 101.6C135.4 108.8 128 121.9 128 136L128 504C128 518.1 135.5 531.2 147.6 538.4C159.7 545.6 174.8 545.9 187.2 539.1L523.2 355.1C536 348.1 544 334.6 544 320C544 305.4 536 291.9 523.2 284.9L187.2 100.9z"/>
+            </svg>
+          </button>
+        </div>
+      </div>
     </article>
     <article>
       <span class="text-highlighted py-1 font-thin">
@@ -455,6 +496,10 @@ h2::first-letter {
 
 .product:nth-of-type(odd) {
   margin-right: 4%;
+}
+
+.cookies {
+  background-image: url(https://i.ytimg.com/vi/D1jzT02IBRA/maxresdefault.jpg?sqp=-oaymwEmCIAKENAF8quKqQMa8AEB-AH-CYAC0AWKAgwIABABGGUgWShUMA8=&rs=AOn4CLC8xWb_RD5Ml98u-0_FNgJbU1WlHQ);
 }
 
 .text-highlighted {
