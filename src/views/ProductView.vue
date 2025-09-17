@@ -48,15 +48,19 @@ async function getTranslatedCategories(product: Product): Promise<string[]> {
   if (!product.categories?.length) return []
 
   const cleanCategory = (cat: string, langPrefix: string) =>
-    cat.trim().replace(new RegExp(`^${langPrefix}:`), '').replace(/-/g, ' ').trim()
+    cat
+      .trim()
+      .replace(new RegExp(`^${langPrefix}:`), '')
+      .replace(/-/g, ' ')
+      .trim()
 
   const frenchCategories: string[] = product.categories
-    .filter(c => c.startsWith('fr:'))
-    .map(c => cleanCategory(c, 'fr'))
+    .filter((c) => c.startsWith('fr:'))
+    .map((c) => cleanCategory(c, 'fr'))
 
   const englishCategories: string[] = product.categories
-    .filter(c => c.startsWith('en:'))
-    .map(c => cleanCategory(c, 'en'))
+    .filter((c) => c.startsWith('en:'))
+    .map((c) => cleanCategory(c, 'en'))
 
   // Limite de 6 catégories TTC
   const categoriesToTranslate: string = englishCategories
@@ -71,7 +75,7 @@ async function getTranslatedCategories(product: Product): Promise<string[]> {
     const response = await fetch('https://jokes-api-platform.onrender.com/translate', {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({ text: categoriesToTranslate, target_lang: 'FR' }),
+      body: JSON.stringify({ text: categoriesToTranslate, target_lang: 'FR' })
     })
 
     if (!response.ok) {
@@ -80,13 +84,13 @@ async function getTranslatedCategories(product: Product): Promise<string[]> {
     }
 
     const data = await response.json()
-    translatedCategories = (data.translations?.[0]?.text.split('<SEP>') ?? []).map((c: string) => c.trim())
-
+    translatedCategories = (data.translations?.[0]?.text.split('<SEP>') ?? []).map((c: string) =>
+      c.trim()
+    )
   } catch (error) {
-    console.error('Erreur pendant la traduction :', error)
-    
     // Je conserve quand même les catégories anglaises
     translatedCategories = englishCategories.slice(0, 6 - frenchCategories.length)
+    console.error('Erreur pendant la traduction :', error)
   }
 
   return [...frenchCategories, ...translatedCategories]
@@ -533,7 +537,9 @@ onBeforeRouteUpdate((to) => {
       id="more-products"
       class="relative min-h-[125px] w-full flex flex-wrap lg:flex-nowrap items-stretch lg:items-center justify-between px-6 py-4 bg-neutral-200 rounded-xl"
     >
-      <h2 class="title w-full lg:w-1/4 mt-4 mb-8 lg:ml-[-0.75rem] lg:m-0 text-center text-3xl lg:text-2xl">
+      <h2
+        class="title w-full lg:w-1/4 mt-4 mb-8 lg:ml-[-0.75rem] lg:m-0 text-center text-3xl lg:text-2xl"
+      >
         Alternatives
       </h2>
       <div

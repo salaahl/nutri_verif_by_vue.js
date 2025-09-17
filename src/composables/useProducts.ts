@@ -46,7 +46,7 @@ interface APIProduct {
   brands?: string
   generic_name_fr?: string
   compared_to_category?: string
-  categories?: string
+  categories_hierarchy?: string[]
   last_updated_t?: number
   nutriscore_grade?: string
   nova_group?: number | string
@@ -142,7 +142,7 @@ export function useProducts() {
       brand: product.brands ?? '',
       generic_name: product.generic_name_fr ?? '',
       category: product.compared_to_category ?? '',
-      categories: product.categories?.split(',') ?? [],
+      categories: product.categories_hierarchy ?? [],
       lastUpdate: product.last_updated_t
         ? new Date(product.last_updated_t * 1000).toLocaleDateString('fr-FR')
         : '',
@@ -172,7 +172,8 @@ export function useProducts() {
       page.value++
     }
 
-    const fields = 'id,image_front_small_url,brands,generic_name_fr,nutriscore_grade,nova_group,compared_to_category'
+    const fields =
+      'id,image_front_small_url,brands,generic_name_fr,nutriscore_grade,nova_group,compared_to_category'
     const route = `${API_BASE_URL}?search_terms=${encodeURIComponent(input.value)}&fields=${encodeURIComponent(fields)}&purchase_places_tags=france&sort_by=${encodeURIComponent(filter.value)}&page_size=20&page=${page.value}&search_simple=1&action=process&json=1`
 
     try {
