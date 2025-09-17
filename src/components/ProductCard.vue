@@ -77,9 +77,9 @@ const searchProductsByCategory: Function = async (category: string) => {
             />
             <!-- ".prevent" permet d'éviter la remontée du clic au RouterLink -->
             <button
-              v-if="category !== ''"
-              class="product-card-tag max-h-[30px] ml-2 py-1 px-2 truncate text-xs font-semibold bg-white rounded-full"
-              @click.prevent="searchProductsByCategory(category.trim().split(':')[1].replace(/-/g, ' ').trim())"
+              v-if="category !== '' && category.startsWith('fr:')"
+              class="product-card-tag max-h-[30px] ml-4 md:ml-6 py-1 px-2 truncate text-xs font-semibold bg-white rounded-full"
+              @click.prevent="searchProductsByCategory(category.split(':')[1].replace(/-/g, ' ').trim())"
             >
               #{{ category.trim().split(':')[1].replace(/-/g, ' ').trim() }}
             </button>
