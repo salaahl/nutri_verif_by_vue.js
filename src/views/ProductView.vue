@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { onBeforeMount, computed } from 'vue'
+import { onBeforeMount } from 'vue'
 import { useRoute, useRouter, onBeforeRouteUpdate } from 'vue-router'
 import { useProducts } from '../composables/useProducts'
 import ProductCard from '/src/components/ProductCard.vue'
@@ -40,13 +40,57 @@ const nutrimentsKeys = [
   'proteins_serving'
 ]
 
-const filteredCategories = computed<string[]>(() => {
+interface Product {
+  categories?: string[]
+}
+
+async function getTranslatedCategories(product: Product): Promise<string[]> {
   if (!product.categories?.length) return []
 
-  return product.categories
-    .filter((category: string) => category.trim().startsWith('fr:'))
-    .map((category: string) => category.trim().replace(/^fr:/, '').replace(/-/g, ' ').trim())
-})
+  const cleanCategory = (cat: string, langPrefix: string) =>
+    cat.trim().replace(new RegExp(`^${langPrefix}:`), '').replace(/-/g, ' ').trim()
+
+  const frenchCategories: string[] = product.categories
+    .filter(c => c.startsWith('fr:'))
+    .map(c => cleanCategory(c, 'fr'))
+
+  const englishCategories: string[] = product.categories
+    .filter(c => c.startsWith('en:'))
+    .map(c => cleanCategory(c, 'en'))
+
+  // Limite de 6 catégories TTC
+  const categoriesToTranslate: string = englishCategories
+    .slice(0, 6 - frenchCategories.length)
+    .join('<SEP>')
+
+  if (!categoriesToTranslate) return frenchCategories
+
+  let translatedCategories: string[] = []
+
+  try {
+    const response = await fetch('https://jokes-api-platform.onrender.com/translate', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ text: categoriesToTranslate, target_lang: 'FR' }),
+    })
+
+    if (!response.ok) {
+      const errorText = await response.text()
+      throw new Error(`Erreur HTTP ${response.status}: ${errorText}`)
+    }
+
+    const data = await response.json()
+    translatedCategories = (data.translations?.[0]?.text.split('<SEP>') ?? []).map((c: string) => c.trim())
+
+  } catch (error) {
+    console.error('Erreur pendant la traduction :', error)
+    
+    // Je conserve quand même les catégories anglaises
+    translatedCategories = englishCategories.slice(0, 6 - frenchCategories.length)
+  }
+
+  return [...frenchCategories, ...translatedCategories]
+}
 
 const searchProductsByCategory: Function = async (category: string) => {
   productsIsLoading.value = true
@@ -86,6 +130,7 @@ const updateProduct = async (productId: string) => {
 
 onBeforeMount(async () => {
   await fetchProduct(Array.isArray(route.params.id) ? route.params.id[0] : route.params.id)
+  product.categories = await getTranslatedCategories(product)
 
   if (product.nutriscore !== 'a' || product.novaGroup !== 'a')
     fetchSuggestedProducts(product.id, product.category)
@@ -462,7 +507,7 @@ onBeforeRouteUpdate((to) => {
               product.link
             }}</a>
           </h4>
-          <div v-if="filteredCategories.length" id="tags" class="relative mt-4">
+          <div v-if="product.categories.length" id="tags" class="relative mt-4">
             <div
               v-if="productsIsLoading"
               class="loader-container absolute h-full w-full flex justify-center items-center bg-[whitesmoke]"
@@ -470,7 +515,7 @@ onBeforeRouteUpdate((to) => {
               <div class="lds-hourglass"></div>
             </div>
             <button
-              v-for="category in filteredCategories"
+              v-for="category in product.categories"
               :key="category"
               class="tag mt-2 mr-2 py-2 px-3 text-sm font-semibold text-white bg-neutral-400 text-white rounded-full"
               @click="searchProductsByCategory(category)"
