@@ -2,7 +2,7 @@
 
 **Application web de food checking** basée sur l'API [OpenFoodFacts](https://world.openfoodfacts.org/), permettant de rechercher et évaluer la qualité nutritionnelle des produits alimentaires.
 
-🌐 [Accéder à l'application](https://nutriverif-71662e666d39.herokuapp.com)
+🌐 [Accéder à l'application](https://nutriverif.onrender.com)
 
 ---
 
@@ -57,3 +57,4 @@ Développé dans le cadre d'une démarche personnelle de veille et de pratique c
 ⚠️ Conditions d'utilisation
 Ce projet est mis à disposition à des fins de consultation uniquement.
 Toute reproduction, modification, ou réutilisation du code sans autorisation écrite est interdite.
+
