@@ -162,6 +162,7 @@ const searchProductsByCategory: Function = async (category: string) => {
 }
 
 .product-card-tag {
+  font-size: 10px;
   color: black;
   background-color: white;
   box-shadow:
