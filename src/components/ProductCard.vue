@@ -38,7 +38,7 @@ const searchProductsByCategory: Function = async (category: string) => {
       :to="'/product/' + id"
       class="h-full w-full flex flex-col justify-between"
     >
-      <div class="thumbnail h-2/5 md:h-1/2 flex items-center justify-center m-auto aspect-square">
+      <div class="thumbnail h-2/5 flex items-center justify-center m-auto aspect-square">
         <div
           v-if="productsIsLoading"
           class="loader-container w-fit flex justify-center items-center m-auto"
@@ -52,10 +52,10 @@ const searchProductsByCategory: Function = async (category: string) => {
           class="h-3/4 w-3/4 object-contain object-center"
         />
       </div>
-      <div class="details h-3/5 md:h-1/2 flex flex-col justify-between">
+      <div class="details h-3/5 flex flex-col justify-between">
         <div class="mt-2">
           <h4 class="title text-sm text-ellipsis overflow-hidden">{{ brand }}</h4>
-          <h4 class="text-xs color-[grey]">{{ name }}</h4>
+          <h4 class="mt-[8px] text-xs color-[grey]">{{ name }}</h4>
         </div>
         <div class="scores">
           <img
