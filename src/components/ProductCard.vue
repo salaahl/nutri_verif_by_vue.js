@@ -54,8 +54,8 @@ const searchProductsByCategory: Function = async (category: string) => {
       </div>
       <div class="details h-3/5 md:h-1/2 flex flex-col justify-between">
         <div class="mt-2">
-          <h4 class="title text-ellipsis overflow-hidden">{{ brand }}</h4>
-          <h4 class="message text-sm font-thin">{{ name }}</h4>
+          <h4 class="title text-sm text-ellipsis overflow-hidden">{{ brand }}</h4>
+          <h4 class="text-xs color-[grey]">{{ name }}</h4>
         </div>
         <div class="scores">
           <img
