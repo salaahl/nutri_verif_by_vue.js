@@ -5,10 +5,7 @@ import { useProducts } from '../composables/useProducts'
 
 const route = useRoute()
 const router = useRouter()
-const {
-  productsIsLoading,
-  searchProducts,
-} = useProducts()
+const { productsIsLoading, searchProducts } = useProducts()
 
 interface ProductProps {
   id: string
@@ -23,9 +20,7 @@ interface ProductProps {
 defineProps<ProductProps>()
 
 const searchProductsByCategory: Function = async (category: string) => {
-  productsIsLoading.value = true
   await searchProducts(category, null, 'complete')
-  productsIsLoading.value = false
 
   router.push({ name: 'search' })
 }
@@ -53,7 +48,7 @@ const searchProductsByCategory: Function = async (category: string) => {
         />
       </div>
       <div class="details h-3/5 flex flex-col justify-between">
-        <div class="mt-2">
+        <div class="mt-3">
           <h4 class="title text-sm text-ellipsis overflow-hidden">{{ brand }}</h4>
           <h4 class="mt-[4px] text-xs color-[grey]">{{ name }}</h4>
         </div>
@@ -65,12 +60,14 @@ const searchProductsByCategory: Function = async (category: string) => {
               '-new-fr.svg'
             "
             :alt="'Nutriscore : ' + nutriscore"
-            class="max-h-[40px]"
+            class="max-h-[35px]"
           />
           <div class="flex justify-between items-end mt-1">
             <img
               :src="
-                'https://static.openfoodfacts.org/images/attributes/dist/nova-group-' + nova + '.svg'
+                'https://static.openfoodfacts.org/images/attributes/dist/nova-group-' +
+                nova +
+                '.svg'
               "
               :alt="'Groupe Nova : ' + nova"
               class="max-h-[30px]"
@@ -79,7 +76,9 @@ const searchProductsByCategory: Function = async (category: string) => {
             <button
               v-if="category !== '' && category.startsWith('fr:')"
               class="product-card-tag max-h-[30px] ml-4 md:ml-6 py-1 px-2 truncate text-xs font-semibold bg-white rounded-full"
-              @click.prevent="searchProductsByCategory(category.split(':')[1].replace(/-/g, ' ').trim())"
+              @click.prevent="
+                searchProductsByCategory(category.split(':')[1].replace(/-/g, ' ').trim())
+              "
             >
               #{{ category.trim().split(':')[1].replace(/-/g, ' ').trim() }}
             </button>

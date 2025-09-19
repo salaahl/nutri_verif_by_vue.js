@@ -296,6 +296,58 @@ export function useProducts() {
     }
   }
 
+  async function getTranslatedCategories(categories: string[]): Promise<string[]> {
+    if (!categories?.length) return []
+
+    const cleanCategory = (cat: string, langPrefix: string) =>
+      cat
+        .trim()
+        .replace(new RegExp(`^${langPrefix}:`), '')
+        .replace(/-/g, ' ')
+        .trim()
+
+    const frenchCategories: string[] = categories
+      .filter((c) => c.startsWith('fr:'))
+      .map((c) => cleanCategory(c, 'fr'))
+
+    const englishCategories: string[] = categories
+      .filter((c) => c.startsWith('en:'))
+      .map((c) => cleanCategory(c, 'en'))
+
+    // Limite de 6 catégories TTC
+    const categoriesToTranslate: string = englishCategories
+      .slice(0, 6 - frenchCategories.length)
+      .join('<SEP>')
+
+    if (!categoriesToTranslate) return frenchCategories
+
+    let translatedCategories: string[] = []
+
+    try {
+      const response = await fetch('https://jokes-api-platform.onrender.com/translate', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ text: categoriesToTranslate, target_lang: 'FR' })
+      })
+
+      if (!response.ok) {
+        const errorText = await response.text()
+        throw new Error(`Erreur HTTP ${response.status}: ${errorText}`)
+      }
+
+      const data = await response.json()
+      translatedCategories = (data.translations?.[0]?.text.split('<SEP>') ?? []).map((c: string) =>
+        c.trim()
+      )
+    } catch (error) {
+      // Je conserve quand même les catégories anglaises
+      translatedCategories = englishCategories.slice(0, 6 - frenchCategories.length)
+      console.error('Erreur pendant la traduction :', error)
+    }
+
+    return [...frenchCategories, ...translatedCategories]
+  }
+
   return {
     products,
     productsIsLoading,
@@ -316,6 +368,7 @@ export function useProducts() {
     searchProducts,
     fetchProduct,
     fetchLastProduct,
-    fetchSuggestedProducts
+    fetchSuggestedProducts,
+    getTranslatedCategories
   }
 }

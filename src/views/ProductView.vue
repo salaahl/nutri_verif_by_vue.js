@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { onBeforeMount } from 'vue'
+import { onBeforeMount, ref } from 'vue'
 import { useRoute, useRouter, onBeforeRouteUpdate } from 'vue-router'
 import { useProducts } from '../composables/useProducts'
 import ProductCard from '/src/components/ProductCard.vue'
@@ -8,7 +8,6 @@ const router = useRouter()
 const route = useRoute()
 
 const {
-  productsIsLoading,
   searchProducts,
   product,
   productIsLoading,
@@ -18,7 +17,8 @@ const {
   fetchProduct,
   novaDescription,
   ajrSelected,
-  ajrValues
+  ajrValues,
+  getTranslatedCategories
 } = useProducts()
 
 const nutrimentsKeys = [
@@ -40,66 +40,10 @@ const nutrimentsKeys = [
   'proteins_serving'
 ]
 
-interface Product {
-  categories?: string[]
-}
-
-async function getTranslatedCategories(product: Product): Promise<string[]> {
-  if (!product.categories?.length) return []
-
-  const cleanCategory = (cat: string, langPrefix: string) =>
-    cat
-      .trim()
-      .replace(new RegExp(`^${langPrefix}:`), '')
-      .replace(/-/g, ' ')
-      .trim()
-
-  const frenchCategories: string[] = product.categories
-    .filter((c) => c.startsWith('fr:'))
-    .map((c) => cleanCategory(c, 'fr'))
-
-  const englishCategories: string[] = product.categories
-    .filter((c) => c.startsWith('en:'))
-    .map((c) => cleanCategory(c, 'en'))
-
-  // Limite de 6 catégories TTC
-  const categoriesToTranslate: string = englishCategories
-    .slice(0, 6 - frenchCategories.length)
-    .join('<SEP>')
-
-  if (!categoriesToTranslate) return frenchCategories
-
-  let translatedCategories: string[] = []
-
-  try {
-    const response = await fetch('https://jokes-api-platform.onrender.com/translate', {
-      method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({ text: categoriesToTranslate, target_lang: 'FR' })
-    })
-
-    if (!response.ok) {
-      const errorText = await response.text()
-      throw new Error(`Erreur HTTP ${response.status}: ${errorText}`)
-    }
-
-    const data = await response.json()
-    translatedCategories = (data.translations?.[0]?.text.split('<SEP>') ?? []).map((c: string) =>
-      c.trim()
-    )
-  } catch (error) {
-    // Je conserve quand même les catégories anglaises
-    translatedCategories = englishCategories.slice(0, 6 - frenchCategories.length)
-    console.error('Erreur pendant la traduction :', error)
-  }
-
-  return [...frenchCategories, ...translatedCategories]
-}
+const categoriesIsLoading = ref(false)
 
 const searchProductsByCategory: Function = async (category: string) => {
-  productsIsLoading.value = true
   await searchProducts(category, null, 'complete')
-  productsIsLoading.value = false
 
   router.push({ name: 'search' })
 }
@@ -123,25 +67,31 @@ const resetProduct = () => {
     link: ''
   })
 }
-
-// Update product when route changes
+// Chargement du produit et des suggestions
 const updateProduct = async (productId: string) => {
   resetProduct()
 
   await fetchProduct(productId)
-  fetchSuggestedProducts(productId, product.category)
+  categoriesIsLoading.value = true
+  product.categories = await getTranslatedCategories(product.categories)
+  categoriesIsLoading.value = false
+
+  if (product.nutriscore !== 'a' || product.novaGroup !== 'a')
+    fetchSuggestedProducts(productId, product.category)
 }
 
 onBeforeMount(async () => {
   await fetchProduct(Array.isArray(route.params.id) ? route.params.id[0] : route.params.id)
-  product.categories = await getTranslatedCategories(product)
+  categoriesIsLoading.value = true
+  product.categories = await getTranslatedCategories(product.categories)
+  categoriesIsLoading.value = false
 
   if (product.nutriscore !== 'a' || product.novaGroup !== 'a')
     fetchSuggestedProducts(product.id, product.category)
 })
 
 onBeforeRouteUpdate((to) => {
-  updateProduct(Array.isArray(to.params.id) ? to.params.id[0] : to.params.id) // Update product when route changes
+  updateProduct(Array.isArray(to.params.id) ? to.params.id[0] : to.params.id) // Mise à jour du produit avec le nouvel ID
 })
 </script>
 
@@ -513,7 +463,7 @@ onBeforeRouteUpdate((to) => {
           </h4>
           <div v-if="product.categories.length" id="tags" class="relative mt-4">
             <div
-              v-if="productsIsLoading"
+              v-if="categoriesIsLoading"
               class="loader-container absolute h-full w-full flex justify-center items-center bg-[whitesmoke]"
             >
               <div class="lds-hourglass"></div>
