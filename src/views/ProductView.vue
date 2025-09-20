@@ -11,6 +11,7 @@ const {
   searchProducts,
   product,
   productIsLoading,
+  productsIsLoading,
   fetchSuggestedProducts,
   suggestedProductsIsLoading,
   suggestedProducts,
@@ -43,7 +44,9 @@ const nutrimentsKeys = [
 const categoriesIsLoading = ref(false)
 
 const searchProductsByCategory: Function = async (category: string) => {
+  productsIsLoading.value = true
   await searchProducts(category, null, 'complete')
+  productsIsLoading.value = false
 
   router.push({ name: 'search' })
 }
@@ -463,7 +466,7 @@ onBeforeRouteUpdate((to) => {
           </h4>
           <div v-if="product.categories.length" id="tags" class="relative mt-4">
             <div
-              v-if="categoriesIsLoading"
+              v-if="categoriesIsLoading || productsIsLoading"
               class="loader-container absolute h-full w-full flex justify-center items-center bg-[whitesmoke]"
             >
               <div class="lds-hourglass"></div>
