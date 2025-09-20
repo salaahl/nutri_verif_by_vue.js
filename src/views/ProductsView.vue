@@ -200,7 +200,13 @@ onUnmounted(() => {
       </div>
     </form>
   </section>
-  <section id="search-results">
+  <section
+    id="search-results"
+    :class="
+      'xs:bg-gray-200 xs:rounded-[10px] transition-[transform,opacity] duration-[1500ms] ease-in-out' +
+      (products.length === 0 ? '' : ' show')
+    "
+  >
     <ProductCard
       v-for="product in products"
       :key="product.id"
@@ -242,6 +248,22 @@ onUnmounted(() => {
 #search-results {
   display: flex;
   flex-wrap: wrap;
+  opacity: 0;
+  padding: 0;
+  transform: translateY(-100px);
+  transition:
+    opacity 0.25s ease-out,
+    transform 0.25s ease-out,
+    padding 0s 0.25s;
+}
+
+#search-results.show {
+  opacity: 1;
+  transform: translateY(0);
+  transition:
+    opacity 0.25s ease-in,
+    transform 0.25s ease-in,
+    padding 0s;
 }
 
 #search-bar .lds-hourglass:after {
@@ -257,10 +279,19 @@ onUnmounted(() => {
 }
 
 .product {
-  width: 45%;
-  margin-left: 2.5%;
-  margin-right: 2.5%;
+  width: 48%;
+  margin-right: 4%;
   margin-bottom: 2rem;
+}
+
+.product:nth-of-type(2n) {
+  margin-right: unset;
+}
+
+@media (min-width: 375px) {
+  #search-results.show {
+    padding: 1rem;
+  }
 }
 
 @media (min-width: 768px) and (max-width: 1023px) {
