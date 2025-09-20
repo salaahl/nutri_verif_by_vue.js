@@ -49,8 +49,8 @@ const searchProductsByCategory: Function = async (category: string) => {
       </div>
       <div class="details h-3/5 flex flex-col justify-between">
         <div class="mt-3">
-          <h4 class="title text-sm text-ellipsis overflow-hidden">{{ brand }}</h4>
-          <h4 class="mt-[4px] text-xs color-[grey]">{{ name }}</h4>
+          <h4 class="title text-sm lg:text-base font-bold text-ellipsis overflow-hidden">{{ brand }}</h4>
+          <h4 class="mt-[4px] text-xs lg:text-sm color-[grey]">{{ name }}</h4>
         </div>
         <div class="scores">
           <img
@@ -60,7 +60,7 @@ const searchProductsByCategory: Function = async (category: string) => {
               '-new-fr.svg'
             "
             :alt="'Nutriscore : ' + nutriscore"
-            class="max-h-[35px]"
+            class="max-h-[35px] lg:max-h-[45px]"
           />
           <div class="flex justify-between items-end mt-1">
             <img
@@ -70,12 +70,12 @@ const searchProductsByCategory: Function = async (category: string) => {
                 '.svg'
               "
               :alt="'Groupe Nova : ' + nova"
-              class="max-h-[30px]"
+              class="max-h-[25px] md:max-h-[35px]"
             />
             <!-- ".prevent" permet d'éviter la remontée du clic au RouterLink -->
             <button
               v-if="category !== '' && category.startsWith('fr:')"
-              class="product-card-tag max-h-[30px] ml-2 md:ml-6 py-1 px-2 truncate text-xs font-semibold bg-white rounded-full"
+              class="product-card-tag max-h-[30px] ml-2 md:ml-6 py-1 lg:py-1.5 px-2 truncate text-[10px] lg:text-xs font-semibold bg-white rounded-full"
               @click.prevent="
                 searchProductsByCategory(category.split(':')[1].replace(/-/g, ' ').trim())
               "
@@ -161,7 +161,6 @@ const searchProductsByCategory: Function = async (category: string) => {
 }
 
 .product-card-tag {
-  font-size: 10px;
   color: black;
   background-color: white;
   box-shadow:

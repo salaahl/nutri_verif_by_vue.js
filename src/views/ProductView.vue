@@ -144,7 +144,7 @@ onBeforeRouteUpdate((to) => {
           <div class="scores mt-8">
             <img
               id="nutriscore-img"
-              class="max-w-[100px] md:max-w-[115px]"
+              class="max-w-[100px]"
               :src="
                 'https://static.openfoodfacts.org/images/attributes/dist/nutriscore-' +
                 product.nutriscore +
@@ -154,7 +154,7 @@ onBeforeRouteUpdate((to) => {
             />
             <img
               id="nova-group-img"
-              class="max-h-[50px] md:max-h-[60px] mt-2"
+              class="max-h-[50px] mt-2"
               :src="
                 'https://static.openfoodfacts.org/images/attributes/dist/nova-group-' +
                 product.novaGroup +

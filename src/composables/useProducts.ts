@@ -314,9 +314,9 @@ export function useProducts() {
       .filter((c) => c.startsWith('en:'))
       .map((c) => cleanCategory(c, 'en'))
 
-    // Limite de 6 catégories TTC
+    // Limite de 4 catégories TTC
     const categoriesToTranslate: string = englishCategories
-      .slice(0, 6 - frenchCategories.length)
+      .slice(0, 4 - frenchCategories.length)
       .join('<SEP>')
 
     if (!categoriesToTranslate) return frenchCategories
@@ -341,7 +341,7 @@ export function useProducts() {
       )
     } catch (error) {
       // Je conserve quand même les catégories anglaises
-      translatedCategories = englishCategories.slice(0, 6 - frenchCategories.length)
+      translatedCategories = englishCategories.slice(0, 4 - frenchCategories.length)
       console.error('Erreur pendant la traduction :', error)
     }
 
