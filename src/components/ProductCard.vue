@@ -50,17 +50,17 @@ const searchProductsByCategory: Function = async (category: string) => {
       <div class="details h-3/5 flex flex-col justify-between">
         <div class="mt-3">
           <h4 class="title text-sm lg:text-base font-bold text-ellipsis overflow-hidden">{{ brand }}</h4>
-          <h4 class="mt-[4px] text-xs lg:text-sm color-[grey]">{{ name }}</h4>
+          <h4 class="mt-[4px] text-xs lg:text-sm text-gray-600">{{ name }}</h4>
         </div>
         <div class="scores">
           <img
             :src="
               'https://static.openfoodfacts.org/images/attributes/dist/nutriscore-' +
               nutriscore +
-              '-new-fr.svg'
+              '.svg'
             "
             :alt="'Nutriscore : ' + nutriscore"
-            class="max-h-[35px] lg:max-h-[45px]"
+            class="h-[40px]"
           />
           <div class="flex justify-between items-end mt-1">
             <img
@@ -70,7 +70,7 @@ const searchProductsByCategory: Function = async (category: string) => {
                 '.svg'
               "
               :alt="'Groupe Nova : ' + nova"
-              class="max-h-[25px] md:max-h-[35px]"
+              class="h-[35px]"
             />
             <!-- ".prevent" permet d'éviter la remontée du clic au RouterLink -->
             <button

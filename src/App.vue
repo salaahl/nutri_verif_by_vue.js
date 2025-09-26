@@ -90,6 +90,10 @@ main {
   width: 100%;
 }
 
+h1::first-letter {
+  font-weight: bold;
+}
+
 .radio-toolbar input[type='radio'] {
   display: none;
 }

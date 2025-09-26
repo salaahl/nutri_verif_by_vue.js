@@ -3,7 +3,7 @@ import { onMounted, onUnmounted } from 'vue'
 
 onMounted(() => {
   const websiteName = document.querySelector('#website-name > span') as HTMLElement
-  if (!document.querySelector('.title > span')) return
+  if (!document.querySelector('h2')) return
   websiteName.style.color = 'red'
 
   const body = document.querySelector('body') as HTMLElement
@@ -11,7 +11,7 @@ onMounted(() => {
   body.style.backgroundColor = 'hsla(160, 100%, 37%, 0.6)'
 
   setTimeout(() => {
-    const title = document.querySelector('.title > span') as HTMLElement
+    const title = document.querySelector('h2') as HTMLElement
     if (!title) return
     title.style.backgroundSize = '100% 100%'
   }, 1000)
@@ -32,8 +32,9 @@ onUnmounted(() => {
   <h1
     class="title flex flex-col items-center md:translate-y-[-100px] text-xl md:text-2xl text-center uppercase"
   >
-    A propos de nous <span class="text-xs">(et un peu d'Open Food Facts)</span>
+    A propos de nous
   </h1>
+  <h2 class="w-fit mx-auto text-xs">(et un peu d'Open Food Facts)</h2>
   <p class="text-center">
     NutriVérif est une application web de food checking alimentée par la base de données d'Open Food
     Facts et developpée par
@@ -58,7 +59,11 @@ onUnmounted(() => {
 </template>
 
 <style scoped>
-.title > span {
+.title::first-letter {
+  font-weight: bold;
+}
+
+h2 {
   text-decoration: none;
   background: linear-gradient(to top, red 0%, red 10%, transparent 20%) no-repeat left bottom / 0
     100%;

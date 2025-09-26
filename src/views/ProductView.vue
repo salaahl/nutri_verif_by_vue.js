@@ -151,7 +151,7 @@ onBeforeRouteUpdate((to) => {
               :src="
                 'https://static.openfoodfacts.org/images/attributes/dist/nutriscore-' +
                 product.nutriscore +
-                '-new-fr.svg'
+                '.svg'
               "
               :alt="'Nutriscore : ' + product.nutriscore"
             />

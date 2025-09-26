@@ -183,7 +183,7 @@ onUnmounted(() => {
       </div>
     </div>
     <h3 id="total-products" class="my-8 text-2xl lg:text-3xl text-center">
-      + de 3 819 363 produits référencés
+      + de 4 034 279 produits référencés
     </h3>
   </section>
   <section id="about" class="mb-24">
@@ -202,16 +202,16 @@ onUnmounted(() => {
       </div>
     </article>
     <article>
-      <span class="text-highlighted py-1 font-thin">
+      <span class="text-highlighted py-[2.5px] font-[200]">
         NutriVérif est alimentée par "Open Food Facts", une base de données de produits alimentaires
         créée par tous et pour tous.
       </span>
       <div class="my-2"></div>
-      <span class="text-highlighted py-1 font-thin">
+      <span class="text-highlighted py-[2.5px] font-[200]">
         Vous pouvez l'utiliser pour faire de meilleurs choix alimentaires, et comme les données sont
         ouvertes, tout le monde peut les réutiliser pour tout usage.
       </span>
-      <RouterLink :to="'/about'" class="flex items-center w-fit mt-2">
+      <RouterLink :to="'/about'" class="flex items-center w-fit mt-4 py-1 px-3 bg-white rounded-full transition ease-in-out duration-300 hover:translate-x-1 hover:bg-[#00bd7e]">
         En savoir plus
         <svg class="h-[15px] w-auto ml-2" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 448 512">
           <path
@@ -326,7 +326,7 @@ onUnmounted(() => {
                   :src="
                     'https://static.openfoodfacts.org/images/attributes/dist/nutriscore-' +
                     product.nutriscore +
-                    '-new-fr.svg'
+                    '.svg'
                   "
                   :alt="'Nutriscore : ' + product.nutriscore"
                 />
