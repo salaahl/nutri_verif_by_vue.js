@@ -56,7 +56,7 @@ const resetProduct = () => {
     id: '',
     image: '',
     brand: '',
-    generic_name: '',
+    name: '',
     categories: [],
     lastUpdate: '',
     nutriscore: 'unknown',
@@ -80,7 +80,14 @@ const updateProduct = async (productId: string) => {
   categoriesIsLoading.value = false
 
   if (product.nutriscore !== 'a' || product.novaGroup !== 'a')
-    fetchSuggestedProducts(productId, product.category)
+    fetchSuggestedProducts(
+      productId,
+      product.brand,
+      product.name,
+      product.nutriscore,
+      product.novaGroup,
+      product.categories
+    )
 }
 
 onBeforeMount(async () => {
@@ -90,7 +97,14 @@ onBeforeMount(async () => {
   categoriesIsLoading.value = false
 
   if (product.nutriscore !== 'a' || product.novaGroup !== 'a')
-    fetchSuggestedProducts(product.id, product.category)
+    fetchSuggestedProducts(
+      product.id,
+      product.brand,
+      product.name,
+      product.nutriscore,
+      product.novaGroup,
+      product.categories
+    )
 })
 
 onBeforeRouteUpdate((to) => {
@@ -116,7 +130,7 @@ onBeforeRouteUpdate((to) => {
         <img
           id="product-img"
           :src="product.image"
-          :alt="product.generic_name"
+          :alt="product.name"
           class="h-auto max-h-72 lg:max-h-full w-auto max-w-[70%] m-auto"
         />
       </div>
@@ -136,8 +150,8 @@ onBeforeRouteUpdate((to) => {
               <span v-if="product.brand" id="brand" class="font-semibold text-[#00bd7e]"
                 >{{ product.brand }} -
               </span>
-              <span v-if="product.generic_name" id="generic-name" class="font-semibold">{{
-                product.generic_name
+              <span v-if="product.name" id="generic-name" class="font-semibold">{{
+                product.name
               }}</span>
             </h1>
             <h3 v-if="product.lastUpdate" class="mt-2 text-sm">

@@ -106,7 +106,7 @@ onMounted(async () => {
     }, 1000)
   })
 
-  await fetchProduct('8000500310427')
+  await fetchProduct('3608580758686')
   fetchSuggestedProducts()
   fetchLastProduct()
 })
@@ -211,7 +211,10 @@ onUnmounted(() => {
         Vous pouvez l'utiliser pour faire de meilleurs choix alimentaires, et comme les données sont
         ouvertes, tout le monde peut les réutiliser pour tout usage.
       </span>
-      <RouterLink :to="'/about'" class="flex items-center w-fit mt-4 py-1 px-3 bg-white rounded-full transition ease-in-out duration-300 hover:translate-x-1 hover:bg-[#00bd7e]">
+      <RouterLink
+        :to="'/about'"
+        class="flex items-center w-fit mt-4 py-1 px-3 bg-white rounded-full transition ease-in-out duration-300 hover:translate-x-1 hover:bg-[#00bd7e]"
+      >
         En savoir plus
         <svg class="h-[15px] w-auto ml-2" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 448 512">
           <path
@@ -291,7 +294,7 @@ onUnmounted(() => {
           <img
             id="product-img"
             :src="product.image"
-            :alt="product.generic_name"
+            :alt="product.name"
             class="h-auto max-h-72 lg:max-h-full w-auto max-w-[70%] m-auto"
           />
         </div>
@@ -310,9 +313,7 @@ onUnmounted(() => {
                 <span v-if="product.brand" id="brand" class="text-[#00bd7e]"
                   >{{ product.brand }} -
                 </span>
-                <span v-if="product.generic_name" id="generic-name">{{
-                  product.generic_name
-                }}</span>
+                <span v-if="product.name" id="generic-name">{{ product.name }}</span>
               </h3>
               <h4 v-if="product.lastUpdate" class="text-sm">
                 Dernière mise à jour : <span id="last-update">{{ product.lastUpdate }}</span>

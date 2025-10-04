@@ -15,8 +15,7 @@ interface Product {
   id: string
   image: string
   brand: string
-  generic_name: string
-  category: string
+  name: string
   categories: string[]
   lastUpdate: string
   nutriscore: string
@@ -37,7 +36,7 @@ interface APIProducts {
   generic_name_fr?: string
   nutriscore_grade?: string
   nova_group?: number | string
-  compared_to_category?: string
+  categories_hierarchy?: string[]
 }
 
 interface APIProduct {
@@ -45,7 +44,6 @@ interface APIProduct {
   image_front_url?: string
   brands?: string
   generic_name_fr?: string
-  compared_to_category?: string
   categories_hierarchy?: string[]
   last_updated_t?: number
   nutriscore_grade?: string
@@ -62,6 +60,24 @@ interface APIProduct {
 type SearchMethod = 'complete' | 'more'
 
 const API_BASE_URL = 'https://world.openfoodfacts.org/cgi/search.pl'
+
+async function fetchWithTimeout(
+  resource: string,
+  options: { timeout?: number; method?: string; headers?: HeadersInit; body?: string } = {}
+) {
+  const { timeout = 10000 } = options
+
+  const controller = new AbortController()
+  const id = setTimeout(() => controller.abort(), timeout)
+
+  const response = await fetch(resource, {
+    ...options,
+    signal: controller.signal
+  })
+
+  clearTimeout(id)
+  return response
+}
 
 export function useProducts() {
   const productsStore = useProductsStore()
@@ -131,7 +147,8 @@ export function useProducts() {
       name: product.generic_name_fr ?? '',
       nutriscore: product.nutriscore_grade ?? 'unknown',
       nova: product.nova_group ?? 'unknown',
-      category: product.compared_to_category ?? ''
+      category:
+        product.categories_hierarchy?.find((category: string) => category.startsWith('fr:')) ?? ''
     }
   }
 
@@ -140,8 +157,7 @@ export function useProducts() {
       id: product.id ?? '',
       image: product.image_front_url ?? '/logo.png',
       brand: product.brands ?? '',
-      generic_name: product.generic_name_fr ?? '',
-      category: product.compared_to_category ?? '',
+      name: product.generic_name_fr ?? '',
       categories: product.categories_hierarchy ?? [],
       lastUpdate: product.last_updated_t
         ? new Date(product.last_updated_t * 1000).toLocaleDateString('fr-FR')
@@ -173,13 +189,13 @@ export function useProducts() {
     }
 
     const fields =
-      'id,image_front_small_url,brands,generic_name_fr,nutriscore_grade,nova_group,compared_to_category'
+      'id,image_front_small_url,brands,generic_name_fr,nutriscore_grade,nova_group,categories_hierarchy'
     const route = `${API_BASE_URL}?search_terms=${encodeURIComponent(input.value)}&fields=${encodeURIComponent(fields)}&purchase_places_tags=france&sort_by=${encodeURIComponent(filter.value)}&page_size=20&page=${page.value}&search_simple=1&action=process&json=1`
 
     try {
       productsIsLoading.value = true
       error.value = null
-      const response = await fetch(route)
+      const response = await fetchWithTimeout(route)
       const data = await response.json()
 
       if (method === 'complete') pages.value = Math.ceil(data.count / 20)
@@ -195,10 +211,12 @@ export function useProducts() {
   async function fetchProduct(id: string) {
     productIsLoading.value = true
     error.value = null
+    const fields =
+      'id,image_front_url,brands,generic_name_fr,categories_hierarchy,last_updated_t,nutriscore_grade,nova_group,quantity,serving_size,ingredients_text_with_allergens_fr,nutriments,nutrient_levels,manufacturing_places,link'
 
     try {
-      const route = `https://world.openfoodfacts.org/api/v3/product/${id}.json`
-      const response = await fetch(route)
+      const route = `https://world.openfoodfacts.org/api/v3/product/${id}&fields=${encodeURIComponent(fields)}&json=1`
+      const response = await fetchWithTimeout(route)
       const data = await response.json()
 
       Object.assign(product, transformProduct(data.product))
@@ -211,13 +229,13 @@ export function useProducts() {
 
   async function fetchLastProduct() {
     const fields =
-      'id,image_front_small_url,brands,generic_name_fr,nutriscore_grade,nova_group,compared_to_category,created_t,completeness'
+      'id,image_front_small_url,brands,generic_name_fr,nutriscore_grade,nova_group,categories_hierarchy,created_t,completeness'
     const route = `${API_BASE_URL}?&fields=${encodeURIComponent(fields)}&purchase_places_tags=france&sort_by=created_t&page_size=300&action=process&json=1`
     error.value = null
 
     try {
       lastProductsIsLoading.value = true
-      const response = await fetch(route)
+      const response = await fetchWithTimeout(route)
       const data = await response.json()
 
       const filteredProducts = data.products
@@ -235,19 +253,22 @@ export function useProducts() {
 
   async function fetchSuggestedProducts(
     id: string = product.id,
-    category: string = product.category
+    brand: string = product.brand,
+    name: string = product.name,
+    nutriscore: string = product.nutriscore,
+    novaGroup: string | number = product.novaGroup,
+    categories: string[] = product.categories
   ) {
-    const fields =
-      'id,image_front_small_url,brands,generic_name_fr,nutriscore_grade,nova_group,compared_to_category,completeness,popularity_key'
-    const route = `https://world.openfoodfacts.org/api/v2/search?categories_tags=${encodeURIComponent(category)}&fields=${encodeURIComponent(fields)}&purchase_places_tags=france&sort_by=nutriscore_score,nova_group,popularity_key&page_size=300&action=process&json=1`
+    let fields = 'id,nutriscore_grade,nova_group,completeness,popularity_key'
+    let route = `${API_BASE_URL}?search_terms=${encodeURIComponent(name ?? brand.split(',')[0])}&categories_tags=${encodeURIComponent(categories.join('|'))}&fields=${encodeURIComponent(fields)}&purchase_places_tags=france&sort_by=nutriscore_score,nova_group,popularity_key&page_size=300&action=process&json=1`
 
     try {
       suggestedProducts.value = []
       suggestedProductsIsLoading.value = true
       error.value = null
 
-      const response = await fetch(route)
-      const data = await response.json()
+      let response = await fetchWithTimeout(route, { timeout: 15000 })
+      let data = await response.json()
 
       /*
        * Les produits suggérés doivent remplir les critères suivants :
@@ -265,10 +286,10 @@ export function useProducts() {
             e.id !== id &&
             e.nutriscore_grade !== 'not-applicable' &&
             e.nutriscore_grade !== 'unknown' &&
-            (score.indexOf(e.nutriscore_grade) < score.indexOf(product.nutriscore) ||
-              (score.indexOf(e.nutriscore_grade) === score.indexOf(product.nutriscore) &&
+            (score.indexOf(e.nutriscore_grade) < score.indexOf(nutriscore) ||
+              (score.indexOf(e.nutriscore_grade) === score.indexOf(nutriscore) &&
                 typeof e.nova_group === 'number' &&
-                e.nova_group < Number(product.novaGroup))) &&
+                e.nova_group < Number(novaGroup))) &&
             e.completeness >= 0.35
         )
         .sort(
@@ -288,7 +309,21 @@ export function useProducts() {
         )
         .slice(0, 4)
 
-      suggestedProducts.value.push(...selectedProducts.map(transformProducts))
+      if (selectedProducts.length) {
+        // Je récupère les informations complètes des produits selectionnés
+        fields =
+          'id,image_front_small_url,brands,generic_name_fr,nutriscore_grade,nova_group,categories_hierarchy,completeness,popularity_key'
+        route = `${API_BASE_URL}?code=${encodeURIComponent(
+          selectedProducts.map((e: { id: string }) => e['id']).join('|')
+        )}
+          &fields=${encodeURIComponent(fields)}
+          &sort_by=nutriscore_score,nova_group,popularity_key&page_size=4&action=process&json=1`
+
+        response = await fetchWithTimeout(route)
+        data = await response.json()
+
+        suggestedProducts.value.push(...data.products.reverse().map(transformProducts))
+      }
     } catch (err: any) {
       error.value = err.message || 'Une erreur est survenue'
     } finally {
@@ -324,7 +359,7 @@ export function useProducts() {
     let translatedCategories: string[] = []
 
     try {
-      const response = await fetch('https://jokes-api-platform.onrender.com/translate', {
+      const response = await fetchWithTimeout('https://jokes-api-platform.onrender.com/translate', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ text: categoriesToTranslate, target_lang: 'FR' })
