@@ -160,7 +160,11 @@ export function useProducts() {
       name: product.generic_name_fr ?? '',
       categories: product.categories_hierarchy ?? [],
       lastUpdate: product.last_updated_t
-        ? new Date(product.last_updated_t * 1000).toLocaleDateString('fr-FR')
+        ? new Date(product.last_updated_t * 1000).toLocaleDateString('fr-FR', {
+            year: 'numeric',
+            month: 'long',
+            day: 'numeric'
+          })
         : '',
       nutriscore: product.nutriscore_grade ?? 'unknown',
       novaGroup: product.nova_group ?? 'unknown',

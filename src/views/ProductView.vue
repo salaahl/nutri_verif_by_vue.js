@@ -116,11 +116,11 @@ onBeforeRouteUpdate((to) => {
   <div
     :key="Array.isArray(route.params.id) ? route.params.id[0] : route.params.id"
     id="product-container"
-    class="md:min-h-[calc(100vh-344px)] flex flex-wrap justify-between md:flex-nowrap flex-col md:flex-row md:mb-8"
+    class="md:min-h-[calc(100vh-204px)] flex flex-wrap justify-between md:flex-nowrap flex-col md:flex-row mb-16"
   >
     <section
       id="product-images-container"
-      class="md:sticky top-[5vh] md:h-[90vh] w-full md:w-2/4 flex items-center justify-center aspect-square md:aspect-auto bg-white rounded-[32px]"
+      class="md:sticky top-[102px] md:max-h-[calc(100vh-204px)] w-full md:w-2/4 flex items-center justify-center md:mr-4 aspect-square md:aspect-auto bg-white rounded-[32px]"
     >
       <div class="flex md:w-full">
         <div
@@ -136,7 +136,7 @@ onBeforeRouteUpdate((to) => {
       </div>
     </section>
 
-    <section id="product-details-container" class="relative w-full md:w-2/4 max-md:my-8 md:pl-6">
+    <section id="product-details-container" class="relative w-full md:w-2/4 max-md:my-8 md:pl-4">
       <div
         v-if="productIsLoading"
         class="loader-container md:absolute h-full w-full flex justify-center items-center"
@@ -146,15 +146,13 @@ onBeforeRouteUpdate((to) => {
       <div id="product-detail" class="h-full">
         <div class="h-full flex flex-col justify-evently">
           <div>
-            <h1 class="title text-xl md:text-2xl">
-              <span v-if="product.brand" id="brand" class="font-semibold text-[#00bd7e]"
-                >{{ product.brand }} -
-              </span>
-              <span v-if="product.name" id="generic-name" class="font-semibold">{{
-                product.name
-              }}</span>
+            <h1 v-if="product.brand" class="title text-xl md:text-2xl font-bold text-[#00bd7e]">
+              {{ product.brand }}
             </h1>
-            <h3 v-if="product.lastUpdate" class="mt-2 text-sm">
+            <h2 v-if="product.name" class="title text-xl md:text-2xl font-bold">
+              {{ product.name }}
+            </h2>
+            <h3 v-if="product.lastUpdate" class="mt-2 text-xs">
               Dernière mise à jour : <span id="last-update">{{ product.lastUpdate }}</span>
             </h3>
           </div>
@@ -171,7 +169,7 @@ onBeforeRouteUpdate((to) => {
             />
             <img
               id="nova-group-img"
-              class="max-h-[50px] mt-2"
+              class="max-w-[25px] mt-2"
               :src="
                 'https://static.openfoodfacts.org/images/attributes/dist/nova-group-' +
                 product.novaGroup +
@@ -499,7 +497,7 @@ onBeforeRouteUpdate((to) => {
     </section>
   </div>
 
-  <aside v-if="suggestedProducts.length || suggestedProductsIsLoading" class="my-16">
+  <aside v-if="suggestedProducts.length || suggestedProductsIsLoading" class="mb-16">
     <section
       id="more-products"
       class="relative min-h-[125px] w-full flex flex-wrap lg:flex-nowrap items-stretch lg:items-center justify-between px-6 py-4 bg-neutral-200 rounded-xl"

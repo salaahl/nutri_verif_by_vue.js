@@ -309,21 +309,21 @@ onUnmounted(() => {
         <div id="product-detail" class="h-full text-black/25">
           <div class="h-full flex flex-col justify-evently">
             <div>
-              <h3 class="title text-xl md:text-2xl uppercase">
-                <span v-if="product.brand" id="brand" class="text-[#00bd7e]"
-                  >{{ product.brand }} -
-                </span>
-                <span v-if="product.name" id="generic-name">{{ product.name }}</span>
+              <h3 v-if="product.brand" class="title text-xl md:text-2xl font-bold text-[#00bd7e]">
+                {{ product.brand }}
               </h3>
-              <h4 v-if="product.lastUpdate" class="text-sm">
+              <h3 v-if="product.name" class="title text-xl md:text-2xl font-bold">
+                {{ product.name }}
+              </h3>
+              <h4 v-if="product.lastUpdate" class="mt-2 text-xs">
                 Dernière mise à jour : <span id="last-update">{{ product.lastUpdate }}</span>
               </h4>
             </div>
             <div>
-              <div class="scores">
+              <div class="scores mt-8">
                 <img
                   id="nutriscore-img"
-                  class="max-w-[100px] md:max-w-[115px] mt-2"
+                  class="max-w-[100px]"
                   :src="
                     'https://static.openfoodfacts.org/images/attributes/dist/nutriscore-' +
                     product.nutriscore +
@@ -334,7 +334,7 @@ onUnmounted(() => {
                 <div class="flex items-end">
                   <img
                     id="nova-group-img"
-                    class="max-h-[50px] md:max-h-[60px] mt-2 opacity-25"
+                    class="max-w-[25px] mt-2 opacity-25"
                     :src="
                       'https://static.openfoodfacts.org/images/attributes/dist/nova-group-' +
                       product.novaGroup +
@@ -347,7 +347,7 @@ onUnmounted(() => {
               <div
                 v-if="product.nutrient_levels"
                 id="nutrient-levels"
-                class="flex flex-wrap opacity-25"
+                class="flex flex-wrap mt-2 opacity-25"
               >
                 <span
                   v-for="(level, nutrient) in product.nutrient_levels"

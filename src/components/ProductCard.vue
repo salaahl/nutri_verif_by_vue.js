@@ -49,8 +49,10 @@ const searchProductsByCategory: Function = async (category: string) => {
       </div>
       <div class="details h-3/5 flex flex-col justify-between">
         <div class="mt-3">
-          <h4 class="title text-sm lg:text-base font-bold text-ellipsis overflow-hidden">{{ brand }}</h4>
-          <h4 class="mt-[4px] text-xs lg:text-sm text-gray-600">{{ name }}</h4>
+          <h4 class="title text-sm lg:text-base font-bold text-ellipsis overflow-hidden">
+            {{ brand }}
+          </h4>
+          <h4 class="mt-[4px] text-xs lg:text-sm font-bold">{{ name }}</h4>
         </div>
         <div class="scores">
           <img
@@ -158,6 +160,10 @@ const searchProductsByCategory: Function = async (category: string) => {
 
 .thumbnail img {
   margin: auto;
+}
+
+.title {
+  color: var(--color-green);
 }
 
 .product-card-tag {
