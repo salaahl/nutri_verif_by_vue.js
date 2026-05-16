@@ -17,6 +17,7 @@
   "dependencies": {
     "express": "^4.19.2",
     "gsap": "^3.12.5",
+    "html5-qrcode": "^2.3.8",
     "pinia": "^2.1.7",
     "serve-static": "^1.15.0",
     "vue": "^3.4.21",

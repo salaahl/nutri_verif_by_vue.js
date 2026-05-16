@@ -2,7 +2,8 @@
 import { onMounted, onUnmounted } from 'vue'
 import { useRouter } from 'vue-router'
 import { useProducts } from '../composables/useProducts'
-import ProductCard from '/src/components/ProductCard.vue'
+import ProductScanner from '@/components/ProductScanner.vue'
+import ProductCard from '@/components/ProductCard.vue'
 
 import gsap from 'gsap'
 import { ScrollTrigger } from 'gsap/ScrollTrigger'
@@ -124,6 +125,23 @@ onUnmounted(() => {
     <h1 class="text-6xl font-light text-center">Nutri<span class="text-[#00bd7e]">Vérif</span></h1>
     <h3 class="text-lg font-thin text-center">Manger (plus) sain</h3>
   </section>
+  <div
+    id="scanner-container"
+    class="hide fixed top-0 left-0 h-full w-full flex flex-col items-center justify-center z-50"
+  >
+    <button
+      id="close-scanner"
+      class="absolute w-[35px] rounded-full flex items-center justify-center"
+      onclick="document.querySelector('#scanner-container').classList.add('hide')"
+    >
+      <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 640 640">
+        <path
+          d="M320 576C461.4 576 576 461.4 576 320C576 178.6 461.4 64 320 64C178.6 64 64 178.6 64 320C64 461.4 178.6 576 320 576zM231 231C240.4 221.6 255.6 221.6 264.9 231L319.9 286L374.9 231C384.3 221.6 399.5 221.6 408.8 231C418.1 240.4 418.2 255.6 408.8 264.9L353.8 319.9L408.8 374.9C418.2 384.3 418.2 399.5 408.8 408.8C399.4 418.1 384.2 418.2 374.9 408.8L319.9 353.8L264.9 408.8C255.5 418.2 240.3 418.2 231 408.8C221.7 399.4 221.6 384.2 231 374.9L286 319.9L231 264.9C221.6 255.5 221.6 240.3 231 231z"
+        />
+      </svg>
+    </button>
+    <ProductScanner />
+  </div>
   <section id="search-container" class="w-full mb-20">
     <div id="search-bar" class="relative mb-8">
       <label for="search-input" class="sr-only">Search</label>
@@ -137,9 +155,9 @@ onUnmounted(() => {
         </div>
         <!-- Mobile search bar -->
         <button
-          id="scanner"
+          id="open-scanner"
           class="lg:hidden absolute inset-y-0 end-0 flex items-center pe-6"
-          onclick="document.querySelector('#scanner').classList.remove('hidden')"
+          onclick="document.querySelector('#scanner-container').classList.remove('hide')"
         >
           <svg class="search-bar-icon" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 640 640">
             <path
@@ -161,7 +179,7 @@ onUnmounted(() => {
     >
       <div
         id="search-results"
-        class="relative flex flex-wrap justify-between md:justify-start p-4 bg-neutral-200 rounded-lg"
+        class="relative flex flex-wrap justify-between md:justify-start mb-8 p-4 bg-neutral-200 rounded-lg"
       >
         <div
           v-if="productsIsLoading"
@@ -194,8 +212,8 @@ onUnmounted(() => {
         </article>
       </div>
     </div>
-    <h3 id="total-products" class="my-8 text-2xl lg:text-3xl text-center">
-      + de 4 034 279 produits référencés
+    <h3 id="total-products" class="text-2xl lg:text-3xl text-center">
+      + de 1 234 100 produits référencés
     </h3>
   </section>
   <section id="about" class="mb-24">
@@ -492,6 +510,23 @@ h2::first-letter {
   font-weight: bold;
 }
 
+#scanner-container {
+  padding: 0 var(--app-padding-x);
+  background-color: whitesmoke;
+  transform: translateX(0);
+  transition: transform 0.25s ease-in-out;
+}
+
+#scanner-container.hide {
+  transform: translateX(100%);
+  overflow: hidden;
+}
+
+#close-scanner {
+  top: var(--app-padding-x);
+  right: var(--app-padding-x);
+}
+
 #search-bar {
   position: sticky;
   width: 100%;
@@ -508,7 +543,7 @@ h2::first-letter {
   filter: contrast(0.5);
 }
 
-#scanner .search-bar-icon {
+#open-scanner .search-bar-icon {
   width: 1.4rem;
 }
 
