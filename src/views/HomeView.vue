@@ -21,7 +21,7 @@ const {
   fetchSuggestedProducts,
   suggestedProducts,
   suggestedProductsIsLoading,
-  fetchLastProduct,
+  fetchLastProducts,
   lastProductsIsLoading,
   lastProducts
 } = useProducts()
@@ -108,7 +108,7 @@ onMounted(async () => {
 
   await fetchProduct('3608580758686')
   fetchSuggestedProducts()
-  fetchLastProduct()
+  fetchLastProducts()
 })
 
 onUnmounted(() => {
@@ -129,12 +129,24 @@ onUnmounted(() => {
       <label for="search-input" class="sr-only">Search</label>
       <div class="relative w-full">
         <div class="absolute inset-y-0 start-0 flex items-center ps-6 pointer-events-none">
-          <svg id="search-bar-icon" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 448 512">
+          <svg class="search-bar-icon" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 448 512">
             <path
               d="M416 0C400 0 288 32 288 176V288c0 35.3 28.7 64 64 64h32V480c0 17.7 14.3 32 32 32s32-14.3 32-32V352 240 32c0-17.7-14.3-32-32-32zM64 16C64 7.8 57.9 1 49.7 .1S34.2 4.6 32.4 12.5L2.1 148.8C.7 155.1 0 161.5 0 167.9c0 45.9 35.1 83.6 80 87.7V480c0 17.7 14.3 32 32 32s32-14.3 32-32V255.6c44.9-4.1 80-41.8 80-87.7c0-6.4-.7-12.8-2.1-19.1L191.6 12.5c-1.8-8-9.3-13.3-17.4-12.4S160 7.8 160 16V150.2c0 5.4-4.4 9.8-9.8 9.8c-5.1 0-9.3-3.9-9.8-9L127.9 14.6C127.2 6.3 120.3 0 112 0s-15.2 6.3-15.9 14.6L83.7 151c-.5 5.1-4.7 9-9.8 9c-5.4 0-9.8-4.4-9.8-9.8V16zm48.3 152l-.3 0-.3 0 .3-.7 .3 .7z"
             />
           </svg>
         </div>
+        <!-- Mobile search bar -->
+        <button
+          id="scanner"
+          class="lg:hidden absolute inset-y-0 end-0 flex items-center pe-6"
+          onclick="document.querySelector('#scanner').classList.remove('hidden')"
+        >
+          <svg class="search-bar-icon" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 640 640">
+            <path
+              d="M160 224L224 224L224 160L160 160L160 224zM96 144C96 117.5 117.5 96 144 96L240 96C266.5 96 288 117.5 288 144L288 240C288 266.5 266.5 288 240 288L144 288C117.5 288 96 266.5 96 240L96 144zM160 480L224 480L224 416L160 416L160 480zM96 400C96 373.5 117.5 352 144 352L240 352C266.5 352 288 373.5 288 400L288 496C288 522.5 266.5 544 240 544L144 544C117.5 544 96 522.5 96 496L96 400zM416 160L416 224L480 224L480 160L416 160zM400 96L496 96C522.5 96 544 117.5 544 144L544 240C544 266.5 522.5 288 496 288L400 288C373.5 288 352 266.5 352 240L352 144C352 117.5 373.5 96 400 96zM384 416C366.3 416 352 401.7 352 384C352 366.3 366.3 352 384 352C401.7 352 416 366.3 416 384C416 401.7 401.7 416 384 416zM384 480C401.7 480 416 494.3 416 512C416 529.7 401.7 544 384 544C366.3 544 352 529.7 352 512C352 494.3 366.3 480 384 480zM480 512C480 494.3 494.3 480 512 480C529.7 480 544 494.3 544 512C544 529.7 529.7 544 512 544C494.3 544 480 529.7 480 512zM512 416C494.3 416 480 401.7 480 384C480 366.3 494.3 352 512 352C529.7 352 544 366.3 544 384C544 401.7 529.7 416 512 416zM480 448C480 465.7 465.7 480 448 480C430.3 480 416 465.7 416 448C416 430.3 430.3 416 448 416C465.7 416 480 430.3 480 448z"
+            />
+          </svg>
+        </button>
         <input
           type="text"
           id="search-input"
@@ -490,10 +502,14 @@ h2::first-letter {
   transition: top 0.25s;
 }
 
-#search-bar-icon {
+.search-bar-icon {
   height: auto;
   width: 0.875rem;
   filter: contrast(0.5);
+}
+
+#scanner .search-bar-icon {
+  width: 1.4rem;
 }
 
 .product {

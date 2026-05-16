@@ -61,6 +61,10 @@ type SearchMethod = 'complete' | 'more'
 
 const API_BASE_URL = 'https://world.openfoodfacts.org/cgi/search.pl'
 
+// Détection du mode localhost / développement
+const isLocalhost =
+  window.location.hostname === 'localhost' || window.location.hostname === '127.0.0.1'
+
 async function fetchWithTimeout(
   resource: string,
   options: { timeout?: number; method?: string; headers?: HeadersInit; body?: string } = {}
@@ -194,7 +198,9 @@ export function useProducts() {
 
     const fields =
       'id,image_front_small_url,brands,generic_name_fr,nutriscore_grade,nova_group,categories_hierarchy'
-    const route = `${API_BASE_URL}?search_terms=${encodeURIComponent(input.value)}&fields=${encodeURIComponent(fields)}&purchase_places_tags=france&sort_by=${encodeURIComponent(filter.value)}&page_size=20&page=${page.value}&search_simple=1&action=process&json=1`
+    const route = isLocalhost
+      ? '/data/mock-products.json'
+      : `${API_BASE_URL}?search_terms=${encodeURIComponent(input.value)}&fields=${encodeURIComponent(fields)}&purchase_places_tags=france&sort_by=${encodeURIComponent(filter.value)}&page_size=20&page=${page.value}&search_simple=1&action=process&json=1`
 
     try {
       productsIsLoading.value = true
@@ -219,7 +225,9 @@ export function useProducts() {
       'id,image_front_url,brands,generic_name_fr,categories_hierarchy,last_updated_t,nutriscore_grade,nova_group,quantity,serving_size,ingredients_text_with_allergens_fr,nutriments,nutrient_levels,manufacturing_places,link'
 
     try {
-      const route = `https://world.openfoodfacts.org/api/v3/product/${id}&fields=${encodeURIComponent(fields)}&json=1`
+      const route = isLocalhost
+        ? '/data/mock-product.json'
+        : `https://world.openfoodfacts.org/api/v3/product/${id}&fields=${encodeURIComponent(fields)}&json=1`
       const response = await fetchWithTimeout(route)
       const data = await response.json()
 
@@ -231,10 +239,13 @@ export function useProducts() {
     }
   }
 
-  async function fetchLastProduct() {
+  async function fetchLastProducts() {
     const fields =
       'id,image_front_small_url,brands,generic_name_fr,nutriscore_grade,nova_group,categories_hierarchy,created_t,completeness'
-    const route = `${API_BASE_URL}?&fields=${encodeURIComponent(fields)}&purchase_places_tags=france&sort_by=created_t&page_size=300&action=process&json=1`
+
+    const route = isLocalhost
+      ? '/data/mock-products.json'
+      : `${API_BASE_URL}?&fields=${encodeURIComponent(fields)}&purchase_places_tags=france&sort_by=created_t&page_size=300&action=process&json=1`
     error.value = null
 
     try {
@@ -264,7 +275,9 @@ export function useProducts() {
     categories: string[] = product.categories
   ) {
     let fields = 'id,nutriscore_grade,nova_group,completeness,popularity_key'
-    let route = `${API_BASE_URL}?search_terms=${encodeURIComponent(name ?? brand.split(',')[0])}&categories_tags=${encodeURIComponent(categories.join('|'))}&fields=${encodeURIComponent(fields)}&purchase_places_tags=france&sort_by=nutriscore_score,nova_group,popularity_key&page_size=300&action=process&json=1`
+    let route = isLocalhost
+      ? '/data/mock-products.json'
+      : `${API_BASE_URL}?search_terms=${encodeURIComponent(name ?? brand.split(',')[0])}&categories_tags=${encodeURIComponent(categories.join('|'))}&fields=${encodeURIComponent(fields)}&purchase_places_tags=france&sort_by=nutriscore_score,nova_group,popularity_key&page_size=300&action=process&json=1`
 
     try {
       suggestedProducts.value = []
@@ -317,9 +330,11 @@ export function useProducts() {
         // Je récupère les informations complètes des produits selectionnés
         fields =
           'id,image_front_small_url,brands,generic_name_fr,nutriscore_grade,nova_group,categories_hierarchy,completeness,popularity_key'
-        route = `${API_BASE_URL}?code=${encodeURIComponent(
-          selectedProducts.map((e: { id: string }) => e['id']).join('|')
-        )}
+        route = isLocalhost
+          ? '/data/mock-products.json'
+          : `${API_BASE_URL}?code=${encodeURIComponent(
+              selectedProducts.map((e: { id: string }) => e['id']).join('|')
+            )}
           &fields=${encodeURIComponent(fields)}
           &sort_by=nutriscore_score,nova_group,popularity_key&page_size=4&action=process&json=1`
 
@@ -406,7 +421,7 @@ export function useProducts() {
     error,
     searchProducts,
     fetchProduct,
-    fetchLastProduct,
+    fetchLastProducts,
     fetchSuggestedProducts,
     getTranslatedCategories
   }

@@ -1,0 +1,59 @@
+{
+  "products": [
+    {
+      "id": "1234567890123",
+      "image_front_small_url": "../logo.png",
+      "brands": "Marque Test",
+      "generic_name_fr": "Produit Test 1",
+      "nutriscore_grade": "a",
+      "nova_group": 1,
+      "categories_hierarchy": ["en:snacks"],
+      "created_t": 1710000000,
+      "completeness": 0.8
+    },
+    {
+      "id": "1234567890124",
+      "image_front_small_url": "../logo.png",
+      "brands": "Marque Test",
+      "generic_name_fr": "Produit Test 2",
+      "nutriscore_grade": "a",
+      "nova_group": 1,
+      "categories_hierarchy": ["en:snacks"],
+      "created_t": 1720000000,
+      "completeness": 0.8
+    },
+    {
+      "id": "1234567890125",
+      "image_front_small_url": "../logo.png",
+      "brands": "Marque Test",
+      "generic_name_fr": "Produit Test 3",
+      "nutriscore_grade": "a",
+      "nova_group": 1,
+      "categories_hierarchy": ["en:snacks"],
+      "created_t": 1730000000,
+      "completeness": 0.6
+    },
+    {
+      "id": "1234567890126",
+      "image_front_small_url": "../logo.png",
+      "brands": "Marque Test",
+      "generic_name_fr": "Produit Test 4",
+      "nutriscore_grade": "a",
+      "nova_group": 1,
+      "categories_hierarchy": ["en:snacks"],
+      "created_t": 1740000000,
+      "completeness": 0.9
+    },
+    {
+      "id": "1234567890127",
+      "image_front_small_url": "../logo.png",
+      "brands": "Marque Test",
+      "generic_name_fr": "Produit Test 5",
+      "nutriscore_grade": "a",
+      "nova_group": 1,
+      "categories_hierarchy": ["en:snacks"],
+      "created_t": 1750000000,
+      "completeness": 0.3
+    }
+  ]
+}
