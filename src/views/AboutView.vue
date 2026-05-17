@@ -6,9 +6,25 @@ onMounted(() => {
   if (!document.querySelector('h2')) return
   websiteName.style.color = 'red'
 
-  const body = document.querySelector('body') as HTMLElement
-  if (!body) return
-  body.style.backgroundColor = 'hsla(160, 100%, 37%)'
+  const plants = document.querySelectorAll(
+    '.plant-primary, .plant-secondary'
+  ) as NodeListOf<SVGElement>
+
+  if (plants && plants.length > 0) {
+    for (let i = 0; i < plants.length; i++) {
+      const element = plants[i]
+
+      const computedStyle = window.getComputedStyle(element)
+      const currentOpacity = parseFloat(computedStyle.fillOpacity || '1')
+
+      // Sécurité au cas où le parse renvoie NaN
+      if (!isNaN(currentOpacity)) {
+        // Calculer la nouvelle opacité (en plafonnant à 1 au maximum)
+        const newOpacity = Math.min(currentOpacity + 0.2, 1)
+        element.style.fillOpacity = newOpacity.toString()
+      }
+    }
+  }
 
   setTimeout(() => {
     const title = document.querySelector('h2') as HTMLElement
@@ -22,9 +38,23 @@ onUnmounted(() => {
   if (!websiteName) return
   websiteName.style.color = 'hsla(160, 100%, 37%, 1)'
 
-  const body = document.querySelector('body') as HTMLElement
-  if (!body) return
-  body.style.backgroundColor = 'whitesmoke'
+  const plants = document.querySelectorAll(
+    '.plant-primary, .plant-secondary'
+  ) as NodeListOf<SVGElement>
+
+  if (plants && plants.length > 0) {
+    for (let i = 0; i < plants.length; i++) {
+      const element = plants[i]
+
+      const computedStyle = window.getComputedStyle(element)
+      const currentOpacity = parseFloat(computedStyle.fillOpacity || '1')
+
+      if (!isNaN(currentOpacity)) {
+        const newOpacity = Math.min(currentOpacity - 0.2, 1)
+        element.style.fillOpacity = newOpacity.toString()
+      }
+    }
+  }
 })
 </script>
 

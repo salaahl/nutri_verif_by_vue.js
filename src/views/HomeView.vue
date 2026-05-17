@@ -122,7 +122,7 @@ onUnmounted(() => {
 
 <template>
   <section id="header" class="w-full mb-20">
-    <h1 class="text-6xl font-light text-center">Nutri<span class="text-[#00bd7e] md:text-white">Vérif</span></h1>
+    <h1 class="text-6xl font-light text-center">Nutri<span class="text-[#00bd7e]">Vérif</span></h1>
     <h3 class="text-lg font-thin text-center">Manger (plus) sain</h3>
   </section>
   <div

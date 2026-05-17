@@ -35,8 +35,6 @@ body {
   text-rendering: optimizeLegibility;
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
-  background-color: whitesmoke;
-  transition: background-color var(--transition-delay-double);
 }
 
 h1,

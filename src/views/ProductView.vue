@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { onBeforeMount, ref } from 'vue'
+import { onBeforeMount, onMounted, onUnmounted, ref } from 'vue'
 import { useRoute, useRouter, onBeforeRouteUpdate } from 'vue-router'
 import { useProducts } from '../composables/useProducts'
 import ProductCard from '/src/components/ProductCard.vue'
@@ -107,8 +107,22 @@ onBeforeMount(async () => {
     )
 })
 
+onMounted(() => {
+  const bg = document.querySelector('.bg .bg-base') as SVGElement
+  if (!bg) return
+
+  bg.style.fill = 'whitesmoke'
+})
+
 onBeforeRouteUpdate((to) => {
   updateProduct(Array.isArray(to.params.id) ? to.params.id[0] : to.params.id) // Mise à jour du produit avec le nouvel ID
+})
+
+onUnmounted(() => {
+  const bg = document.querySelector('.bg .bg-base') as SVGElement
+  if (!bg) return
+
+  bg.style.fill = 'white'
 })
 </script>
 
@@ -146,7 +160,10 @@ onBeforeRouteUpdate((to) => {
       <div id="product-detail" class="h-full">
         <div class="h-full flex flex-col justify-evently">
           <div>
-            <h1 v-if="product.brand" class="title text-xl md:text-2xl font-bold text-[#00bd7e] md:text-[indianred]">
+            <h1
+              v-if="product.brand"
+              class="title text-xl md:text-2xl font-bold text-[#00bd7e] md:text-[indianred]"
+            >
               {{ product.brand }}
             </h1>
             <h2 v-if="product.name" class="title text-xl md:text-2xl font-bold">

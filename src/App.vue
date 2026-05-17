@@ -9,8 +9,30 @@ const currentRoute = computed(() => {
 </script>
 
 <template>
-  <div class="bg">
-    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1440 900" width="100%" height="100%">
+  <div class="bg absolute inset-0 w-full h-full min-h-screen overflow-hidden -z-10 bg-[#ffffff]">
+    <svg
+      xmlns="http://www.w3.org/2000/svg"
+      viewBox="0 0 1440 900"
+      width="100%"
+      height="100%"
+      preserveAspectRatio="xMidYMid slice"
+      class="w-full h-full"
+    >
+      <rect class="bg-base" width="100%" height="100%" fill="#FFFFFF" />
+
+      <g id="background-blobs" fill="#f5f5f5" transform="scale(1.6, 1.5)">
+        <g transform="translate(900, 0)">
+          <path
+            d="M0 486.7C-52.4 455.1 -104.8 423.5 -168 405.6C-231.2 387.6 -305.1 383.3 -344.2 344.2C-383.3 305.1 -387.6 231.2 -405.6 168C-423.5 104.8 -455.1 52.4 -486.7 0L0 0Z"
+          />
+        </g>
+        <g transform="translate(0, 600)">
+          <path
+            d="M0 -486.7C58.5 -454.5 116.9 -422.2 160.3 -387.1C203.8 -352 232.2 -314.2 284.3 -284.3C336.3 -254.3 412 -232.3 449.7 -186.3C487.4 -140.2 487.1 -70.1 486.7 0L0 0Z"
+          />
+        </g>
+      </g>
+
       <g id="decorations-left" transform="translate(40, 500)">
         <g class="plant-primary" transform="rotate(-20) scale(1.4)">
           <path d="M38.5,0 L41.5,0 L41.5,240 L38.5,240 Z" />
@@ -144,13 +166,26 @@ const currentRoute = computed(() => {
   width: 100%;
 }
 
-.bg .bg-main {
-  fill: whitesmoke;
+.bg > svg {
+  position: absolute;
+  top: 0;
+  left: 0;
+  height: 100%;
+  width: 100%;
 }
 
-.bg .card-bg {
+.bg .bg-base {
   fill: #ffffff;
-  filter: drop-shadow(0px 10px 30px rgba(0, 0, 0, 0.04));
+}
+
+.bg .blob-surface {
+  fill: #f5f5f5;
+}
+
+.bg .bg-base,
+.bg .plant-primary,
+.bg .plant-secondary {
+  transition: all var(--transition-delay-double);
 }
 
 /* Couleur des épis de blé */
@@ -268,7 +303,7 @@ footer > div,
   }
 
   header > a::before {
-    transform: scale(5);
+    transform: scale(1.35);
   }
 
   footer > div {
