@@ -8,7 +8,7 @@ onMounted(() => {
 
   const body = document.querySelector('body') as HTMLElement
   if (!body) return
-  body.style.backgroundColor = 'hsla(160, 100%, 37%, 0.6)'
+  body.style.backgroundColor = 'hsla(160, 100%, 37%)'
 
   setTimeout(() => {
     const title = document.querySelector('h2') as HTMLElement
@@ -34,7 +34,7 @@ onUnmounted(() => {
   >
     A propos de nous
   </h1>
-  <h2 class="w-fit mx-auto text-xs">(et un peu d'Open Food Facts)</h2>
+  <h2 class="w-fit mx-auto md:translate-y-[-100px] text-xs">(et un peu d'Open Food Facts)</h2>
   <p class="text-center">
     NutriVérif est une application web de food checking alimentée par la base de données d'Open Food
     Facts et developpée par

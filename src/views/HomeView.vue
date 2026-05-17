@@ -122,7 +122,7 @@ onUnmounted(() => {
 
 <template>
   <section id="header" class="w-full mb-20">
-    <h1 class="text-6xl font-light text-center">Nutri<span class="text-[#00bd7e]">Vérif</span></h1>
+    <h1 class="text-6xl font-light text-center">Nutri<span class="text-[#00bd7e] md:text-white">Vérif</span></h1>
     <h3 class="text-lg font-thin text-center">Manger (plus) sain</h3>
   </section>
   <div
@@ -218,7 +218,7 @@ onUnmounted(() => {
   </section>
   <section id="about" class="mb-24">
     <article class="mb-8">
-      <div id="video-container" class="w-full aspect-[2/1] border-[3px] rounded-xl overflow-hidden">
+      <div id="video-container" class="w-full aspect-[2/1] border-[3px] border-[#00bd7e] rounded-xl overflow-hidden">
         <div class="cookies h-full w-full flex items-center justify-center">
           <button id="accept-cookies">
             <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 640 640" class="h-[75px] w-[75px]">
@@ -600,6 +600,23 @@ h2::first-letter {
 #product-detail > div > div:nth-of-type(2) > *:nth-child(n + 2) {
   filter: blur(1.5px);
   pointer-events: none;
+}
+
+#video-container::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  aspect-ratio: 2/1;
+  background-color: hsla(160, 100%, 37%, 1);
+  transform: rotateZ(2deg);
+    border-radius: 10px;
+    z-index: -1;
+}
+
+#video-container {
+  z-index: 1;
 }
 
 @media (min-width: 768px) {
