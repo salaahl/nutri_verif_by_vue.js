@@ -2,7 +2,6 @@
 import { onMounted, onUnmounted } from 'vue'
 import { useRouter } from 'vue-router'
 import { useProducts } from '../composables/useProducts'
-import ProductScanner from '@/components/ProductScanner.vue'
 import ProductCard from '@/components/ProductCard.vue'
 
 import gsap from 'gsap'
@@ -125,23 +124,6 @@ onUnmounted(() => {
     <h1 class="text-6xl font-light text-center">Nutri<span class="text-[#00bd7e]">Vérif</span></h1>
     <h3 class="text-lg font-thin text-center">Manger (plus) sain</h3>
   </section>
-  <div
-    id="scanner-container"
-    class="hide fixed top-0 left-0 h-full w-full flex flex-col items-center justify-center z-50"
-  >
-    <button
-      id="close-scanner"
-      class="absolute w-[35px] rounded-full flex items-center justify-center"
-      onclick="document.querySelector('#scanner-container').classList.add('hide')"
-    >
-      <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 640 640">
-        <path
-          d="M320 576C461.4 576 576 461.4 576 320C576 178.6 461.4 64 320 64C178.6 64 64 178.6 64 320C64 461.4 178.6 576 320 576zM231 231C240.4 221.6 255.6 221.6 264.9 231L319.9 286L374.9 231C384.3 221.6 399.5 221.6 408.8 231C418.1 240.4 418.2 255.6 408.8 264.9L353.8 319.9L408.8 374.9C418.2 384.3 418.2 399.5 408.8 408.8C399.4 418.1 384.2 418.2 374.9 408.8L319.9 353.8L264.9 408.8C255.5 418.2 240.3 418.2 231 408.8C221.7 399.4 221.6 384.2 231 374.9L286 319.9L231 264.9C221.6 255.5 221.6 240.3 231 231z"
-        />
-      </svg>
-    </button>
-    <ProductScanner />
-  </div>
   <section id="search-container" class="w-full mb-20">
     <div id="search-bar" class="relative mb-8">
       <label for="search-input" class="sr-only">Search</label>
@@ -153,18 +135,17 @@ onUnmounted(() => {
             />
           </svg>
         </div>
-        <!-- Mobile search bar -->
-        <button
+        <RouterLink
           id="open-scanner"
+          :to="'/scanner'"
           class="lg:hidden absolute inset-y-0 end-0 flex items-center pe-6"
-          onclick="document.querySelector('#scanner-container').classList.remove('hide')"
         >
           <svg class="search-bar-icon" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 640 640">
             <path
               d="M160 224L224 224L224 160L160 160L160 224zM96 144C96 117.5 117.5 96 144 96L240 96C266.5 96 288 117.5 288 144L288 240C288 266.5 266.5 288 240 288L144 288C117.5 288 96 266.5 96 240L96 144zM160 480L224 480L224 416L160 416L160 480zM96 400C96 373.5 117.5 352 144 352L240 352C266.5 352 288 373.5 288 400L288 496C288 522.5 266.5 544 240 544L144 544C117.5 544 96 522.5 96 496L96 400zM416 160L416 224L480 224L480 160L416 160zM400 96L496 96C522.5 96 544 117.5 544 144L544 240C544 266.5 522.5 288 496 288L400 288C373.5 288 352 266.5 352 240L352 144C352 117.5 373.5 96 400 96zM384 416C366.3 416 352 401.7 352 384C352 366.3 366.3 352 384 352C401.7 352 416 366.3 416 384C416 401.7 401.7 416 384 416zM384 480C401.7 480 416 494.3 416 512C416 529.7 401.7 544 384 544C366.3 544 352 529.7 352 512C352 494.3 366.3 480 384 480zM480 512C480 494.3 494.3 480 512 480C529.7 480 544 494.3 544 512C544 529.7 529.7 544 512 544C494.3 544 480 529.7 480 512zM512 416C494.3 416 480 401.7 480 384C480 366.3 494.3 352 512 352C529.7 352 544 366.3 544 384C544 401.7 529.7 416 512 416zM480 448C480 465.7 465.7 480 448 480C430.3 480 416 465.7 416 448C416 430.3 430.3 416 448 416C465.7 416 480 430.3 480 448z"
             />
           </svg>
-        </button>
+        </RouterLink>
         <input
           type="text"
           id="search-input"
@@ -218,7 +199,10 @@ onUnmounted(() => {
   </section>
   <section id="about" class="mb-24">
     <article class="mb-8">
-      <div id="video-container" class="w-full aspect-[2/1] border-[3px] border-[#00bd7e] rounded-xl overflow-hidden">
+      <div
+        id="video-container"
+        class="w-full aspect-[2/1] border-[3px] border-[#00bd7e] rounded-xl overflow-hidden"
+      >
         <div class="cookies h-full w-full flex items-center justify-center">
           <button id="accept-cookies">
             <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 640 640" class="h-[75px] w-[75px]">
@@ -510,23 +494,6 @@ h2::first-letter {
   font-weight: bold;
 }
 
-#scanner-container {
-  padding: 0 var(--app-padding-x);
-  background-color: whitesmoke;
-  transform: translateX(0);
-  transition: transform 0.25s ease-in-out;
-}
-
-#scanner-container.hide {
-  transform: translateX(100%);
-  overflow: hidden;
-}
-
-#close-scanner {
-  top: var(--app-padding-x);
-  right: var(--app-padding-x);
-}
-
 #search-bar {
   position: sticky;
   width: 100%;
@@ -611,8 +578,8 @@ h2::first-letter {
   aspect-ratio: 2/1;
   background-color: hsla(160, 100%, 37%, 1);
   transform: rotateZ(2deg);
-    border-radius: 10px;
-    z-index: -1;
+  border-radius: 10px;
+  z-index: -1;
 }
 
 #video-container {

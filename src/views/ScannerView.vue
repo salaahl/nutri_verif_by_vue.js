@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { onBeforeUnmount, ref } from 'vue'
+import { onMounted, onBeforeUnmount, ref } from 'vue'
 import { useRoute, useRouter } from 'vue-router'
 import { Html5Qrcode } from 'html5-qrcode'
 import { useProducts } from '../composables/useProducts'
@@ -46,10 +46,7 @@ async function onScanSuccess(decodedText: string, decodedResult: any) {
   scannedCode.value = decodedText
 
   try {
-    // 1. On éteint d'abord proprement la caméra et on attend que ce soit fait
     await stopScanner()
-
-    // 2. Une fois la caméra coupée, on redirige vers la page du produit
     router.push(`/product/${decodedText}`)
   } catch (err) {
     console.error("Erreur lors de l'arrêt du scanner ou de la redirection :", err)
@@ -71,6 +68,10 @@ async function stopScanner() {
     }
   }
 }
+
+onMounted(async () => {
+  await startScanner()
+})
 
 // Nettoyage de sécurité si l'utilisateur quitte la page sans avoir scanné
 onBeforeUnmount(async () => {
