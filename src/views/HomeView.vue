@@ -120,7 +120,7 @@ onUnmounted(() => {
 </script>
 
 <template>
-  <section id="header" class="w-full mb-20">
+  <section id="header" class="w-full my-20">
     <h1 class="text-6xl font-light text-center">Nutri<span class="text-[#00bd7e]">Vérif</span></h1>
     <h3 class="text-lg font-thin text-center">Manger (plus) sain</h3>
   </section>
@@ -135,6 +135,7 @@ onUnmounted(() => {
             />
           </svg>
         </div>
+        <!-- Bouton d'accès au scanner désactivé sur les ordinateurs (> 1024px) -->
         <RouterLink
           id="open-scanner"
           :to="'/scanner'"
