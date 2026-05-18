@@ -245,7 +245,7 @@ export function useProducts() {
 
     const route = isLocalhost
       ? '/data/mock-products.json'
-      : `${API_BASE_URL}?&fields=${encodeURIComponent(fields)}&purchase_places_tags=france&sort_by=created_t&page_size=299&action=process&json=1`
+      : `${API_BASE_URL}?&fields=${encodeURIComponent(fields)}&purchase_places_tags=france&sort_by=created_t&page_size=250&action=process&json=1`
     error.value = null
 
     try {
@@ -277,7 +277,7 @@ export function useProducts() {
     let fields = 'id,nutriscore_grade,nova_group,completeness,popularity_key'
     let route = isLocalhost
       ? '/data/mock-products.json'
-      : `${API_BASE_URL}?search_terms=${encodeURIComponent(name ?? brand.split(',')[0])}&categories_tags=${encodeURIComponent(categories.join('|'))}&fields=${encodeURIComponent(fields)}&purchase_places_tags=france&sort_by=nutriscore_score,nova_group,popularity_key&page_size=299&action=process&json=1`
+      : `${API_BASE_URL}?search_terms=${encodeURIComponent(name ?? brand.split(',')[0])}&categories_tags=${encodeURIComponent(categories.join('|'))}&fields=${encodeURIComponent(fields)}&purchase_places_tags=france&sort_by=nutriscore_score,nova_group,popularity_key&page_size=250&action=process&json=1`
 
     try {
       suggestedProducts.value = []
