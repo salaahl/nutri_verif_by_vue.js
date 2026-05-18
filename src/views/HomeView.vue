@@ -133,10 +133,12 @@ onMounted(async () => {
   })
 
   await fetchProduct('3608580758686')
-  fetchSuggestedProducts()
+  setTimeout(() => {
+    fetchSuggestedProducts()
+  }, 2500)
   setTimeout(() => {
     fetchLastProducts()
-  }, 5000)
+  }, 2500)
 })
 
 onUnmounted(() => {
