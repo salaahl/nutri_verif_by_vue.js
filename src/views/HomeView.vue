@@ -33,8 +33,6 @@ const {
   lastProducts
 } = useProducts()
 
-const sleep = (ms: number) => new Promise((resolve) => setTimeout(resolve, ms))
-
 const categories = [
   'yaourts',
   'céréales',
@@ -135,11 +133,7 @@ onMounted(async () => {
   })
 
   await fetchProduct('3608580758686')
-
-  await sleep(1500)
   await fetchSuggestedProducts()
-
-  await sleep(1500)
   await fetchLastProducts()
 })
 

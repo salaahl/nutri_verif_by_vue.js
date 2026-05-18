@@ -60,6 +60,8 @@ interface APIProduct {
 type SearchMethod = 'complete' | 'more'
 
 const API_BASE_URL = 'https://world.openfoodfacts.org/cgi/search.pl'
+const API_BASE_URL_V2 = 'https://world.openfoodfacts.org/api/v2'
+const API_BASE_URL_V3 = 'https://world.openfoodfacts.org/api/v3'
 
 // Détection du mode localhost / développement
 const isLocalhost =
@@ -227,7 +229,7 @@ export function useProducts() {
     try {
       const route = isLocalhost
         ? '/data/mock-product.json'
-        : `https://world.openfoodfacts.org/api/v3/product/${id}&fields=${encodeURIComponent(fields)}&json=1`
+        : `${API_BASE_URL_V3}/product/${id}&fields=${encodeURIComponent(fields)}&json=1`
       const response = await fetchWithTimeout(route)
       const data = await response.json()
 
@@ -245,7 +247,7 @@ export function useProducts() {
 
     const route = isLocalhost
       ? '/data/mock-products.json'
-      : `${API_BASE_URL}?&fields=${encodeURIComponent(fields)}&purchase_places_tags=france&sort_by=created_t&page_size=300&action=process&json=1`
+      : `${API_BASE_URL_V2}/search?&fields=${encodeURIComponent(fields)}&purchase_places_tags=france&states_tags=en:nutrition-facts-completed&sort_by=created_t&page_size=50&action=process&json=1`
     error.value = null
 
     try {
@@ -277,7 +279,7 @@ export function useProducts() {
     let fields = 'id,nutriscore_grade,nova_group,completeness,popularity_key'
     let route = isLocalhost
       ? '/data/mock-products.json'
-      : `${API_BASE_URL}?search_terms=${encodeURIComponent(name ?? brand.split(',')[0])}&categories_tags=${encodeURIComponent(categories.join('|'))}&fields=${encodeURIComponent(fields)}&purchase_places_tags=france&sort_by=nutriscore_score,nova_group,popularity_key&page_size=300&action=process&json=1`
+      : `${API_BASE_URL}?search_terms=${encodeURIComponent(name ?? brand.split(',')[0])}&categories_tags=${encodeURIComponent(categories.join('|'))}&fields=${encodeURIComponent(fields)}&purchase_places_tags=france&states_tags=en:nutrition-facts-completed&sort_by=nutriscore_score,nova_group,popularity_key&page_size=150&action=process&json=1`
 
     try {
       suggestedProducts.value = []
