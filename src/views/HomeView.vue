@@ -1,6 +1,7 @@
 <script setup lang="ts">
-import { onMounted, onUnmounted } from 'vue'
+import { onMounted, onUnmounted, computed } from 'vue'
 import { useRouter } from 'vue-router'
+import { useProductsStore } from '../stores/products'
 import { useProducts } from '../composables/useProducts'
 import ProductCard from '@/components/ProductCard.vue'
 
@@ -10,6 +11,12 @@ import { ScrollTrigger } from 'gsap/ScrollTrigger'
 gsap.registerPlugin(ScrollTrigger)
 
 const router = useRouter()
+
+const productsStore = useProductsStore()
+const isFirstLaunch = computed<boolean>({
+  get: () => productsStore.getLaunchStatus,
+  set: (val) => productsStore.setLaunchStatus(val)
+})
 
 const {
   searchProducts,
@@ -26,19 +33,38 @@ const {
   lastProducts
 } = useProducts()
 
+const categories = [
+  'yaourts',
+  'céréales',
+  'boissons',
+  'snacks',
+  'plats préparés',
+  'bio',
+  'sans gluten'
+]
+
+const searchProductsByCategory: Function = async (category: string) => {
+  await searchProducts(category, null, 'complete')
+  router.push({ name: 'search' })
+}
+
 onMounted(async () => {
-  // Animation des sections
-  document.querySelectorAll('main > div > section').forEach((section) => {
-    gsap.from(section, {
-      y: window.innerWidth < 768 ? '15%' : '250',
-      opacity: window.innerWidth < 768 ? 0 : 1,
-      duration: 0.4,
-      scrollTrigger: {
-        trigger: section,
-        start: window.innerWidth < 768 ? '0 85%' : '0 100%'
-      }
+  if (isFirstLaunch.value) {
+    // Animation des sections
+    document.querySelectorAll('main > div > section').forEach((section) => {
+      gsap.from(section, {
+        y: window.innerWidth < 768 ? '15%' : '250',
+        opacity: window.innerWidth < 768 ? 0 : 1,
+        duration: 0.4,
+        scrollTrigger: {
+          trigger: section,
+          start: window.innerWidth < 768 ? '0 85%' : '0 100%'
+        }
+      })
     })
-  })
+
+    isFirstLaunch.value = false
+  }
 
   // Retirer le nom du site sur la page d'accueil
   const websiteName = document.querySelector('#website-name') as HTMLElement
@@ -125,7 +151,7 @@ onUnmounted(() => {
     <h3 class="text-lg font-thin text-center">Manger (plus) sain</h3>
   </section>
   <section id="search-container" class="w-full mb-20">
-    <div id="search-bar" class="relative mb-8">
+    <div id="search-bar" class="relative mb-6">
       <label for="search-input" class="sr-only">Search</label>
       <div class="relative w-full">
         <div class="absolute inset-y-0 start-0 flex items-center ps-6 pointer-events-none">
@@ -193,6 +219,25 @@ onUnmounted(() => {
           </RouterLink>
         </article>
       </div>
+    </div>
+    <div
+      v-if="categories.length"
+      class="radio-toolbar relative flex flex-wrap justify-center mb-12"
+    >
+      <div
+        v-if="productsIsLoading"
+        class="loader-container absolute h-full w-full flex justify-center items-center bg-[whitesmoke]"
+      >
+        <div class="lds-hourglass"></div>
+      </div>
+      <label
+        v-for="category in categories"
+        :key="category"
+        class="tag mt-2 mr-2 py-2 px-3 text-sm font-semibold text-white bg-neutral-400 text-white rounded-full"
+        @click="searchProductsByCategory(category)"
+      >
+        {{ category }}
+      </label>
     </div>
     <h3 id="total-products" class="text-2xl lg:text-3xl text-center">
       + de 1 234 100 produits référencés
@@ -573,7 +618,6 @@ h2::first-letter {
 #video-container::before {
   content: '';
   position: absolute;
-  top: 0;
   left: 0;
   width: 100%;
   aspect-ratio: 2/1;

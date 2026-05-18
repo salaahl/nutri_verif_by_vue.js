@@ -1,60 +1,12 @@
 <script setup lang="ts">
-import { onMounted, onUnmounted } from 'vue'
+import { onMounted } from 'vue'
 
 onMounted(() => {
-  const websiteName = document.querySelector('#website-name > span') as HTMLElement
-  if (!document.querySelector('h2')) return
-  websiteName.style.color = 'red'
-
-  const plants = document.querySelectorAll(
-    '.plant-primary, .plant-secondary'
-  ) as NodeListOf<SVGElement>
-
-  if (plants && plants.length > 0) {
-    for (let i = 0; i < plants.length; i++) {
-      const element = plants[i]
-
-      const computedStyle = window.getComputedStyle(element)
-      const currentOpacity = parseFloat(computedStyle.fillOpacity || '1')
-
-      // Sécurité au cas où le parse renvoie NaN
-      if (!isNaN(currentOpacity)) {
-        // Calculer la nouvelle opacité (en plafonnant à 1 au maximum)
-        const newOpacity = Math.min(currentOpacity + 0.2, 1)
-        element.style.fillOpacity = newOpacity.toString()
-      }
-    }
-  }
-
   setTimeout(() => {
     const title = document.querySelector('h2') as HTMLElement
     if (!title) return
     title.style.backgroundSize = '100% 100%'
   }, 1000)
-})
-
-onUnmounted(() => {
-  const websiteName = document.querySelector('#website-name > span') as HTMLElement
-  if (!websiteName) return
-  websiteName.style.color = 'hsla(160, 100%, 37%, 1)'
-
-  const plants = document.querySelectorAll(
-    '.plant-primary, .plant-secondary'
-  ) as NodeListOf<SVGElement>
-
-  if (plants && plants.length > 0) {
-    for (let i = 0; i < plants.length; i++) {
-      const element = plants[i]
-
-      const computedStyle = window.getComputedStyle(element)
-      const currentOpacity = parseFloat(computedStyle.fillOpacity || '1')
-
-      if (!isNaN(currentOpacity)) {
-        const newOpacity = Math.min(currentOpacity - 0.2, 1)
-        element.style.fillOpacity = newOpacity.toString()
-      }
-    }
-  }
 })
 </script>
 

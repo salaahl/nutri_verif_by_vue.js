@@ -7,7 +7,8 @@ export const useProductsStore = defineStore('products', {
     filter: '',
     page: 1,
     pages: 1,
-    ajrSelected: 'women'
+    ajrSelected: 'women',
+    launch: true
   }),
   actions: {
     updateProducts(payload: any) {
@@ -27,6 +28,9 @@ export const useProductsStore = defineStore('products', {
     },
     updateAjrSelected(payload: string) {
       this.ajrSelected = payload
+    },
+    setLaunchStatus(payload: boolean) {
+      this.launch = payload
     }
   },
   getters: {
@@ -47,6 +51,9 @@ export const useProductsStore = defineStore('products', {
     },
     getAjrSelected(state) {
       return state.ajrSelected
+    },
+    getLaunchStatus(state) {
+      return state.launch
     }
   }
 })
