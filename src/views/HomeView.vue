@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { onMounted, onUnmounted, computed } from 'vue'
+import { onMounted, onUnmounted, computed, ref } from 'vue'
 import { useRouter } from 'vue-router'
 import { useProductsStore } from '../stores/products'
 import { useProducts } from '../composables/useProducts'
@@ -45,8 +45,12 @@ const categories = [
   'sans gluten'
 ]
 
+const categoriesIsLoading = ref(false)
+
 const searchProductsByCategory: Function = async (category: string) => {
+  categoriesIsLoading.value = true
   await searchProducts(category, null, 'complete')
+  categoriesIsLoading.value = false
   router.push({ name: 'search' })
 }
 
@@ -175,7 +179,7 @@ onUnmounted(() => {
       class="radio-toolbar relative flex flex-wrap justify-center mb-12"
     >
       <div
-        v-if="productsIsLoading"
+        v-if="categoriesIsLoading"
         class="loader-container absolute h-full w-full flex justify-center items-center bg-[whitesmoke]"
       >
         <div class="lds-hourglass"></div>

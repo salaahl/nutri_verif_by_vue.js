@@ -83,11 +83,17 @@ async function fetchWithTimeout(
 ) {
   const { timeout = 10000 } = options
 
+  const mergedHeaders = {
+    'User-Agent': 'NutriVérif/1.0 (sokhona.salaha@gmail.com)',
+    ...options.headers
+  }
+
   const controller = new AbortController()
   const id = setTimeout(() => controller.abort(), timeout)
 
   const response = await fetch(resource, {
     ...options,
+    headers: mergedHeaders,
     signal: controller.signal
   })
 
