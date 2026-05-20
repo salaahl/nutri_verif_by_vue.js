@@ -180,11 +180,12 @@ onUnmounted(() => {
     >
       <div
         v-if="categoriesIsLoading"
-        class="loader-container absolute h-full w-full flex justify-center items-center bg-[whitesmoke]"
+        class="loader-container h-full w-full flex justify-center items-center"
       >
         <div class="lds-hourglass"></div>
       </div>
       <label
+        v-else
         v-for="category in categories"
         :key="category"
         class="tag mt-2 mr-2 py-2 px-3 text-sm font-semibold text-white bg-neutral-400 text-white rounded-full"
@@ -201,7 +202,7 @@ onUnmounted(() => {
     <article class="mb-8">
       <div
         id="video-container"
-        class="w-full aspect-[2/1] border-[3px] border-[#00bd7e] rounded-xl overflow-hidden"
+        class="w-full aspect-[2/1] border-[3px] border-black rounded-xl overflow-hidden"
       >
         <div class="cookies h-full w-full flex items-center justify-center">
           <button id="accept-cookies">
@@ -487,6 +488,14 @@ h2::first-letter {
   width: 1.4rem;
 }
 
+.radio-toolbar label {
+  background-color: #343A40;
+}
+
+.radio-toolbar label:hover {
+  background-color: #00bd7e;
+}
+
 .product {
   width: 48%;
   margin-bottom: 5%;
@@ -538,6 +547,11 @@ h2::first-letter {
 
 #video-container {
   z-index: 1;
+}
+
+/* Conteneur des alternatives */
+aside {
+  margin-bottom: 0;
 }
 
 @media (min-width: 768px) {
