@@ -131,8 +131,8 @@ onUnmounted(() => {
 
 <template>
   <section id="header" class="w-full my-20">
-    <h1 class="text-6xl font-light text-center">Nutri<span class="text-[#00bd7e]">Vérif</span></h1>
-    <h3 class="text-lg font-thin text-center">Manger (plus) sain</h3>
+    <h1 class="text-6xl font-light text-center text-[#00bd7e]">Nutri<span class="text-black">Vérif</span></h1>
+    <h3 class="text-lg text-center">Manger (plus) sain</h3>
   </section>
   <section id="search-container" class="w-full mb-20">
     <SearchBar />
@@ -425,7 +425,7 @@ onUnmounted(() => {
   </section>
   <section id="last-products" class="mb-24">
     <h2 class="title mb-12 text-2xl lg:text-3xl text-right">
-      Produits <span class="text-[#00bd7e]">récemment</span> ajoutés
+      Produits <span class="text-[indianred]">récemment</span> ajoutés
     </h2>
     <div
       class="relative flex flex-wrap justify-between md:justify-start p-4 bg-neutral-200 rounded-lg"
@@ -468,6 +468,13 @@ h2::first-letter {
   font-weight: bold;
 }
 
+#search-container {
+  padding: calc(var(--app-padding-x) * 2) var(--app-padding-x);
+  background: rgb(255 255 255 / 0.5);
+  border-radius: 10px;
+  backdrop-filter: blur(10px);
+}
+
 #search-bar {
   position: sticky;
   width: 100%;
@@ -490,7 +497,7 @@ h2::first-letter {
 }
 
 .radio-toolbar label {
-  background-color: #343A40;
+  background-color: #343a40;
 }
 
 .radio-toolbar label:hover {
@@ -558,6 +565,7 @@ aside {
 @media (min-width: 768px) {
   .product {
     width: 19%;
+    aspect-ratio: auto;
     margin-bottom: 0;
   }
 
@@ -575,6 +583,17 @@ aside {
     padding: 2rem;
     background-color: rgb(238, 238, 238);
     border-radius: 0.5rem;
+  }
+}
+
+@media (min-width: 1024px) {
+  #search-container {
+    padding: calc(var(--app-padding-x) * 2) var(--app-padding-x);
+    border-radius: 100px;
+  }
+
+  .product {
+    aspect-ratio: 2/3;
   }
 }
 </style>
