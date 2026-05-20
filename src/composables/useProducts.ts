@@ -57,6 +57,16 @@ interface APIProduct {
   link?: string
 }
 
+interface FetchSuggestionsOptions {
+  id?: string
+  brand?: string
+  name?: string
+  nutriscore?: string
+  novaGroup?: string | number
+  categories?: string[]
+  isFrom?: null | string
+}
+
 type SearchMethod = 'complete' | 'more'
 
 const API_BASE_URL = 'https://world.openfoodfacts.org/cgi/search.pl'
@@ -97,6 +107,7 @@ export function useProducts() {
   const lastProducts = ref<Products[]>([])
   const lastProductsIsLoading = ref(false)
   const suggestedProducts = ref<Products[]>([])
+  const homeSuggestedProducts = ref<Products[]>([])
   const suggestedProductsIsLoading = ref(false)
   const ajrSelected = computed<string>({
     get: () => productsStore.getAjrSelected,
@@ -268,14 +279,17 @@ export function useProducts() {
     }
   }
 
-  async function fetchSuggestedProducts(
-    id: string = product.id,
-    brand: string = product.brand,
-    name: string = product.name,
-    nutriscore: string = product.nutriscore,
-    novaGroup: string | number = product.novaGroup,
-    categories: string[] = product.categories
-  ) {
+  async function fetchSuggestedProducts({
+    id = product.id,
+    brand = product.brand,
+    name = product.name,
+    nutriscore = product.nutriscore,
+    novaGroup = product.novaGroup,
+    categories = product.categories,
+    isFrom = null
+  }: FetchSuggestionsOptions = {}) {
+    if (isFrom === 'home' && homeSuggestedProducts.value.length > 0) return
+
     let fields = 'id,nutriscore_grade,nova_group,completeness,popularity_key'
     let route = isLocalhost
       ? '/data/mock-products.json'
@@ -343,7 +357,9 @@ export function useProducts() {
         response = await fetchWithTimeout(route)
         data = await response.json()
 
-        suggestedProducts.value.push(...data.products.reverse().map(transformProducts))
+        isFrom === 'home'
+          ? homeSuggestedProducts.value.push(...data.products.reverse().map(transformProducts))
+          : suggestedProducts.value.push(...data.products.reverse().map(transformProducts))
       }
     } catch (err: any) {
       error.value = err.message || 'Une erreur est survenue'
@@ -412,6 +428,7 @@ export function useProducts() {
     lastProducts,
     lastProductsIsLoading,
     suggestedProducts,
+    homeSuggestedProducts,
     suggestedProductsIsLoading,
     ajrSelected,
     novaDescription,

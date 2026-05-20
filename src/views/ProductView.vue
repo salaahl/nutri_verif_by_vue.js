@@ -2,7 +2,7 @@
 import { onBeforeMount, onMounted, onUnmounted, ref } from 'vue'
 import { useRoute, useRouter, onBeforeRouteUpdate } from 'vue-router'
 import { useProducts } from '../composables/useProducts'
-import ProductCard from '/src/components/ProductCard.vue'
+import AlternativesProducts from '@/components/AlternativesProducts.vue'
 
 const router = useRouter()
 const route = useRoute()
@@ -13,8 +13,6 @@ const {
   productIsLoading,
   productsIsLoading,
   fetchSuggestedProducts,
-  suggestedProductsIsLoading,
-  suggestedProducts,
   fetchProduct,
   novaDescription,
   ajrSelected,
@@ -80,14 +78,14 @@ const updateProduct = async (productId: string) => {
   categoriesIsLoading.value = false
 
   if (product.nutriscore !== 'a' || product.novaGroup !== 'a')
-    fetchSuggestedProducts(
-      productId,
-      product.brand,
-      product.name,
-      product.nutriscore,
-      product.novaGroup,
-      product.categories
-    )
+    fetchSuggestedProducts({
+      id: productId,
+      brand: product.brand,
+      name: product.name,
+      nutriscore: product.nutriscore,
+      novaGroup: product.novaGroup,
+      categories: product.categories
+    })
 }
 
 onBeforeMount(async () => {
@@ -97,14 +95,14 @@ onBeforeMount(async () => {
   categoriesIsLoading.value = false
 
   if (product.nutriscore !== 'a' || product.novaGroup !== 'a')
-    fetchSuggestedProducts(
-      product.id,
-      product.brand,
-      product.name,
-      product.nutriscore,
-      product.novaGroup,
-      product.categories
-    )
+    fetchSuggestedProducts({
+      id: product.id,
+      brand: product.brand,
+      name: product.name,
+      nutriscore: product.nutriscore,
+      novaGroup: product.novaGroup,
+      categories: product.categories
+    })
 })
 
 onMounted(() => {
@@ -513,38 +511,7 @@ onUnmounted(() => {
       </div>
     </section>
   </div>
-
-  <aside v-if="suggestedProducts.length || suggestedProductsIsLoading" class="mb-16">
-    <section
-      id="more-products"
-      class="relative min-h-[125px] w-full flex flex-wrap lg:flex-nowrap items-stretch lg:items-center justify-between px-6 py-4 bg-neutral-200 rounded-xl"
-    >
-      <h2
-        class="title w-full lg:w-1/4 mt-4 mb-8 lg:ml-[-0.75rem] lg:m-0 text-center text-3xl lg:text-2xl"
-      >
-        Alternatives
-      </h2>
-      <div
-        v-if="suggestedProductsIsLoading"
-        class="loader-container md:absolute h-full w-full flex justify-center items-center"
-      >
-        <div class="lds-hourglass"></div>
-      </div>
-      <div class="relative w-full lg:w-3/4 flex flex-wrap md:flex-nowrap lg:justify-end">
-        <ProductCard
-          v-for="product in suggestedProducts"
-          :key="product.id"
-          :id="product.id"
-          :image="product.image"
-          :brand="product.brand"
-          :name="product.name"
-          :nutriscore="product.nutriscore"
-          :nova="product.nova"
-          :category="product.category"
-        />
-      </div>
-    </section>
-  </aside>
+  <AlternativesProducts />
 </template>
 
 <style>
@@ -572,49 +539,5 @@ onUnmounted(() => {
 .tag:hover {
   color: #000;
   background-color: whitesmoke;
-}
-
-#more-products > .title {
-  font-family: 'Grand Hotel', cursive;
-  font-size: xx-large;
-}
-
-#more-products > .title::first-letter {
-  color: indianred;
-}
-
-#more-products .product {
-  width: 48%;
-  margin-bottom: 5%;
-}
-
-#more-products .product:nth-of-type(odd) {
-  margin-right: 4%;
-}
-
-@media (min-width: 768px) {
-  #more-products > .title {
-    font-size: xxx-large;
-  }
-
-  #more-products .product {
-    width: 23.75%;
-    margin-bottom: 0;
-  }
-
-  #more-products .product:nth-child(1),
-  #more-products .product:nth-child(4) {
-    margin-left: unset;
-    margin-right: unset;
-  }
-
-  #more-products .product:nth-child(2) {
-    margin-left: 1.75%;
-  }
-
-  #more-products .product:nth-child(3) {
-    margin-left: 1.75%;
-    margin-right: 1.75%;
-  }
 }
 </style>
