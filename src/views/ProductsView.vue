@@ -45,10 +45,24 @@ const onScroll = async () => {
 }
 
 onMounted(() => {
+  const fill = document.querySelectorAll(
+    'svg .bg-base, svg #background-blobs'
+  ) as NodeListOf<SVGElement>
+
+  if (fill && fill.length > 0) {
+    fill.forEach((f) => f.classList.add('products-screen'))
+  }
   window.addEventListener('scroll', onScroll)
 })
 
 onUnmounted(() => {
+  const fill = document.querySelectorAll(
+    'svg .bg-base, svg #background-blobs'
+  ) as NodeListOf<SVGElement>
+
+  if (fill && fill.length > 0) {
+    fill.forEach((f) => f.classList.remove('products-screen'))
+  }
   window.removeEventListener('scroll', onScroll)
 })
 </script>

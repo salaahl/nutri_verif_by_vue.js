@@ -18,9 +18,9 @@ const currentRoute = computed(() => {
       preserveAspectRatio="xMidYMid slice"
       class="w-full h-full"
     >
-      <rect class="bg-base" width="100%" height="100%" fill="#FFFFFF" />
+      <rect class="bg-base" width="100%" height="100%" />
 
-      <g id="background-blobs" fill="#f5f5f5" transform="scale(1.6, 1.5)">
+      <g id="background-blobs" transform="scale(1.6, 1.5)">
         <g transform="translate(900, 0)">
           <path
             d="M0 486.7C-52.4 455.1 -104.8 423.5 -168 405.6C-231.2 387.6 -305.1 383.3 -344.2 344.2C-383.3 305.1 -387.6 231.2 -405.6 168C-423.5 104.8 -455.1 52.4 -486.7 0L0 0Z"
@@ -174,27 +174,48 @@ const currentRoute = computed(() => {
   width: 100%;
 }
 
-.bg .bg-base {
-  fill: #ffffff;
+.bg-base {
+  fill: white;
 }
 
-.bg .blob-surface {
-  fill: #f5f5f5;
+#background-blobs {
+  fill: hsla(160, 100%, 37%, 1);
+}
+
+/* Les ***-screen sont chargés dynamiquement */
+.bg-base .about-screen {
+  fill: white;
+}
+
+#background-blobs.about-screen {
+  fill: whitesmoke;
+}
+
+.bg-base.products-screen {
+  fill: white;
+}
+
+#background-blobs.products-screen {
+  fill: whitesmoke;
+}
+
+.bg-base.product-screen,
+#background-blobs.product-screen {
+  fill: whitesmoke;
 }
 
 .bg .bg-base,
+#background-blobs,
 .bg .plant-primary,
 .bg .plant-secondary {
   transition: all var(--transition-delay-double);
 }
 
-/* Couleur des épis de blé */
 .bg .plant-primary {
   fill: #2e5a44;
   fill-opacity: 0.12;
 }
 
-/* Variantes de feuillage */
 .bg .plant-secondary {
   fill: #4a7c59;
   fill-opacity: 0.08;

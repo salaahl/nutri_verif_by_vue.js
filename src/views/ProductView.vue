@@ -106,10 +106,13 @@ onBeforeMount(async () => {
 })
 
 onMounted(() => {
-  const bg = document.querySelector('.bg .bg-base') as SVGElement
-  if (!bg) return
+  const fill = document.querySelectorAll(
+    'svg .bg-base, svg #background-blobs'
+  ) as NodeListOf<SVGElement>
 
-  bg.style.fill = 'whitesmoke'
+  if (fill && fill.length > 0) {
+    fill.forEach((f) => f.classList.add('product-screen'))
+  }
 })
 
 onBeforeRouteUpdate((to) => {
@@ -117,10 +120,13 @@ onBeforeRouteUpdate((to) => {
 })
 
 onUnmounted(() => {
-  const bg = document.querySelector('.bg .bg-base') as SVGElement
-  if (!bg) return
+  const fill = document.querySelectorAll(
+    'svg .bg-base, svg #background-blobs'
+  ) as NodeListOf<SVGElement>
 
-  bg.style.fill = 'white'
+  if (fill && fill.length > 0) {
+    fill.forEach((f) => f.classList.remove('product-screen'))
+  }
 })
 </script>
 

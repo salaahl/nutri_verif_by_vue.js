@@ -137,6 +137,26 @@ onUnmounted(() => {
   <section id="search-container" class="w-full mb-20">
     <SearchBar />
     <div
+      v-if="categories.length"
+      class="radio-toolbar relative flex flex-wrap justify-center mb-12"
+    >
+      <div
+        v-if="categoriesIsLoading"
+        class="loader-container h-full w-full flex justify-center items-center"
+      >
+        <div class="lds-hourglass"></div>
+      </div>
+      <label
+        v-else
+        v-for="category in categories"
+        :key="category"
+        class="tag mt-2 mr-2 py-2 px-3 text-sm font-semibold text-white bg-neutral-400 text-white rounded-full"
+        @click="searchProductsByCategory(category)"
+      >
+        {{ category }}
+      </label>
+    </div>
+    <div
       :class="`${products.length > 0 || productsIsLoading ? 'max-h-[750px] md:max-h-[400px]' : 'max-h-0'} overflow-hidden transition-all duration-300 ease-in-out`"
     >
       <div
@@ -173,26 +193,6 @@ onUnmounted(() => {
           </RouterLink>
         </article>
       </div>
-    </div>
-    <div
-      v-if="categories.length"
-      class="radio-toolbar relative flex flex-wrap justify-center mb-12"
-    >
-      <div
-        v-if="categoriesIsLoading"
-        class="loader-container h-full w-full flex justify-center items-center"
-      >
-        <div class="lds-hourglass"></div>
-      </div>
-      <label
-        v-else
-        v-for="category in categories"
-        :key="category"
-        class="tag mt-2 mr-2 py-2 px-3 text-sm font-semibold text-white bg-neutral-400 text-white rounded-full"
-        @click="searchProductsByCategory(category)"
-      >
-        {{ category }}
-      </label>
     </div>
     <h3 id="total-products" class="text-2xl lg:text-3xl text-center">
       + de 1 234 100 produits référencés
@@ -474,6 +474,7 @@ h2::first-letter {
   max-width: 1280px;
   margin-left: auto;
   margin-right: auto;
+  margin-bottom: 1rem;
   z-index: 99;
   transition: top 0.25s;
 }
