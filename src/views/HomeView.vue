@@ -131,7 +131,9 @@ onUnmounted(() => {
 
 <template>
   <section id="header" class="w-full my-20">
-    <h1 class="text-6xl font-light text-center text-[#00bd7e]">Nutri<span class="text-black">Vérif</span></h1>
+    <h1 class="text-6xl font-light text-center text-[#00bd7e]">
+      Nutri<span class="text-black">Vérif</span>
+    </h1>
     <h3 class="text-lg text-center">Manger (plus) sain</h3>
   </section>
   <section id="search-container" class="w-full mb-20">
@@ -150,7 +152,7 @@ onUnmounted(() => {
         v-else
         v-for="category in categories"
         :key="category"
-        class="tag mt-2 mr-2 py-2 px-3 text-sm font-semibold text-white bg-neutral-400 text-white rounded-full"
+        class="tag mt-2 mr-2 py-2 px-3 text-sm font-semibold text-white rounded-full"
         @click="searchProductsByCategory(category)"
       >
         {{ category }}
@@ -161,7 +163,7 @@ onUnmounted(() => {
     >
       <div
         id="search-results"
-        class="relative flex flex-wrap justify-between md:justify-start mb-8 p-4 bg-neutral-200 rounded-lg"
+        class="relative flex flex-wrap justify-between md:justify-start mb-8 p-4 rounded-lg"
       >
         <div
           v-if="productsIsLoading"
@@ -217,12 +219,12 @@ onUnmounted(() => {
       </div>
     </article>
     <article>
-      <span class="text-highlighted py-[2.5px] font-[200]">
+      <span class="text-highlighted red py-[2.5px] font-[200]">
         NutriVérif est alimentée par "Open Food Facts", une base de données de produits alimentaires
         créée par tous et pour tous.
       </span>
       <div class="my-2"></div>
-      <span class="text-highlighted py-[2.5px] font-[200]">
+      <span class="text-highlighted red py-[2.5px] font-[200]">
         Vous pouvez l'utiliser pour faire de meilleurs choix alimentaires, et comme les données sont
         ouvertes, tout le monde peut les réutiliser pour tout usage.
       </span>
@@ -290,7 +292,7 @@ onUnmounted(() => {
       Découvrez des <span class="text-[#00bd7e]">alternatives</span> plus saines
     </h2>
     <span class="inline-block mb-8">
-      <span class="text-highlighted red">Vous méritez le meilleur pour votre alimentation </span>
+      <span class="text-highlighted">Vous méritez le meilleur pour votre alimentation </span>
       <span>. Si un produit a un Nutri-Score jugé trop faible :</span>
     </span>
     <div
@@ -412,14 +414,14 @@ onUnmounted(() => {
     </div>
     <span class="inline-block my-8">
       notre fonctionnalité intelligente vous propose instantanément des alternatives
-      <span class="text-highlighted red">mieux notées et tout aussi savoureuses</span> :
+      <span class="text-highlighted">mieux notées et tout aussi savoureuses</span> :
     </span>
     <AlternativesProducts
       :isLoading="suggestedProductsIsLoading"
       :products="homeSuggestedProducts"
     />
     <span class="inline-block my-8">
-      Trouvez des options <span class="text-highlighted red">plus saines</span> et faites de chaque
+      Trouvez des options <span class="text-highlighted">plus saines</span> et faites de chaque
       choix un pas vers une meilleure santé.</span
     >
   </section>
@@ -427,9 +429,7 @@ onUnmounted(() => {
     <h2 class="title mb-12 text-2xl lg:text-3xl text-right">
       Produits <span class="text-[indianred]">récemment</span> ajoutés
     </h2>
-    <div
-      class="relative flex flex-wrap justify-between md:justify-start p-4 bg-neutral-200 rounded-lg"
-    >
+    <div class="relative flex flex-wrap justify-between md:justify-start p-4 rounded-lg">
       <div
         v-if="lastProductsIsLoading"
         class="loader-container w-fit flex justify-center items-center m-auto"
@@ -459,6 +459,12 @@ onUnmounted(() => {
   </section>
 </template>
 
+<style>
+#more-products {
+  background-color: rgb(255 255 255 / 0.5);
+}
+</style>
+
 <style scoped>
 h1 {
   font-family: 'Grand Hotel', cursive;
@@ -470,7 +476,7 @@ h2::first-letter {
 
 #search-container {
   padding: calc(var(--app-padding-x) * 2) var(--app-padding-x);
-  background: rgb(255 255 255 / 0.5);
+  background-color: rgb(255 255 255 / 0.5);
   border-radius: 10px;
   backdrop-filter: blur(10px);
 }
@@ -478,7 +484,7 @@ h2::first-letter {
 #search-bar {
   position: sticky;
   width: 100%;
-  max-width: 1280px;
+  max-width: 1024px;
   margin-left: auto;
   margin-right: auto;
   margin-bottom: 1rem;
@@ -502,6 +508,11 @@ h2::first-letter {
 
 .radio-toolbar label:hover {
   background-color: #00bd7e;
+}
+
+#search-results,
+#last-products > div {
+  background-color: rgb(255 255 255 / 0.5);
 }
 
 .product {
@@ -557,8 +568,16 @@ h2::first-letter {
   z-index: 1;
 }
 
-/* Conteneur des alternatives */
-aside {
+#alternatives-functionality {
+  margin-left: calc(var(--app-padding-x) * -1);
+  margin-right: calc(var(--app-padding-x) * -1);
+  padding: 2rem var(--app-padding-x) 0 var(--app-padding-x);
+  background-color: rgb(255 255 255 / 0.5);
+  backdrop-filter: blur(10px);
+}
+
+/* Container des alternatives */
+#alternatives-functionality > aside {
   margin-bottom: 0;
 }
 
@@ -580,8 +599,9 @@ aside {
   }
 
   #alternatives-functionality {
-    padding: 2rem;
-    background-color: rgb(238, 238, 238);
+    margin-left: 0;
+    margin-right: 0;
+    background: radial-gradient(circle, rgba(0, 0, 0, 0) 0%, rgba(255, 255, 255, 0.5) 50%);
     border-radius: 0.5rem;
   }
 }
