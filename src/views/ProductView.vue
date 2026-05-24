@@ -107,7 +107,7 @@ onBeforeMount(async () => {
 
 onMounted(() => {
   const fill = document.querySelectorAll(
-    'svg .bg-base, svg #background-blobs'
+    'svg .bg-base, svg #background-blobs > g, .plant-primary, .plant-secondary'
   ) as NodeListOf<SVGElement>
 
   if (fill && fill.length > 0) {
@@ -121,7 +121,7 @@ onBeforeRouteUpdate((to) => {
 
 onUnmounted(() => {
   const fill = document.querySelectorAll(
-    'svg .bg-base, svg #background-blobs'
+    'svg .bg-base, svg #background-blobs > g, .plant-primary, .plant-secondary'
   ) as NodeListOf<SVGElement>
 
   if (fill && fill.length > 0) {

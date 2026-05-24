@@ -26,7 +26,27 @@ const currentRoute = computed(() => {
             d="M0 486.7C-52.4 455.1 -104.8 423.5 -168 405.6C-231.2 387.6 -305.1 383.3 -344.2 344.2C-383.3 305.1 -387.6 231.2 -405.6 168C-423.5 104.8 -455.1 52.4 -486.7 0L0 0Z"
           />
         </g>
+        <g transform="translate(925, -25)">
+          <path
+            d="M0 486.7C-52.4 455.1 -104.8 423.5 -168 405.6C-231.2 387.6 -305.1 383.3 -344.2 344.2C-383.3 305.1 -387.6 231.2 -405.6 168C-423.5 104.8 -455.1 52.4 -486.7 0L0 0Z"
+          />
+        </g>
+        <g transform="translate(950, -50)">
+          <path
+            d="M0 486.7C-52.4 455.1 -104.8 423.5 -168 405.6C-231.2 387.6 -305.1 383.3 -344.2 344.2C-383.3 305.1 -387.6 231.2 -405.6 168C-423.5 104.8 -455.1 52.4 -486.7 0L0 0Z"
+          />
+        </g>
         <g transform="translate(0, 600)">
+          <path
+            d="M0 -486.7C58.5 -454.5 116.9 -422.2 160.3 -387.1C203.8 -352 232.2 -314.2 284.3 -284.3C336.3 -254.3 412 -232.3 449.7 -186.3C487.4 -140.2 487.1 -70.1 486.7 0L0 0Z"
+          />
+        </g>
+        <g transform="translate(-25, 625)">
+          <path
+            d="M0 -486.7C58.5 -454.5 116.9 -422.2 160.3 -387.1C203.8 -352 232.2 -314.2 284.3 -284.3C336.3 -254.3 412 -232.3 449.7 -186.3C487.4 -140.2 487.1 -70.1 486.7 0L0 0Z"
+          />
+        </g>
+        <g transform="translate(-50, 650)">
           <path
             d="M0 -486.7C58.5 -454.5 116.9 -422.2 160.3 -387.1C203.8 -352 232.2 -314.2 284.3 -284.3C336.3 -254.3 412 -232.3 449.7 -186.3C487.4 -140.2 487.1 -70.1 486.7 0L0 0Z"
           />
@@ -178,47 +198,71 @@ const currentRoute = computed(() => {
   fill: white;
 }
 
-#background-blobs {
+#background-blobs > g:nth-child(1),
+#background-blobs > g:nth-child(4) {
+  fill: hsla(160, 100%, 37%, 0.25);
+}
+
+#background-blobs > g:nth-child(2),
+#background-blobs > g:nth-child(5) {
+  fill: hsla(160, 100%, 37%, 0.5);
+}
+
+#background-blobs > g:nth-child(3),
+#background-blobs > g:nth-child(6) {
   fill: hsla(160, 100%, 37%, 1);
 }
 
 /* Les ***-screen sont chargés dynamiquement */
-.bg-base .about-screen {
-  fill: white;
+#background-blobs > g.about-screen:nth-child(1),
+#background-blobs > g.products-screen:nth-child(1),
+#background-blobs > g.about-screen:nth-child(4),
+#background-blobs > g.products-screen:nth-child(4) {
+  fill: rgb(245, 245, 245, 0.25);
 }
 
-#background-blobs.about-screen {
-  fill: whitesmoke;
+#background-blobs > g.about-screen:nth-child(2),
+#background-blobs > g.products-screen:nth-child(2),
+#background-blobs > g.about-screen:nth-child(5),
+#background-blobs > g.products-screen:nth-child(5) {
+  fill: rgb(245, 245, 245, 0.5);
 }
 
-.bg-base.products-screen {
-  fill: white;
-}
-
-#background-blobs.products-screen {
-  fill: whitesmoke;
+#background-blobs > g.about-screen:nth-child(3),
+#background-blobs > g.products-screen:nth-child(3),
+#background-blobs > g.about-screen:nth-child(6),
+#background-blobs > g.products-screen:nth-child(6) {
+  fill: rgb(245, 245, 245);
 }
 
 .bg-base.product-screen,
-#background-blobs.product-screen {
+#background-blobs > g.product-screen {
   fill: whitesmoke;
 }
 
 .bg .bg-base,
-#background-blobs,
+#background-blobs > g,
 .bg .plant-primary,
 .bg .plant-secondary {
   transition: all var(--transition-delay-double);
 }
 
+.bg .plant-primary,
+.bg .plant-secondary {
+  fill-opacity: 0.08;
+}
+
+.bg .plant-primary.product-screen,
+.bg .plant-secondary.product-screen {
+  fill-opacity: 0.04;
+}
+
 .bg .plant-primary {
   fill: #2e5a44;
-  fill-opacity: 0.12;
 }
 
 .bg .plant-secondary {
   fill: #4a7c59;
-  fill-opacity: 0.08;
 }
 
 .slide-fade-enter-active {

@@ -46,7 +46,7 @@ const onScroll = async () => {
 
 onMounted(() => {
   const fill = document.querySelectorAll(
-    'svg .bg-base, svg #background-blobs'
+    'svg .bg-base, svg #background-blobs > g'
   ) as NodeListOf<SVGElement>
 
   if (fill && fill.length > 0) {
@@ -57,7 +57,7 @@ onMounted(() => {
 
 onUnmounted(() => {
   const fill = document.querySelectorAll(
-    'svg .bg-base, svg #background-blobs'
+    'svg .bg-base, svg #background-blobs > g'
   ) as NodeListOf<SVGElement>
 
   if (fill && fill.length > 0) {
