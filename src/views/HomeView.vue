@@ -476,9 +476,9 @@ h2::first-letter {
 
 #search-container {
   padding: calc(var(--app-padding-x) * 2) var(--app-padding-x);
-  background-color: rgb(255 255 255 / 0.5);
+  background: radial-gradient(circle, rgba(0, 0, 0, 0) 0%, rgba(255, 255, 255, 0.5) 50%);
   border-radius: 10px;
-  backdrop-filter: blur(10px);
+  backdrop-filter: blur(5px);
 }
 
 #search-bar {
@@ -573,7 +573,7 @@ h2::first-letter {
   margin-right: calc(var(--app-padding-x) * -1);
   padding: 2rem var(--app-padding-x) 0 var(--app-padding-x);
   background-color: rgb(255 255 255 / 0.5);
-  backdrop-filter: blur(10px);
+  backdrop-filter: blur(5px);
 }
 
 /* Container des alternatives */
