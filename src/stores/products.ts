@@ -3,6 +3,7 @@ import { defineStore } from 'pinia'
 export const useProductsStore = defineStore('products', {
   state: () => ({
     products: [],
+    productsIsLoading: false,
     input: '',
     filter: '',
     page: 1,
@@ -13,6 +14,9 @@ export const useProductsStore = defineStore('products', {
   actions: {
     updateProducts(payload: any) {
       this.products = payload
+    },
+    updateProductsLoadingState(payload: boolean) {
+      this.productsIsLoading = payload
     },
     updateInput(payload: string) {
       this.input = payload
@@ -36,6 +40,9 @@ export const useProductsStore = defineStore('products', {
   getters: {
     getProducts(state) {
       return state.products
+    },
+    getProductsLoadingState(state) {
+      return state.productsIsLoading
     },
     getInput(state) {
       return state.input

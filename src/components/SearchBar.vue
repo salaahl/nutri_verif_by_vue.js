@@ -31,14 +31,17 @@ const onSubmit = async (event: Event) => {
     let searchFilter: any = null
 
     if (toolbarIsVisible.value) {
-      searchFilter = document.querySelector(
+      const checkedInput = document.querySelector(
         '#search-form input[name="sort_by"]:checked'
       ) as HTMLInputElement
-      if (!searchFilter) return
+
+      if (checkedInput?.value) {
+        searchFilter = checkedInput.value
+      }
     }
 
     window.scrollTo({ top: 0, behavior: 'smooth' })
-    await searchProducts(searchInput.value, searchFilter?.value, 'complete')
+    await searchProducts(searchInput.value, searchFilter, 'complete')
   }
 }
 

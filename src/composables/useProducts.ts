@@ -107,7 +107,10 @@ export function useProducts() {
     get: () => productsStore.getProducts,
     set: (val) => productsStore.updateProducts(val)
   })
-  const productsIsLoading = ref(false)
+  const productsIsLoading = computed<boolean>({
+    get: () => productsStore.getProductsLoadingState,
+    set: (val) => productsStore.updateProductsLoadingState(val)
+  })
   const product = reactive<Product>(transformProduct({}))
   const productIsLoading = ref(false)
   const lastProducts = ref<Products[]>([])
@@ -158,8 +161,14 @@ export function useProducts() {
     get: () => productsStore.getFilter,
     set: (val) => productsStore.updateFilter(val)
   })
-  const page = ref<number>(1)
-  const pages = ref<number>(1)
+  const page = computed<number>({
+    get: () => productsStore.getPage,
+    set: (val) => productsStore.updatePage(val)
+  })
+  const pages = computed<number>({
+    get: () => productsStore.getPages,
+    set: (val) => productsStore.updatePages(val)
+  })
   const error = ref<string | null>(null)
 
   function transformProducts(product: APIProducts): Products {
@@ -206,8 +215,8 @@ export function useProducts() {
     sortBy: string | null,
     method: SearchMethod
   ) {
-    if (userInput !== null) input.value = userInput
-    if (sortBy !== null) filter.value = sortBy
+    if (userInput) input.value = userInput
+    if (sortBy) filter.value = sortBy
     if (method === 'complete') {
       products.value = [] // Réinitialiser les produits en cas de nouvelle recherche
       page.value = 1
@@ -226,6 +235,23 @@ export function useProducts() {
       error.value = null
       const response = await fetchWithTimeout(route)
       const data = await response.json()
+
+      if (isLocalhost && data.products) {
+        const multiplicationFactor = 5 // 4 produits issus de mock-products x 5 = 20 produits
+        const multipliedProducts: any[] = []
+
+        for (let i = 0; i < multiplicationFactor; i++) {
+          const clone = data.products.map((product: any, index: number) => ({
+            ...product,
+            id: Math.random().toString(36).substring(2, 9) + index.toString(),
+            generic_name: `${product.product_name} ${i + 1}`
+          }))
+          multipliedProducts.push(...clone)
+        }
+
+        data.products = multipliedProducts
+        data.count = multipliedProducts.length * 2 // On multiplie le nombre de produits par 2 pour simuler la pagination
+      }
 
       if (method === 'complete') pages.value = Math.ceil(data.count / 20)
 
