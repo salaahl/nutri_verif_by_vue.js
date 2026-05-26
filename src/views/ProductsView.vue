@@ -22,8 +22,10 @@ const onScroll = async () => {
 
   if (prevScrollpos > currentScrollPos) {
     window.innerWidth > 768 ? (searchBar.style.top = '25px') : (searchBar.style.top = '0')
+    searchBar.classList.add('blur-bg')
   } else {
     searchBar.style.top = '-' + (searchBarHeight + 4) + 'px'
+    searchBar.classList.remove('blur-bg')
   }
 
   if (
@@ -94,6 +96,10 @@ onUnmounted(() => {
 </template>
 
 <style scoped>
+#search-bar {
+  padding: var(--app-padding-x);
+}
+
 #search-results {
   display: flex;
   flex-wrap: wrap;

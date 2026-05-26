@@ -189,6 +189,14 @@ const onFilterChange = (e: Event) => {
   transition: top 0.25s;
 }
 
+#search-bar.blur-bg {
+  background: radial-gradient(circle, transparent, rgb(255 255 255));
+  backdrop-filter: blur(5px);
+  mask-image: linear-gradient(to right, transparent 0%, black 4%, black 96%, transparent 100%),
+    linear-gradient(transparent 0%, black 6%, black 94%, transparent 100%);
+  mask-composite: intersect;
+}
+
 #search-bar-icon {
   height: auto;
   width: 0.875rem;
@@ -199,5 +207,12 @@ const onFilterChange = (e: Event) => {
   margin: 0;
   border: 0.5rem solid #fff;
   border-color: hsla(160, 100%, 37%, 0.6) transparent var(--color-green) transparent;
+}
+
+@media (min-width: 1024px) {
+  #search-bar.blur-bg {
+    mask-image: linear-gradient(to right, transparent 0%, black 3%, black 97%, transparent 100%),
+      linear-gradient(transparent 0%, black 15%, black 85%, transparent 100%);
+  }
 }
 </style>

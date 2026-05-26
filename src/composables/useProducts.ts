@@ -212,7 +212,7 @@ export function useProducts() {
 
   async function searchProducts(
     userInput: string | null,
-    sortBy: string | null,
+    sortBy: string | null | undefined,
     method: SearchMethod
   ) {
     if (userInput) input.value = userInput
@@ -226,9 +226,23 @@ export function useProducts() {
 
     const fields =
       'id,image_front_small_url,brands,generic_name_fr,nutriscore_grade,nova_group,categories_hierarchy'
-    const route = isLocalhost
-      ? '/data/mock-products.json'
-      : `${API_BASE_URL}?search_terms=${encodeURIComponent(input.value)}&fields=${encodeURIComponent(fields)}&purchase_places_tags=france&sort_by=${encodeURIComponent(filter.value)}&page_size=20&page=${page.value}&search_simple=1&action=process&json=1`
+    let route = '/data/mock-products.json'
+
+    if (!isLocalhost) {
+      const params = new URLSearchParams({
+        search_terms: input.value,
+        fields: fields,
+        purchase_places_tags: 'france',
+        sort_by: filter.value,
+        page_size: '20',
+        page: page.value.toString(),
+        search_simple: '1',
+        action: 'process',
+        json: '1'
+      })
+
+      route = `${API_BASE_URL}?${params.toString()}`
+    }
 
     try {
       productsIsLoading.value = true
@@ -268,11 +282,11 @@ export function useProducts() {
     error.value = null
     const fields =
       'id,image_front_url,brands,generic_name_fr,categories_hierarchy,last_updated_t,nutriscore_grade,nova_group,quantity,serving_size,ingredients_text_with_allergens_fr,nutriments,nutrient_levels,manufacturing_places,link'
+    const route = isLocalhost
+      ? '/data/mock-product.json'
+      : `${API_BASE_URL_V3}/product/${id}?fields=${encodeURIComponent(fields)}&json=1`
 
     try {
-      const route = isLocalhost
-        ? '/data/mock-product.json'
-        : `${API_BASE_URL_V3}/product/${id}&fields=${encodeURIComponent(fields)}&json=1`
       const response = await fetchWithTimeout(route)
       const data = await response.json()
 
@@ -287,10 +301,10 @@ export function useProducts() {
   async function fetchLastProducts() {
     const fields =
       'id,image_front_small_url,brands,generic_name_fr,nutriscore_grade,nova_group,categories_hierarchy,created_t,completeness'
-
     const route = isLocalhost
       ? '/data/mock-products.json'
-      : `${API_BASE_URL_V2}/search?&fields=${encodeURIComponent(fields)}&purchase_places_tags=france&states_tags=en:nutrition-facts-completed&sort_by=created_t&page_size=50&action=process&json=1`
+      : `${API_BASE_URL_V2}/search?fields=${encodeURIComponent(fields)}&purchase_places_tags=france&states_tags=en:nutrition-facts-completed&sort_by=created_t&page_size=50&action=process&json=1`
+
     error.value = null
 
     try {
@@ -378,13 +392,12 @@ export function useProducts() {
         // Je récupère les informations complètes des produits selectionnés
         fields =
           'id,image_front_small_url,brands,generic_name_fr,nutriscore_grade,nova_group,categories_hierarchy,completeness,popularity_key'
+
+        const codesParam = selectedProducts.map((e: { id: string }) => e.id).join('|')
+
         route = isLocalhost
           ? '/data/mock-products.json'
-          : `${API_BASE_URL}?code=${encodeURIComponent(
-              selectedProducts.map((e: { id: string }) => e['id']).join('|')
-            )}
-          &fields=${encodeURIComponent(fields)}
-          &sort_by=nutriscore_score,nova_group,popularity_key&page_size=4&action=process&json=1`
+          : `${API_BASE_URL}?code=${encodeURIComponent(codesParam)}&fields=${encodeURIComponent(fields)}&sort_by=nutriscore_score,nova_group,popularity_key&page_size=4&action=process&json=1`
 
         response = await fetchWithTimeout(route)
         data = await response.json()
