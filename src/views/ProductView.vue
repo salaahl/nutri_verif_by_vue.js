@@ -10,8 +10,10 @@ const route = useRoute()
 const {
   searchProducts,
   product,
+  suggestedProducts,
   productIsLoading,
   productsIsLoading,
+  suggestedProductsIsLoading,
   fetchSuggestedProducts,
   fetchProduct,
   novaDescription,
@@ -517,7 +519,7 @@ onUnmounted(() => {
       </div>
     </section>
   </div>
-  <AlternativesProducts />
+  <AlternativesProducts :isLoading="suggestedProductsIsLoading" :products="suggestedProducts" />
 </template>
 
 <style>
