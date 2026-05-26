@@ -81,19 +81,34 @@ async function fetchWithTimeout(
   resource: string,
   options: { timeout?: number; method?: string; headers?: HeadersInit; body?: string } = {}
 ) {
-  const { timeout = 10000 } = options
-
-  const mergedHeaders = {
-    'User-Agent': 'NutriVérif/1.0 (sokhona.salaha@gmail.com)',
-    ...options.headers
-  }
+  const { timeout = 10000, method = 'GET' } = options
 
   const controller = new AbortController()
   const id = setTimeout(() => controller.abort(), timeout)
 
-  const response = await fetch(resource, {
-    ...options,
-    headers: mergedHeaders,
+  if (resource.startsWith('/') || (resource.includes('localhost') && !resource.includes(':8000'))) {
+    const response = await fetch(resource, {
+      ...options,
+      signal: controller.signal
+    })
+    clearTimeout(id)
+    return response
+  }
+
+  const proxyUrl = 'https://jokes-api-platform.onrender.com/search-products'
+
+  const proxyBody = JSON.stringify({
+    url: resource,
+    method: method
+  })
+
+  const response = await fetch(proxyUrl, {
+    method: 'POST',
+    headers: {
+      'Content-Type': 'application/json',
+      ...options.headers
+    },
+    body: proxyBody,
     signal: controller.signal
   })
 
