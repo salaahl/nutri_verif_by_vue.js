@@ -116,12 +116,8 @@ onMounted(async () => {
     `
   }
 
-  const sleep = (ms: number) => new Promise((resolve) => setTimeout(resolve, ms))
-
   await fetchProduct('3608580758686')
-  await sleep(5000)
   await fetchSuggestedProducts({ isFrom: 'home' })
-  await sleep(5000)
   await fetchLastProducts()
 })
 
