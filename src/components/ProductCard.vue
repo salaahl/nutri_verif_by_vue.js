@@ -1,10 +1,11 @@
 <script setup lang="ts">
+import { ref } from 'vue'
 import { useRoute, useRouter } from 'vue-router'
 import { useProducts } from '../composables/useProducts'
 
 const route = useRoute()
 const router = useRouter()
-const { productsIsLoading, searchProducts } = useProducts()
+const { searchProducts } = useProducts()
 
 interface ProductProps {
   id: string
@@ -18,8 +19,12 @@ interface ProductProps {
 
 defineProps<ProductProps>()
 
+const searchProductsByCategoryIsLoading = ref(false)
+
 const searchProductsByCategory: Function = async (category: string) => {
+  searchProductsByCategoryIsLoading.value = true
   await searchProducts(category, null, 'complete')
+  searchProductsByCategoryIsLoading.value = false
 
   router.push({ name: 'search' })
 }
@@ -34,13 +39,13 @@ const searchProductsByCategory: Function = async (category: string) => {
     >
       <div class="thumbnail h-2/5 flex items-center justify-center m-auto aspect-square">
         <div
-          v-if="productsIsLoading"
+          v-if="searchProductsByCategoryIsLoading"
           class="loader-container w-fit flex justify-center items-center m-auto"
         >
           <div class="lds-hourglass"></div>
         </div>
         <img
-          v-if="!productsIsLoading"
+          v-if="!searchProductsByCategoryIsLoading"
           :src="image"
           :alt="brand + ' : ' + name"
           class="h-3/4 w-3/4 object-contain object-center"

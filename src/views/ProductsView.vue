@@ -5,7 +5,7 @@ import SearchBar from '@/components/SearchBar.vue'
 import ProductCard from '@/components/ProductCard.vue'
 
 const { products, productsIsLoading, page, pages, searchProducts } = useProducts()
-
+productsIsLoading.value = true
 let prevScrollpos = 0
 let refresh: boolean = true
 
