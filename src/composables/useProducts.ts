@@ -303,7 +303,7 @@ export function useProducts() {
       'id,image_front_small_url,brands,generic_name_fr,nutriscore_grade,nova_group,categories_hierarchy,created_t,completeness'
     const route = isLocalhost
       ? '/data/mock-products.json'
-      : `${API_BASE_URL_V2}/search?fields=${encodeURIComponent(fields)}&purchase_places_tags=france&states_tags=en:nutrition-facts-completed&sort_by=created_t&page_size=50&action=process&json=1`
+      : `${API_BASE_URL_V2}/search?fields=${encodeURIComponent(fields)}&purchase_places_tags=france&states_tags=en:nutrition-facts-completed&sort_by=created_t&page_size=15&action=process&json=1`
 
     error.value = null
 
