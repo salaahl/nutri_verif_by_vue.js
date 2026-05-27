@@ -18,7 +18,7 @@
       "generic_name_fr": "Produit Test 2",
       "nutriscore_grade": "a",
       "nova_group": 1,
-      "categories_hierarchy": ["en:snacks"],
+      "categories_hierarchy": ["en:snacks", "fr:desserts"],
       "created_t": 1720000000,
       "completeness": 0.8
     },
