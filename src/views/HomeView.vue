@@ -141,7 +141,7 @@ onUnmounted(() => {
       <label
         v-for="category in categories"
         :key="category"
-        class="tag mt-2 mr-2 py-2 px-3 text-sm font-semibold text-white rounded-full"
+        :class="`${productsIsLoading ? 'pointer-events-none' : ''} tag mt-2 mr-2 py-2 px-3 text-sm font-semibold text-white rounded-full`"
         @click="searchProductsByCategory(category)"
       >
         {{ category }}
