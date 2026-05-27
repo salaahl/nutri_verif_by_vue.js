@@ -45,12 +45,8 @@ const categories = [
   'sans gluten'
 ]
 
-const categoriesIsLoading = ref(false)
-
 const searchProductsByCategory: Function = async (category: string) => {
-  categoriesIsLoading.value = true
   await searchProducts(category, null, 'complete')
-  categoriesIsLoading.value = false
   router.push({ name: 'search' })
 }
 
@@ -142,14 +138,7 @@ onUnmounted(() => {
       v-if="categories.length"
       class="radio-toolbar relative flex flex-wrap justify-center mb-12"
     >
-      <div
-        v-if="categoriesIsLoading"
-        class="loader-container h-full w-full flex justify-center items-center"
-      >
-        <div class="lds-hourglass"></div>
-      </div>
       <label
-        v-else
         v-for="category in categories"
         :key="category"
         class="tag mt-2 mr-2 py-2 px-3 text-sm font-semibold text-white rounded-full"
