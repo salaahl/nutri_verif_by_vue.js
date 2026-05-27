@@ -40,7 +40,7 @@ const onScroll = async () => {
     // Permet de temporiser le rafraîchissement
     setTimeout(() => {
       refresh = true
-    }, 1000)
+    }, 1500)
   }
 
   prevScrollpos = currentScrollPos

@@ -81,7 +81,7 @@ async function fetchWithTimeout(
   resource: string,
   options: { timeout?: number; method?: string; headers?: HeadersInit; body?: string } = {}
 ) {
-  const { timeout = 20000, method = 'GET' } = options
+  const { timeout = 30000, method = 'GET' } = options
 
   const controller = new AbortController()
   const id = setTimeout(() => controller.abort(), timeout)
