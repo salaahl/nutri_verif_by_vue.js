@@ -45,6 +45,13 @@ const categories = [
   'sans gluten'
 ]
 
+const showLastProducts = ref(false)
+
+const searchLastProducts: Function = () => {
+  showLastProducts.value = true
+  fetchLastProducts()
+}
+
 const searchProductsByCategory: Function = async (category: string) => {
   await searchProducts(category, null, 'complete')
   router.push({ name: 'search' })
@@ -114,7 +121,6 @@ onMounted(async () => {
 
   await fetchProduct('3608580758686')
   await fetchSuggestedProducts({ isFrom: 'home' })
-  await fetchLastProducts()
 })
 
 onUnmounted(() => {
@@ -418,7 +424,10 @@ onUnmounted(() => {
     <h2 class="title mb-12 text-2xl lg:text-3xl text-right">
       Produits <span class="text-[indianred]">récemment</span> ajoutés
     </h2>
-    <div class="relative flex flex-wrap justify-between md:justify-start p-4 rounded-lg">
+    <div
+      v-if="showLastProducts"
+      class="relative flex flex-wrap justify-between md:justify-start p-4 rounded-lg"
+    >
       <div
         v-if="lastProductsIsLoading"
         class="loader-container w-fit flex justify-center items-center m-auto"
@@ -426,6 +435,7 @@ onUnmounted(() => {
         <div class="lds-hourglass"></div>
       </div>
       <ProductCard
+        v-else
         v-for="product in lastProducts"
         :key="product.id"
         :product="product"
@@ -438,12 +448,26 @@ onUnmounted(() => {
         :category="product.category"
       />
     </div>
+    <div v-else class="relative flex flex-wrap justify-between md:justify-start p-4 rounded-lg">
+      <ProductCard v-for="i in [0, 1, 2, 3]" :key="i" />
+      <article
+        class="md:product w-full md:w-[18.6%] flex items-center justify-center mt-[2.5%] md:mt-0"
+      >
+        <button
+          id="more-products-button"
+          class="h-full w-full flex items-center justify-center p-3 text-center text-white font-semibold bg-[#00bd7e] rounded-lg"
+          @click="searchLastProducts()"
+        >
+          Afficher les produits
+        </button>
+      </article>
+    </div>
   </section>
   <section id="last-section">
     <img
       src="/logo.png"
       alt="logo de l'application"
-      class="h-auto w-auto max-w-[300px] mx-auto mb-24 contrast-0"
+      class="h-auto w-auto max-w-[300px] mx-auto mb-24 opacity-75"
     />
   </section>
 </template>

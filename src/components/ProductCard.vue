@@ -99,7 +99,7 @@ const searchProductsByCategory: Function = async (category: string) => {
         <img
           src="/logo.png"
           alt="product card placeholder"
-          class="h-3/4 w-3/4 object-contain object-center"
+          class="placeholder h-3/4 w-3/4 object-contain object-center"
         />
       </div>
       <div class="details h-3/5 flex flex-col justify-between">
@@ -215,28 +215,38 @@ const searchProductsByCategory: Function = async (category: string) => {
 
 /* Product card placeholder */
 .placeholder {
-  background: linear-gradient(to right, rgb(0 0 0 / 0.1), white);
+  background: linear-gradient(45deg, rgb(0 0 0 / 0.05) 50%, white 100%);
   border-radius: 15px;
+}
+
+img.placeholder {
+  background: unset;
+  filter: opacity(0.8);
 }
 
 .brand.placeholder,
 .name.placeholder {
-  height: 20px;
+  height: 25px;
 }
 
 .brand.placeholder {
-  width: 100px;
+  width: 60%;
 }
 .name.placeholder {
-  width: 150px;
+  width: 80%;
+}
+
+.nutriscore.placeholder,
+.nova.placeholder {
+  height: 30px;
 }
 
 .nutriscore.placeholder {
-  width: 75px;
+  width: 40%;
 }
 
 .nova.placeholder {
-  width: 50px;
+  width: 30%;
 }
 
 .product-card-tag.placeholder {
