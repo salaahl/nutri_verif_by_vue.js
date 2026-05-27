@@ -8,13 +8,13 @@ const router = useRouter()
 const { searchProducts } = useProducts()
 
 interface ProductProps {
-  id: string
+  id?: string
   image?: string
   brand?: string
   name?: string
   nutriscore?: string
   nova?: number | string
-  category: string
+  category?: string
 }
 
 defineProps<ProductProps>()
@@ -31,7 +31,7 @@ const searchProductsByCategory: Function = async (category: string) => {
 </script>
 
 <template>
-  <article class="product">
+  <article v-if="id" class="product">
     <RouterLink
       :replace="route.path.startsWith('/product/') ? true : false"
       :to="'/product/' + id"
@@ -80,7 +80,7 @@ const searchProductsByCategory: Function = async (category: string) => {
             />
             <!-- ".prevent" permet d'éviter la remontée du clic au RouterLink -->
             <button
-              v-if="category !== '' && category.startsWith('fr:')"
+              v-if="category !== '' && category?.startsWith('fr:')"
               class="product-card-tag max-h-[30px] ml-2 md:ml-6 py-1 lg:py-1.5 px-2 truncate text-[10px] lg:text-xs font-semibold bg-white rounded-full"
               @click.prevent="
                 searchProductsByCategory(category.split(':')[1].replace(/-/g, ' ').trim())
@@ -92,6 +92,34 @@ const searchProductsByCategory: Function = async (category: string) => {
         </div>
       </div>
     </RouterLink>
+  </article>
+  <article v-else class="product">
+    <div class="h-full w-full flex flex-col justify-between">
+      <div class="thumbnail h-2/5 flex items-center justify-center m-auto aspect-square">
+        <img
+          src="/logo.png"
+          alt="product card placeholder"
+          class="h-3/4 w-3/4 object-contain object-center"
+        />
+      </div>
+      <div class="details h-3/5 flex flex-col justify-between">
+        <div class="mt-3">
+          <h4
+            class="brand placeholder text-sm lg:text-base font-bold text-ellipsis overflow-hidden"
+          ></h4>
+          <h4 class="name placeholder mt-[4px] text-xs lg:text-sm font-bold"></h4>
+        </div>
+        <div class="scores">
+          <div class="nutriscore placeholder h-[40px]"></div>
+          <div class="flex justify-between items-end mt-1">
+            <div class="nova placeholder h-[35px]"></div>
+            <div
+              class="product-card-tag placeholder h-[35px] max-h-[30px] ml-2 md:ml-6 py-1 lg:py-1.5 px-2 bg-white rounded-full"
+            ></div>
+          </div>
+        </div>
+      </div>
+    </div>
   </article>
 </template>
 
@@ -183,6 +211,36 @@ const searchProductsByCategory: Function = async (category: string) => {
 .product-card-tag:hover {
   color: white;
   background-color: rgb(0, 189, 126);
+}
+
+/* Product card placeholder */
+.placeholder {
+  background: linear-gradient(to right, rgb(0 0 0 / 0.1), white);
+  border-radius: 15px;
+}
+
+.brand.placeholder,
+.name.placeholder {
+  height: 20px;
+}
+
+.brand.placeholder {
+  width: 100px;
+}
+.name.placeholder {
+  width: 150px;
+}
+
+.nutriscore.placeholder {
+  width: 75px;
+}
+
+.nova.placeholder {
+  width: 50px;
+}
+
+.product-card-tag.placeholder {
+  aspect-ratio: 1 / 1;
 }
 
 @media (min-width: 768px) {
