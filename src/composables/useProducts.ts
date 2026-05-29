@@ -81,7 +81,8 @@ async function fetchWithTimeout(
   resource: string,
   options: { timeout?: number; method?: string; headers?: HeadersInit; body?: string } = {}
 ) {
-  const { timeout = 150000, method = 'GET' } = options
+  // Timeout par défaut de 2 minutes pour laisser le temps au serveur de se réveiller lors de la 1ère requête
+  const { timeout = 120000, method = 'GET' } = options
 
   const controller = new AbortController()
   const id = setTimeout(() => controller.abort(), timeout)
