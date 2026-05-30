@@ -316,10 +316,10 @@ export function useProducts() {
 
   async function fetchLastProducts() {
     const fields =
-      'id,image_front_small_url,brands,generic_name_fr,nutriscore_grade,nova_group,categories_hierarchy,created_t,completeness'
+      'id,image_front_small_url,brands,generic_name_fr,nutriscore_grade,nova_group,categories_hierarchy,created_t'
     const route = isLocalhost
       ? '/data/mock-products.json'
-      : `${API_BASE_URL_V2}/search?fields=${encodeURIComponent(fields)}&purchase_places_tags=france&states_tags=en:nutrition-facts-completed&sort_by=created_t&page_size=15&action=process&json=1`
+      : `${API_BASE_URL_V2}/search?fields=${encodeURIComponent(fields)}&purchase_places_tags=france&states_tags=en:brands-completed,en:product-name-completed,en:photos-uploaded&sort_by=created_t&page_size=15&action=process&json=1`
 
     error.value = null
 
@@ -329,7 +329,7 @@ export function useProducts() {
       const data = await response.json()
 
       const filteredProducts = data.products
-        .filter((product: { completeness: number }) => product.completeness >= 0.35)
+        // .filter((product: { completeness: number }) => product.completeness >= 0.35)
         .sort((a: { created_t: number }, b: { created_t: number }) => b.created_t - a.created_t)
         .slice(0, 5)
 
@@ -352,10 +352,10 @@ export function useProducts() {
   }: FetchSuggestionsOptions = {}) {
     if (isFrom === 'home' && homeSuggestedProducts.value.length > 0) return
 
-    let fields = 'id,nutriscore_grade,nova_group,completeness,popularity_key'
+    let fields = 'id,nutriscore_grade,nova_group,popularity_key'
     let route = isLocalhost
       ? '/data/mock-products.json'
-      : `${API_BASE_URL}?search_terms=${encodeURIComponent(name ?? brand.split(',')[0])}&categories_tags=${encodeURIComponent(categories.join('|'))}&fields=${encodeURIComponent(fields)}&purchase_places_tags=france&states_tags=en:nutrition-facts-completed&sort_by=nutriscore_score,nova_group,popularity_key&page_size=150&action=process&json=1`
+      : `${API_BASE_URL}?search_terms=${encodeURIComponent(name ?? brand.split(',')[0])}&categories_tags=${encodeURIComponent(categories.join('|'))}&fields=${encodeURIComponent(fields)}&purchase_places_tags=france&states_tags=en:brands-completed,en:product-name-completed,en:photos-uploaded&sort_by=nutriscore_score,nova_group,popularity_key&page_size=500&action=process&json=1`
 
     try {
       suggestedProducts.value = []
@@ -371,21 +371,25 @@ export function useProducts() {
        * - Avoir un nutriscore
        * - Avoir un nutriscore meilleur OU
        * - Avoir un nutriscore meilleur ET avoir un nova group meilleur
-       * - Avoir un taux de complétude décent
+       * - Avoir un taux de complétude décent - retiré et remplacé par le filtre states_tags
        * Ils sont ensuite triés par nutriscore, nova group puis popularité
        */
       const score = ['a', 'b', 'c', 'd', 'e']
       const selectedProducts = data.products
         .filter(
-          (e: { id: string; nutriscore_grade: string; nova_group: number; completeness: number }) =>
+          (e: {
+            id: string
+            nutriscore_grade: string
+            nova_group: number /* completeness: number */
+          }) =>
             e.id !== id &&
             e.nutriscore_grade !== 'not-applicable' &&
             e.nutriscore_grade !== 'unknown' &&
             (score.indexOf(e.nutriscore_grade) < score.indexOf(nutriscore) ||
               (score.indexOf(e.nutriscore_grade) === score.indexOf(nutriscore) &&
                 typeof e.nova_group === 'number' &&
-                e.nova_group < Number(novaGroup))) &&
-            e.completeness >= 0.35
+                e.nova_group < Number(novaGroup)))
+          /* && e.completeness >= 0.35 */
         )
         .sort(
           (
@@ -407,7 +411,7 @@ export function useProducts() {
       if (selectedProducts.length) {
         // Je récupère les informations complètes des produits selectionnés
         fields =
-          'id,image_front_small_url,brands,generic_name_fr,nutriscore_grade,nova_group,categories_hierarchy,completeness,popularity_key'
+          'id,image_front_small_url,brands,generic_name_fr,nutriscore_grade,nova_group,categories_hierarchy,popularity_key'
 
         const codesParam = selectedProducts.map((e: { id: string }) => e.id).join('|')
 
