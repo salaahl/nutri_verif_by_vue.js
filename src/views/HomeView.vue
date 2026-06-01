@@ -414,6 +414,7 @@ onUnmounted(() => {
     <AlternativesProducts
       :isLoading="suggestedProductsIsLoading"
       :products="homeSuggestedProducts"
+      :backgroundColor="'bg-[#ffffff80]'"
     />
     <span class="inline-block my-8">
       Trouvez des options <span class="text-highlighted">plus saines</span> et faites de chaque
@@ -454,7 +455,7 @@ onUnmounted(() => {
         class="md:product w-full md:w-[18.6%] flex items-center justify-center mt-[2.5%] md:mt-0"
       >
         <button
-          id="more-products-button"
+          id="last-products-button"
           class="h-full w-full flex items-center justify-center p-3 text-center text-white font-semibold bg-[#00bd7e] rounded-lg"
           @click="searchLastProducts()"
         >
@@ -471,12 +472,6 @@ onUnmounted(() => {
     />
   </section>
 </template>
-
-<style>
-#more-products {
-  background-color: rgb(255 255 255 / 0.5);
-}
-</style>
 
 <style scoped>
 h1 {
