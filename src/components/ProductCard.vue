@@ -221,7 +221,7 @@ const searchProductsByCategory: Function = async (category: string) => {
 
 img.placeholder {
   background: unset;
-  filter: opacity(0.3);
+  filter: opacity(0.4);
 }
 
 .brand.placeholder,
