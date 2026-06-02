@@ -166,10 +166,7 @@ onUnmounted(() => {
       <div id="product-detail" class="h-full">
         <div class="h-full flex flex-col justify-evently">
           <div>
-            <h1
-              v-if="product.brand"
-              class="title text-xl md:text-2xl font-bold text-[#00bd7e] md:text-[indianred]"
-            >
+            <h1 v-if="product.brand" class="title text-xl md:text-2xl font-bold text-[#00bd7e]">
               {{ product.brand }}
             </h1>
             <h2 v-if="product.name" class="title text-xl md:text-2xl font-bold">
