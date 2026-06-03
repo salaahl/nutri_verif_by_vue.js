@@ -241,22 +241,28 @@ function handleBack() {
 }
 
 .about-view > svg > #background-blobs > g:nth-child(1),
+.legal-notice-view > svg > #background-blobs > g:nth-child(1),
 .search-view > svg > #background-blobs > g:nth-child(1),
 .about-view > svg > #background-blobs > g:nth-child(4),
+.legal-notice-view > svg > #background-blobs > g:nth-child(4),
 .search-view > svg > #background-blobs > g:nth-child(4) {
   fill: rgb(245, 245, 245, 0.25);
 }
 
 .about-view > svg > #background-blobs > g:nth-child(2),
+.legal-notice-view > svg > #background-blobs > g:nth-child(2),
 .search-view > svg > #background-blobs > g:nth-child(2),
 .about-view > svg > #background-blobs > g:nth-child(5),
+.legal-notice-view > svg > #background-blobs > g:nth-child(5),
 .search-view > svg > #background-blobs > g:nth-child(5) {
   fill: rgb(245, 245, 245, 0.5);
 }
 
 .about-view > svg > #background-blobs > g:nth-child(3),
+.legal-notice-view > svg > #background-blobs > g:nth-child(3),
 .search-view > svg > #background-blobs > g:nth-child(3),
 .about-view > svg > #background-blobs > g:nth-child(6),
+.legal-notice-view > svg > #background-blobs > g:nth-child(6),
 .search-view > svg > #background-blobs > g:nth-child(6),
 .product-view > svg > #background-blobs > g {
   fill: rgb(245, 245, 245);
@@ -322,6 +328,30 @@ function handleBack() {
 
 .about-view > svg > #background-blobs > g:nth-child(6) {
   animation: translateLeftBlobsAbout 2s 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+.legal-notice-view > svg > #background-blobs > g:nth-child(1) {
+  animation: translateRightBlobsLegalNotice 2s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+.legal-notice-view > svg > #background-blobs > g:nth-child(2) {
+  animation: translateRightBlobsLegalNotice 2s 0.15s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+.legal-notice-view > svg > #background-blobs > g:nth-child(3) {
+  animation: translateRightBlobsLegalNotice 2s 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+.legal-notice-view > svg > #background-blobs > g:nth-child(4) {
+  animation: translateLeftBlobsLegalNotice 2s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+.legal-notice-view > svg > #background-blobs > g:nth-child(5) {
+  animation: translateLeftBlobsLegalNotice 2s 0.15s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+.legal-notice-view > svg > #background-blobs > g:nth-child(6) {
+  animation: translateLeftBlobsLegalNotice 2s 0.3s cubic-bezier(0.4, 0, 0.2, 1);
 }
 
 .search-view > svg > #background-blobs > g:nth-child(1) {
@@ -501,48 +531,24 @@ footer > div,
   }
 }
 
-@keyframes translateRightBlobsAbout {
-  0% {
-    translate: 0%;
-  }
-  50% {
-    translate: 100%;
-  }
-  100% {
-    translate: 0%;
-  }
-}
-
-@keyframes translateRightBlobsProducts {
-  0% {
-    translate: 0%;
-  }
-  50% {
-    translate: 100%;
-  }
-  100% {
-    translate: 0%;
-  }
-}
-
-@keyframes translateRightBlobsProduct {
-  0% {
-    translate: 0%;
-  }
-  50% {
-    translate: 100%;
-  }
-  100% {
-    translate: 0%;
-  }
-}
-
 @keyframes translateLeftBlobsHome {
   0% {
     translate: 0%;
   }
   50% {
     translate: -100%;
+  }
+  100% {
+    translate: 0%;
+  }
+}
+
+@keyframes translateRightBlobsAbout {
+  0% {
+    translate: 0%;
+  }
+  50% {
+    translate: 100%;
   }
   100% {
     translate: 0%;
@@ -561,12 +567,60 @@ footer > div,
   }
 }
 
+@keyframes translateRightBlobsLegalNotice {
+  0% {
+    translate: 0%;
+  }
+  50% {
+    translate: 100%;
+  }
+  100% {
+    translate: 0%;
+  }
+}
+
+@keyframes translateLeftBlobsLegalNotice {
+  0% {
+    translate: 0%;
+  }
+  50% {
+    translate: -100%;
+  }
+  100% {
+    translate: 0%;
+  }
+}
+
+@keyframes translateRightBlobsProducts {
+  0% {
+    translate: 0%;
+  }
+  50% {
+    translate: 100%;
+  }
+  100% {
+    translate: 0%;
+  }
+}
+
 @keyframes translateLeftBlobsProducts {
   0% {
     translate: 0%;
   }
   50% {
     translate: -100%;
+  }
+  100% {
+    translate: 0%;
+  }
+}
+
+@keyframes translateRightBlobsProduct {
+  0% {
+    translate: 0%;
+  }
+  50% {
+    translate: 100%;
   }
   100% {
     translate: 0%;

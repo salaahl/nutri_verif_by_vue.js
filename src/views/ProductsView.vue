@@ -60,7 +60,7 @@ onUnmounted(() => {
   <section
     id="search-results"
     :class="
-      'xs:bg-gray-200 xs:rounded-[10px] transition-[transform,opacity] duration-[1500ms] ease-in-out' +
+      'xs:bg-gray-200/50 xs:rounded-[10px] transition-[transform,opacity] duration-[1500ms] ease-in-out' +
       (products.length === 0 ? '' : ' show')
     "
   >

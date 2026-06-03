@@ -234,7 +234,7 @@ onBeforeRouteUpdate((to) => {
               />
               <label
                 @click="ajrSelected = 'women'"
-                class="radio_label mt-2 md:mt-0 mr-4 text-sm font-semibold bg-gray-400 rounded-full"
+                class="radio_label mt-2 md:mt-0 mr-4 text-sm font-semibold bg-gray-300 rounded-full"
                 for="ajr-women"
                 >Femme</label
               >
@@ -248,7 +248,7 @@ onBeforeRouteUpdate((to) => {
               />
               <label
                 @click="ajrSelected = 'men'"
-                class="radio_label mt-2 md:mt-0 mr-4 text-sm font-semibold bg-gray-400 rounded-full"
+                class="radio_label mt-2 md:mt-0 mr-4 text-sm font-semibold bg-gray-300 rounded-full"
                 for="ajr-men"
                 >Homme</label
               >

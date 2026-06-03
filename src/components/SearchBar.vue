@@ -112,7 +112,7 @@ const onFilterChange = (e: Event) => {
         />
         <label
           @click="onFilterChange"
-          class="radio_label mt-2 md:mt-0 mr-4 text-sm font-semibold bg-gray-400 rounded-full"
+          class="radio_label mt-2 md:mt-0 mr-4 text-sm font-semibold bg-gray-300 rounded-full"
           for="popularity_key"
           >Popularité</label
         >
@@ -126,7 +126,7 @@ const onFilterChange = (e: Event) => {
         />
         <label
           @click="onFilterChange"
-          class="radio_label mt-2 md:mt-0 mr-4 text-sm font-semibold bg-gray-400 rounded-full"
+          class="radio_label mt-2 md:mt-0 mr-4 text-sm font-semibold bg-gray-300 rounded-full"
           for="product_name"
           >Pertinence</label
         >
@@ -140,7 +140,7 @@ const onFilterChange = (e: Event) => {
         />
         <label
           @click="onFilterChange"
-          class="radio_label mt-2 md:mt-0 mr-4 text-sm font-semibold bg-gray-400 rounded-full"
+          class="radio_label mt-2 md:mt-0 mr-4 text-sm font-semibold bg-gray-300 rounded-full"
           for="created_t"
           >Date d'ajout</label
         >
@@ -154,7 +154,7 @@ const onFilterChange = (e: Event) => {
         />
         <label
           @click="onFilterChange"
-          class="radio_label mt-2 md:mt-0 mr-4 text-sm font-semibold bg-gray-400 rounded-full"
+          class="radio_label mt-2 md:mt-0 mr-4 text-sm font-semibold bg-gray-300 rounded-full"
           for="nutriscore_score"
           >Nutriscore</label
         >
@@ -168,7 +168,7 @@ const onFilterChange = (e: Event) => {
         />
         <label
           @click="onFilterChange"
-          class="radio_label mt-2 md:mt-0 mr-4 text-sm font-semibold bg-gray-400 rounded-full"
+          class="radio_label mt-2 md:mt-0 mr-4 text-sm font-semibold bg-gray-300 rounded-full"
           for="nova_score"
           >Groupe Nova</label
         >
