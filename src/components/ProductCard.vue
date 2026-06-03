@@ -221,7 +221,7 @@ const searchProductsByCategory: Function = async (category: string) => {
 
 img.placeholder {
   background: unset;
-  filter: opacity(0.4);
+  filter: opacity(0.75);
 }
 
 .brand.placeholder,
@@ -230,7 +230,7 @@ img.placeholder {
 }
 
 .brand.placeholder {
-  width: 60%;
+  width: 55%;
 }
 .name.placeholder {
   width: 80%;
@@ -246,11 +246,11 @@ img.placeholder {
 }
 
 .nova.placeholder {
-  width: 30%;
+  aspect-ratio: 1 / 1;
 }
 
 .product-card-tag.placeholder {
-  aspect-ratio: 1 / 1;
+  width: 50%;
 }
 
 @media (min-width: 768px) {
