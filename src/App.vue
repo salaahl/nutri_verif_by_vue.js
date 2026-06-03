@@ -126,7 +126,11 @@ function handleBack() {
     </svg>
   </div>
   <header class="h-[172px]">
-    <div v-if="router.currentRoute.value.path !== '/'" id="back-link" class="flex items-center mb-4 cursor-pointer">
+    <div
+      v-if="router.currentRoute.value.path !== '/'"
+      id="back-link"
+      class="flex items-center mb-4 cursor-pointer"
+    >
       <a @click="handleBack" class="flex">
         <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 448 512">
           <path
@@ -238,12 +242,12 @@ function handleBack() {
 #background-blobs > g.about-screen:nth-child(3),
 #background-blobs > g.products-screen:nth-child(3),
 #background-blobs > g.about-screen:nth-child(6),
-#background-blobs > g.products-screen:nth-child(6) {
+#background-blobs > g.products-screen:nth-child(6),
+#background-blobs > g.product-screen {
   fill: rgb(245, 245, 245);
 }
 
-.bg-base.product-screen,
-#background-blobs > g.product-screen {
+.bg-base.product-screen {
   fill: whitesmoke;
 }
 
@@ -252,6 +256,49 @@ function handleBack() {
 .bg .plant-primary,
 .bg .plant-secondary {
   transition: all var(--transition-delay-double);
+}
+
+#background-blobs > g {
+  transition: fill 0s calc(var(--transition-delay) * 2) ease-in-out;
+}
+
+#background-blobs > g.home-screen:nth-child(-n + 3) {
+  animation: translateRightHome calc(var(--transition-delay-double) * 4)
+    cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+#background-blobs > g.about-screen:nth-child(-n + 3) {
+  animation: translateRightAbout calc(var(--transition-delay-double) * 4)
+    cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+#background-blobs > g.products-screen:nth-child(-n + 3) {
+  animation: translateRightProducts calc(var(--transition-delay-double) * 4)
+    cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+#background-blobs > g.product-screen:nth-child(-n + 3) {
+  animation: translateRightProduct calc(var(--transition-delay-double) * 4)
+    cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+#background-blobs > g.home-screen:nth-child(n + 4) {
+  animation: translateHomeBack calc(var(--transition-delay-double) * 4) cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+#background-blobs > g.about-screen:nth-child(n + 4) {
+  animation: translateAboutBack calc(var(--transition-delay-double) * 4)
+    cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+#background-blobs > g.products-screen:nth-child(n + 4) {
+  animation: translateProductsBack calc(var(--transition-delay-double) * 4)
+    cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+#background-blobs > g.product-screen:nth-child(n + 4) {
+  animation: translateProductBack calc(var(--transition-delay-double) * 4)
+    cubic-bezier(0.4, 0, 0.2, 1);
 }
 
 .bg .plant-primary,
@@ -381,6 +428,102 @@ footer > div,
       rgba(255, 255, 255, 0.1) 0px 1px 1px 0px inset,
       rgba(50, 50, 93, 0.25) 0px 50px 100px -20px,
       rgba(0, 0, 0, 0.3) 0px 30px 60px -30px;
+  }
+}
+
+@keyframes translateRightHome {
+  0% {
+    translate: 0%;
+  }
+  50% {
+    translate: 100%;
+  }
+  100% {
+    translate: 0%;
+  }
+}
+
+@keyframes translateRightAbout {
+  0% {
+    translate: 0%;
+  }
+  50% {
+    translate: 100%;
+  }
+  100% {
+    translate: 0%;
+  }
+}
+
+@keyframes translateRightProducts {
+  0% {
+    translate: 0%;
+  }
+  50% {
+    translate: 100%;
+  }
+  100% {
+    translate: 0%;
+  }
+}
+
+@keyframes translateRightProduct {
+  0% {
+    translate: 0%;
+  }
+  50% {
+    translate: 100%;
+  }
+  100% {
+    translate: 0%;
+  }
+}
+
+@keyframes translateHomeBack {
+  0% {
+    translate: 0%;
+  }
+  50% {
+    translate: -100%;
+  }
+  100% {
+    translate: 0%;
+  }
+}
+
+@keyframes translateAboutBack {
+  0% {
+    translate: 0%;
+  }
+  50% {
+    translate: -100%;
+  }
+  100% {
+    translate: 0%;
+  }
+}
+
+@keyframes translateProductsBack {
+  0% {
+    translate: 0%;
+  }
+  50% {
+    translate: -100%;
+  }
+  100% {
+    translate: 0%;
+  }
+}
+
+@keyframes translateProductBack {
+  0% {
+    translate: 0%;
+  }
+  50% {
+    translate: -100%;
+  }
+  100% {
+    translate: 0%;
   }
 }
 </style>
