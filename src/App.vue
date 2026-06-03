@@ -125,6 +125,7 @@ function handleBack() {
       </g>
     </svg>
   </div>
+
   <header class="h-[172px]">
     <div
       v-if="router.currentRoute.value.path !== '/'"
@@ -188,6 +189,19 @@ function handleBack() {
 </template>
 
 <style>
+.slide-fade-enter-active {
+  transition: all 0.45s ease-in;
+}
+
+.slide-fade-enter-from {
+  transform: translateX(20px);
+}
+
+.slide-fade-enter-from,
+.slide-fade-leave-to {
+  opacity: 0;
+}
+
 /* Fond de page */
 .bg {
   position: fixed;
@@ -252,53 +266,109 @@ function handleBack() {
 }
 
 .bg .bg-base,
-#background-blobs > g,
 .bg .plant-primary,
 .bg .plant-secondary {
-  transition: all var(--transition-delay-double);
+  transition: all 0.5s;
 }
 
 #background-blobs > g {
-  transition: fill 0s calc(var(--transition-delay) * 2) ease-in-out;
+  transition: fill 0.5s 0.5s;
 }
 
-#background-blobs > g.home-screen:nth-child(-n + 3) {
-  animation: translateRightHome calc(var(--transition-delay-double) * 4)
-    cubic-bezier(0.4, 0, 0.2, 1);
+#background-blobs > g.home-screen:nth-child(1) {
+  animation: translateRightBlobsHome 2s cubic-bezier(0.4, 0, 0.2, 1);
 }
 
-#background-blobs > g.about-screen:nth-child(-n + 3) {
-  animation: translateRightAbout calc(var(--transition-delay-double) * 4)
-    cubic-bezier(0.4, 0, 0.2, 1);
+#background-blobs > g.home-screen:nth-child(2) {
+  animation: translateRightBlobsHome 2s 0.1s cubic-bezier(0.4, 0, 0.2, 1);
 }
 
-#background-blobs > g.products-screen:nth-child(-n + 3) {
-  animation: translateRightProducts calc(var(--transition-delay-double) * 4)
-    cubic-bezier(0.4, 0, 0.2, 1);
+#background-blobs > g.home-screen:nth-child(3) {
+  animation: translateRightBlobsHome 2s 0.2s cubic-bezier(0.4, 0, 0.2, 1);
 }
 
-#background-blobs > g.product-screen:nth-child(-n + 3) {
-  animation: translateRightProduct calc(var(--transition-delay-double) * 4)
-    cubic-bezier(0.4, 0, 0.2, 1);
+#background-blobs > g.home-screen:nth-child(4) {
+  animation: translateLeftBlobsHome 2s cubic-bezier(0.4, 0, 0.2, 1);
 }
 
-#background-blobs > g.home-screen:nth-child(n + 4) {
-  animation: translateHomeBack calc(var(--transition-delay-double) * 4) cubic-bezier(0.4, 0, 0.2, 1);
+#background-blobs > g.home-screen:nth-child(5) {
+  animation: translateLeftBlobsHome 2s 0.2s cubic-bezier(0.4, 0, 0.2, 1);
 }
 
-#background-blobs > g.about-screen:nth-child(n + 4) {
-  animation: translateAboutBack calc(var(--transition-delay-double) * 4)
-    cubic-bezier(0.4, 0, 0.2, 1);
+#background-blobs > g.home-screen:nth-child(6) {
+  animation: translateLeftBlobsHome 2s 0.3s cubic-bezier(0.4, 0, 0.2, 1);
 }
 
-#background-blobs > g.products-screen:nth-child(n + 4) {
-  animation: translateProductsBack calc(var(--transition-delay-double) * 4)
-    cubic-bezier(0.4, 0, 0.2, 1);
+#background-blobs > g.about-screen:nth-child(1) {
+  animation: translateRightBlobsAbout 2s cubic-bezier(0.4, 0, 0.2, 1);
 }
 
-#background-blobs > g.product-screen:nth-child(n + 4) {
-  animation: translateProductBack calc(var(--transition-delay-double) * 4)
-    cubic-bezier(0.4, 0, 0.2, 1);
+#background-blobs > g.about-screen:nth-child(2) {
+  animation: translateRightBlobsAbout 2s 0.2s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+#background-blobs > g.about-screen:nth-child(3) {
+  animation: translateRightBlobsAbout 2s 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+#background-blobs > g.about-screen:nth-child(4) {
+  animation: translateLeftBlobsAbout 2s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+#background-blobs > g.about-screen:nth-child(5) {
+  animation: translateLeftBlobsAbout 2s 0.2s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+#background-blobs > g.about-screen:nth-child(6) {
+  animation: translateLeftBlobsAbout 2s 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+#background-blobs > g.products-screen:nth-child(1) {
+  animation: translateRightBlobsProducts 2s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+#background-blobs > g.products-screen:nth-child(2) {
+  animation: translateRightBlobsProducts 2s 0.15s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+#background-blobs > g.products-screen:nth-child(3) {
+  animation: translateRightBlobsProducts 2s 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+#background-blobs > g.products-screen:nth-child(4) {
+  animation: translateLeftBlobsProducts 2s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+#background-blobs > g.products-screen:nth-child(5) {
+  animation: translateLeftBlobsProducts 2s 0.15s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+#background-blobs > g.products-screen:nth-child(6) {
+  animation: translateLeftBlobsProducts 2s 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+#background-blobs > g.product-screen:nth-child(1) {
+  animation: translateRightBlobsProduct 2s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+#background-blobs > g.product-screen:nth-child(2) {
+  animation: translateRightBlobsProduct 2s 0.15s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+#background-blobs > g.product-screen:nth-child(3) {
+  animation: translateRightBlobsProduct 2s 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+#background-blobs > g.product-screen:nth-child(4) {
+  animation: translateLeftBlobsProduct 2s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+#background-blobs > g.product-screen:nth-child(5) {
+  animation: translateLeftBlobsProduct 2s 0.15s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+#background-blobs > g.product-screen:nth-child(6) {
+  animation: translateLeftBlobsProduct 2s 0.3s cubic-bezier(0.4, 0, 0.2, 1);
 }
 
 .bg .plant-primary,
@@ -317,19 +387,6 @@ function handleBack() {
 
 .bg .plant-secondary {
   fill: #4a7c59;
-}
-
-.slide-fade-enter-active {
-  transition: all 0.45s ease-in;
-}
-
-.slide-fade-enter-from {
-  transform: translateX(20px);
-}
-
-.slide-fade-enter-from,
-.slide-fade-leave-to {
-  opacity: 0;
 }
 
 header {
@@ -431,7 +488,7 @@ footer > div,
   }
 }
 
-@keyframes translateRightHome {
+@keyframes translateRightBlobsHome {
   0% {
     translate: 0%;
   }
@@ -443,7 +500,7 @@ footer > div,
   }
 }
 
-@keyframes translateRightAbout {
+@keyframes translateRightBlobsAbout {
   0% {
     translate: 0%;
   }
@@ -455,7 +512,7 @@ footer > div,
   }
 }
 
-@keyframes translateRightProducts {
+@keyframes translateRightBlobsProducts {
   0% {
     translate: 0%;
   }
@@ -467,7 +524,7 @@ footer > div,
   }
 }
 
-@keyframes translateRightProduct {
+@keyframes translateRightBlobsProduct {
   0% {
     translate: 0%;
   }
@@ -479,7 +536,7 @@ footer > div,
   }
 }
 
-@keyframes translateHomeBack {
+@keyframes translateLeftBlobsHome {
   0% {
     translate: 0%;
   }
@@ -491,7 +548,7 @@ footer > div,
   }
 }
 
-@keyframes translateAboutBack {
+@keyframes translateLeftBlobsAbout {
   0% {
     translate: 0%;
   }
@@ -503,7 +560,7 @@ footer > div,
   }
 }
 
-@keyframes translateProductsBack {
+@keyframes translateLeftBlobsProducts {
   0% {
     translate: 0%;
   }
@@ -515,7 +572,7 @@ footer > div,
   }
 }
 
-@keyframes translateProductBack {
+@keyframes translateLeftBlobsProduct {
   0% {
     translate: 0%;
   }
