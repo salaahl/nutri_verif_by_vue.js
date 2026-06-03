@@ -1,30 +1,12 @@
 <script setup lang="ts">
-import { onMounted, onUnmounted } from 'vue'
+import { onMounted } from 'vue'
 
 onMounted(() => {
-  const fill = document.querySelectorAll(
-    'svg .bg-base, svg #background-blobs > g'
-  ) as NodeListOf<SVGElement>
-
-  if (fill && fill.length > 0) {
-    fill.forEach((f) => f.classList.add('about-screen'))
-  }
-
   setTimeout(() => {
     const title = document.querySelector('h2') as HTMLElement
     if (!title) return
     title.style.backgroundSize = '100% 100%'
   }, 1000)
-})
-
-onUnmounted(() => {
-  const fill = document.querySelectorAll(
-    'svg .bg-base, svg #background-blobs > g'
-  ) as NodeListOf<SVGElement>
-
-  if (fill && fill.length > 0) {
-    fill.forEach((f) => f.classList.remove('about-screen'))
-  }
 })
 </script>
 

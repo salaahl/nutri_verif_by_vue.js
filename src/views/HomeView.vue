@@ -80,14 +80,6 @@ onMounted(async () => {
   if (!websiteName) return
   websiteName.classList.add('opacity-0')
 
-  const fill = document.querySelectorAll(
-    'svg #background-blobs > g'
-  ) as NodeListOf<SVGElement>
-
-  if (fill && fill.length > 0) {
-    fill.forEach((f) => f.classList.add('home-screen'))
-  }
-
   // Affichage conditionnel de la vidéo Youtube
   const videoContainer = document.getElementById('video-container') as HTMLElement
   const cookieAuthorisation = document.getElementById('accept-cookies') as HTMLElement
@@ -135,14 +127,6 @@ onUnmounted(() => {
   const websiteName = document.querySelector('#website-name') as HTMLElement
   if (websiteName) {
     websiteName.classList.remove('opacity-0')
-  }
-
-  const fill = document.querySelectorAll(
-    'svg #background-blobs > g'
-  ) as NodeListOf<SVGElement>
-
-  if (fill && fill.length > 0) {
-    fill.forEach((f) => f.classList.remove('home-screen'))
   }
 })
 </script>

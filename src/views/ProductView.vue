@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { onBeforeMount, onMounted, onUnmounted, ref } from 'vue'
+import { onBeforeMount, ref } from 'vue'
 import { useRoute, useRouter, onBeforeRouteUpdate } from 'vue-router'
 import { useProducts } from '../composables/useProducts'
 import AlternativesProducts from '@/components/AlternativesProducts.vue'
@@ -107,28 +107,8 @@ onBeforeMount(async () => {
     })
 })
 
-onMounted(() => {
-  const fill = document.querySelectorAll(
-    'svg .bg-base, svg #background-blobs > g, .plant-primary, .plant-secondary'
-  ) as NodeListOf<SVGElement>
-
-  if (fill && fill.length > 0) {
-    fill.forEach((f) => f.classList.add('product-screen'))
-  }
-})
-
 onBeforeRouteUpdate((to) => {
   updateProduct(Array.isArray(to.params.id) ? to.params.id[0] : to.params.id) // Mise à jour du produit avec le nouvel ID
-})
-
-onUnmounted(() => {
-  const fill = document.querySelectorAll(
-    'svg .bg-base, svg #background-blobs > g, .plant-primary, .plant-secondary'
-  ) as NodeListOf<SVGElement>
-
-  if (fill && fill.length > 0) {
-    fill.forEach((f) => f.classList.remove('product-screen'))
-  }
 })
 </script>
 

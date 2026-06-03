@@ -16,7 +16,9 @@ function handleBack() {
 </script>
 
 <template>
-  <div class="bg absolute inset-0 w-full h-full min-h-screen overflow-hidden -z-10 bg-[#ffffff]">
+  <div
+    :class="`${router.currentRoute.value.name}-view bg absolute inset-0 w-full h-full min-h-screen overflow-hidden -z-10 bg-[#ffffff]`"
+  >
     <svg
       xmlns="http://www.w3.org/2000/svg"
       viewBox="0 0 1440 900"
@@ -60,7 +62,7 @@ function handleBack() {
         </g>
       </g>
 
-      <g id="decorations-left" transform="translate(40, 500)">
+      <g id="decorations-left" class="decorations" transform="translate(40, 500)">
         <g class="plant-primary" transform="rotate(-20) scale(1.4)">
           <path d="M38.5,0 L41.5,0 L41.5,240 L38.5,240 Z" />
           <path d="M40,0 C35,-15 35,-30 40,-45 C45,-30 45,-15 40,0 Z" />
@@ -91,7 +93,7 @@ function handleBack() {
         </g>
       </g>
 
-      <g id="decorations-right" transform="translate(1360, 60)">
+      <g id="decorations-right" class="decorations" transform="translate(1360, 60)">
         <g class="plant-primary" transform="rotate(60) scale(1.4)">
           <path d="M38.5,0 L41.5,0 L41.5,240 L38.5,240 Z" />
           <path d="M40,0 C36,-10 36,-20 40,-30 C44,-20 44,-10 40,0 Z" />
@@ -238,30 +240,29 @@ function handleBack() {
   fill: hsla(160, 100%, 37%, 1);
 }
 
-/* Les ***-screen sont chargés dynamiquement */
-#background-blobs > g.about-screen:nth-child(1),
-#background-blobs > g.products-screen:nth-child(1),
-#background-blobs > g.about-screen:nth-child(4),
-#background-blobs > g.products-screen:nth-child(4) {
+.about-view > svg > #background-blobs > g:nth-child(1),
+.search-view > svg > #background-blobs > g:nth-child(1),
+.about-view > svg > #background-blobs > g:nth-child(4),
+.search-view > svg > #background-blobs > g:nth-child(4) {
   fill: rgb(245, 245, 245, 0.25);
 }
 
-#background-blobs > g.about-screen:nth-child(2),
-#background-blobs > g.products-screen:nth-child(2),
-#background-blobs > g.about-screen:nth-child(5),
-#background-blobs > g.products-screen:nth-child(5) {
+.about-view > svg > #background-blobs > g:nth-child(2),
+.search-view > svg > #background-blobs > g:nth-child(2),
+.about-view > svg > #background-blobs > g:nth-child(5),
+.search-view > svg > #background-blobs > g:nth-child(5) {
   fill: rgb(245, 245, 245, 0.5);
 }
 
-#background-blobs > g.about-screen:nth-child(3),
-#background-blobs > g.products-screen:nth-child(3),
-#background-blobs > g.about-screen:nth-child(6),
-#background-blobs > g.products-screen:nth-child(6),
-#background-blobs > g.product-screen {
+.about-view > svg > #background-blobs > g:nth-child(3),
+.search-view > svg > #background-blobs > g:nth-child(3),
+.about-view > svg > #background-blobs > g:nth-child(6),
+.search-view > svg > #background-blobs > g:nth-child(6),
+.product-view > svg > #background-blobs > g {
   fill: rgb(245, 245, 245);
 }
 
-.bg-base.product-screen {
+.product-view > svg > .bg-base {
   fill: whitesmoke;
 }
 
@@ -275,99 +276,99 @@ function handleBack() {
   transition: fill 0.5s 0.5s;
 }
 
-#background-blobs > g.home-screen:nth-child(1) {
+.home-view > svg > #background-blobs > g:nth-child(1) {
   animation: translateRightBlobsHome 2s cubic-bezier(0.4, 0, 0.2, 1);
 }
 
-#background-blobs > g.home-screen:nth-child(2) {
+.home-view > svg > #background-blobs > g:nth-child(2) {
   animation: translateRightBlobsHome 2s 0.1s cubic-bezier(0.4, 0, 0.2, 1);
 }
 
-#background-blobs > g.home-screen:nth-child(3) {
+.home-view > svg > #background-blobs > g:nth-child(3) {
   animation: translateRightBlobsHome 2s 0.2s cubic-bezier(0.4, 0, 0.2, 1);
 }
 
-#background-blobs > g.home-screen:nth-child(4) {
+.home-view > svg > #background-blobs > g:nth-child(4) {
   animation: translateLeftBlobsHome 2s cubic-bezier(0.4, 0, 0.2, 1);
 }
 
-#background-blobs > g.home-screen:nth-child(5) {
+.home-view > svg > #background-blobs > g:nth-child(5) {
   animation: translateLeftBlobsHome 2s 0.2s cubic-bezier(0.4, 0, 0.2, 1);
 }
 
-#background-blobs > g.home-screen:nth-child(6) {
+.home-view > svg > #background-blobs > g:nth-child(6) {
   animation: translateLeftBlobsHome 2s 0.3s cubic-bezier(0.4, 0, 0.2, 1);
 }
 
-#background-blobs > g.about-screen:nth-child(1) {
+.about-view > svg > #background-blobs > g:nth-child(1) {
   animation: translateRightBlobsAbout 2s cubic-bezier(0.4, 0, 0.2, 1);
 }
 
-#background-blobs > g.about-screen:nth-child(2) {
+.about-view > svg > #background-blobs > g:nth-child(2) {
   animation: translateRightBlobsAbout 2s 0.2s cubic-bezier(0.4, 0, 0.2, 1);
 }
 
-#background-blobs > g.about-screen:nth-child(3) {
+.about-view > svg > #background-blobs > g:nth-child(3) {
   animation: translateRightBlobsAbout 2s 0.3s cubic-bezier(0.4, 0, 0.2, 1);
 }
 
-#background-blobs > g.about-screen:nth-child(4) {
+.about-view > svg > #background-blobs > g:nth-child(4) {
   animation: translateLeftBlobsAbout 2s cubic-bezier(0.4, 0, 0.2, 1);
 }
 
-#background-blobs > g.about-screen:nth-child(5) {
+.about-view > svg > #background-blobs > g:nth-child(5) {
   animation: translateLeftBlobsAbout 2s 0.2s cubic-bezier(0.4, 0, 0.2, 1);
 }
 
-#background-blobs > g.about-screen:nth-child(6) {
+.about-view > svg > #background-blobs > g:nth-child(6) {
   animation: translateLeftBlobsAbout 2s 0.3s cubic-bezier(0.4, 0, 0.2, 1);
 }
 
-#background-blobs > g.products-screen:nth-child(1) {
+.search-view > svg > #background-blobs > g:nth-child(1) {
   animation: translateRightBlobsProducts 2s cubic-bezier(0.4, 0, 0.2, 1);
 }
 
-#background-blobs > g.products-screen:nth-child(2) {
+.search-view > svg > #background-blobs > g:nth-child(2) {
   animation: translateRightBlobsProducts 2s 0.15s cubic-bezier(0.4, 0, 0.2, 1);
 }
 
-#background-blobs > g.products-screen:nth-child(3) {
+.search-view > svg > #background-blobs > g:nth-child(3) {
   animation: translateRightBlobsProducts 2s 0.3s cubic-bezier(0.4, 0, 0.2, 1);
 }
 
-#background-blobs > g.products-screen:nth-child(4) {
+.search-view > svg > #background-blobs > g:nth-child(4) {
   animation: translateLeftBlobsProducts 2s cubic-bezier(0.4, 0, 0.2, 1);
 }
 
-#background-blobs > g.products-screen:nth-child(5) {
+.search-view > svg > #background-blobs > g:nth-child(5) {
   animation: translateLeftBlobsProducts 2s 0.15s cubic-bezier(0.4, 0, 0.2, 1);
 }
 
-#background-blobs > g.products-screen:nth-child(6) {
+.search-view > svg > #background-blobs > g:nth-child(6) {
   animation: translateLeftBlobsProducts 2s 0.3s cubic-bezier(0.4, 0, 0.2, 1);
 }
 
-#background-blobs > g.product-screen:nth-child(1) {
+.product-view > svg > #background-blobs > g:nth-child(1) {
   animation: translateRightBlobsProduct 2s cubic-bezier(0.4, 0, 0.2, 1);
 }
 
-#background-blobs > g.product-screen:nth-child(2) {
+.product-view > svg > #background-blobs > g:nth-child(2) {
   animation: translateRightBlobsProduct 2s 0.15s cubic-bezier(0.4, 0, 0.2, 1);
 }
 
-#background-blobs > g.product-screen:nth-child(3) {
+.product-view > svg > #background-blobs > g:nth-child(3) {
   animation: translateRightBlobsProduct 2s 0.3s cubic-bezier(0.4, 0, 0.2, 1);
 }
 
-#background-blobs > g.product-screen:nth-child(4) {
+.product-view > svg > #background-blobs > g:nth-child(4) {
   animation: translateLeftBlobsProduct 2s cubic-bezier(0.4, 0, 0.2, 1);
 }
 
-#background-blobs > g.product-screen:nth-child(5) {
+.product-view > svg > #background-blobs > g:nth-child(5) {
   animation: translateLeftBlobsProduct 2s 0.15s cubic-bezier(0.4, 0, 0.2, 1);
 }
 
-#background-blobs > g.product-screen:nth-child(6) {
+.product-view > svg > #background-blobs > g:nth-child(6) {
   animation: translateLeftBlobsProduct 2s 0.3s cubic-bezier(0.4, 0, 0.2, 1);
 }
 
@@ -376,8 +377,8 @@ function handleBack() {
   fill-opacity: 0.08;
 }
 
-.bg .plant-primary.product-screen,
-.bg .plant-secondary.product-screen {
+.product-view > svg > .decorations > .plant-primary,
+.product-view > svg > .decorations > .plant-secondary {
   fill-opacity: 0.04;
 }
 
