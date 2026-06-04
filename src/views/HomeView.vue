@@ -237,7 +237,7 @@ onUnmounted(() => {
     </article>
   </section>
   <section id="score-explanations" class="mb-24">
-    <h2 class="title mb-12 text-2xl lg:text-3xl">
+    <h2 class="title mb-12 text-2xl lg:text-3xl font-light">
       Votre alimentation <span class="text-[indianred]">décryptée</span>
     </h2>
     <div class="flex flex-wrap justify-between">
@@ -283,7 +283,7 @@ onUnmounted(() => {
     </div>
   </section>
   <section id="alternatives-functionality" class="mb-24">
-    <h2 class="title mb-12 text-2xl lg:text-3xl text-center">
+    <h2 class="title mb-12 text-2xl lg:text-3xl font-light text-center">
       Découvrez des <span class="text-[#00bd7e]">alternatives</span> plus saines
     </h2>
     <span class="inline-block mb-8">
@@ -422,7 +422,7 @@ onUnmounted(() => {
     >
   </section>
   <section id="last-products" class="mb-24">
-    <h2 class="title mb-12 text-2xl lg:text-3xl text-right">
+    <h2 class="title mb-12 text-2xl lg:text-3xl font-light text-right">
       Produits <span class="text-[indianred]">récemment</span> ajoutés
     </h2>
     <div
