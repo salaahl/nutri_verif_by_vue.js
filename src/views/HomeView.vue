@@ -120,7 +120,6 @@ onMounted(async () => {
   }
 
   await fetchProduct('3608580758686')
-  await fetchSuggestedProducts({ isFrom: 'home' })
 })
 
 onUnmounted(() => {
@@ -415,6 +414,7 @@ onUnmounted(() => {
       :isLoading="suggestedProductsIsLoading"
       :products="homeSuggestedProducts"
       :backgroundColor="'bg-[#ffffff80]'"
+      @trigger-search="fetchSuggestedProducts({ isFrom: 'home' })"
     />
     <span class="inline-block my-8">
       Trouvez des options <span class="text-highlighted">plus saines</span> et faites de chaque

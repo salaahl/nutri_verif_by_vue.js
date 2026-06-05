@@ -1,4 +1,5 @@
 <script setup lang="ts">
+import { ref } from 'vue'
 import ProductCard from './ProductCard.vue'
 
 interface Products {
@@ -23,6 +24,17 @@ const props = withDefaults(
     backgroundColor: 'bg-white'
   }
 )
+
+const emit = defineEmits<{
+  (e: 'trigger-search'): void
+}>()
+
+const showAlternatives = ref(false)
+
+function searchAlternatives() {
+  showAlternatives.value = true
+  emit('trigger-search')
+}
 </script>
 
 <template>
@@ -42,7 +54,10 @@ const props = withDefaults(
       >
         <div class="lds-hourglass"></div>
       </div>
-      <div class="relative w-full lg:w-3/4 flex flex-wrap md:flex-nowrap lg:justify-end">
+      <div
+        v-if="showAlternatives"
+        class="relative w-full lg:w-3/4 flex flex-wrap md:flex-nowrap lg:justify-end"
+      >
         <ProductCard
           v-for="product in props.products"
           :key="product.id"
@@ -54,6 +69,22 @@ const props = withDefaults(
           :nova="product.nova"
           :category="product.category"
         />
+      </div>
+      <div v-else class="relative w-full lg:w-3/4 flex flex-wrap md:flex-nowrap lg:justify-end">
+        <ProductCard v-for="i in [0, 1, 2]" :key="i" />
+        <!-- Affichage de cette carte unique uniquement sur les petits écrans -->
+        <ProductCard class="md:hidden" :key="3" />
+        <article
+          class="md:product w-full md:w-[23.75%] flex items-center justify-center mt-[2.5%] md:mt-0"
+        >
+          <button
+            id="alternatives-products-button"
+            class="h-full w-full flex items-center justify-center p-3 text-center text-white font-semibold bg-[#00bd7e] rounded-lg"
+            @click="searchAlternatives()"
+          >
+            Afficher les produits
+          </button>
+        </article>
       </div>
     </section>
   </aside>

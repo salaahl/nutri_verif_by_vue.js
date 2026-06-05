@@ -51,6 +51,22 @@ const searchProductsByCategory: Function = async (category: string) => {
   router.push({ name: 'search' })
 }
 
+const searchAlternatives = () => {
+  if (product.nutriscore !== 'a' || product.novaGroup !== 'a')
+    fetchSuggestedProducts({
+      id: product.id
+        ? product.id
+        : Array.isArray(route.params.id)
+          ? route.params.id[0]
+          : route.params.id,
+      brand: product.brand,
+      name: product.name,
+      nutriscore: product.nutriscore,
+      novaGroup: product.novaGroup,
+      categories: product.categories
+    })
+}
+
 const resetProduct = () => {
   Object.assign(product, {
     id: '',
@@ -70,24 +86,16 @@ const resetProduct = () => {
     link: ''
   })
 }
+
 // Chargement du produit et des suggestions
 const updateProduct = async (productId: string) => {
   resetProduct()
+  suggestedProducts.value = []
 
   await fetchProduct(productId)
   categoriesIsLoading.value = true
   product.categories = await getTranslatedCategories(product.categories)
   categoriesIsLoading.value = false
-
-  if (product.nutriscore !== 'a' || product.novaGroup !== 'a')
-    fetchSuggestedProducts({
-      id: productId,
-      brand: product.brand,
-      name: product.name,
-      nutriscore: product.nutriscore,
-      novaGroup: product.novaGroup,
-      categories: product.categories
-    })
 }
 
 onBeforeMount(async () => {
@@ -95,16 +103,6 @@ onBeforeMount(async () => {
   categoriesIsLoading.value = true
   product.categories = await getTranslatedCategories(product.categories)
   categoriesIsLoading.value = false
-
-  if (product.nutriscore !== 'a' || product.novaGroup !== 'a')
-    fetchSuggestedProducts({
-      id: product.id,
-      brand: product.brand,
-      name: product.name,
-      nutriscore: product.nutriscore,
-      novaGroup: product.novaGroup,
-      categories: product.categories
-    })
 })
 
 onBeforeRouteUpdate((to) => {
@@ -496,7 +494,11 @@ onBeforeRouteUpdate((to) => {
       </div>
     </section>
   </div>
-  <AlternativesProducts :isLoading="suggestedProductsIsLoading" :products="suggestedProducts" />
+  <AlternativesProducts
+    :isLoading="suggestedProductsIsLoading"
+    :products="suggestedProducts"
+    @trigger-search="searchAlternatives()"
+  />
 </template>
 
 <style>
