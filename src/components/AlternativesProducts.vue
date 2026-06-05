@@ -94,7 +94,7 @@ function searchAlternatives() {
         />
       </div>
       <!-- Cas 3 : aucun resultat trouvé -->
-      <div v-else-if="showAlternatives && props.products.length === 0" class="w-full">
+      <div v-else-if="showAlternatives && !isLoading && props.products.length === 0" class="w-full">
         <h3 class="text-center text-2xl font-semibold">Aucun produit trouvé</h3>
       </div>
     </section>
