@@ -12,7 +12,7 @@ onMounted(() => {
 
 <template>
   <h1
-    class="title flex flex-col items-center md:translate-y-[-100px] text-xl md:text-2xl text-center uppercase"
+    class="title md:translate-y-[-100px] text-xl md:text-2xl text-center uppercase"
   >
     A propos de nous
   </h1>
