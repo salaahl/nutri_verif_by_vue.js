@@ -411,10 +411,10 @@ onUnmounted(() => {
       <span class="text-highlighted">mieux notées et tout aussi savoureuses</span> :
     </span>
     <AlternativesProducts
+      :from="'home'"
       :hasProduct="product.id ? true : false"
       :isLoading="suggestedProductsIsLoading"
       :products="homeSuggestedProducts"
-      :backgroundColor="'bg-[#ffffff80]'"
       @trigger-search="fetchSuggestedProducts({ isFrom: 'home' })"
     />
     <span class="inline-block my-8">
@@ -436,10 +436,13 @@ onUnmounted(() => {
       >
         <button
           id="last-products-button"
-          class="h-full w-full flex items-center justify-center p-3 text-center text-white font-semibold bg-[#00bd7e] rounded-lg"
+          class="h-full w-full flex items-center justify-center p-3 text-center text-white font-semibold bg-[#00bd7e] md:bg-[#343a40] rounded-lg"
           @click="searchLastProducts()"
         >
-          Afficher les produits
+          <span
+            class="md:backdrop-contrast-50 md:px-4 md:py-2 text-sm font-semibold md:rounded-[25px]"
+            >Afficher les produits</span
+          >
         </button>
       </article>
     </div>

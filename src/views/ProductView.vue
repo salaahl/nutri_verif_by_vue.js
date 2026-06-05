@@ -495,6 +495,7 @@ onBeforeRouteUpdate((to) => {
     </section>
   </div>
   <AlternativesProducts
+    :from:="'product'"
     :hasProduct="product.id ? true : false"
     :isLoading="suggestedProductsIsLoading"
     :products="suggestedProducts"

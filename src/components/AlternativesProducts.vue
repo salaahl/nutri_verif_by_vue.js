@@ -14,15 +14,16 @@ interface Products {
 
 const props = withDefaults(
   defineProps<{
+    from?: string
     hasProduct?: boolean
     isLoading?: boolean
     products?: Products[]
-    backgroundColor?: string
   }>(),
   {
+    from: 'product',
+    hasProduct: false,
     isLoading: false,
-    products: () => [],
-    backgroundColor: 'bg-white'
+    products: () => []
   }
 )
 
@@ -42,7 +43,7 @@ function searchAlternatives() {
   <aside v-if="hasProduct" class="mb-16">
     <section
       id="more-products"
-      :class="`relative min-h-[125px] w-full flex flex-wrap lg:flex-nowrap items-stretch lg:items-center justify-between px-4 md:px-6 py-4 ${backgroundColor} rounded-xl`"
+      :class="`relative min-h-[125px] w-full flex flex-wrap lg:flex-nowrap items-stretch lg:items-center justify-between px-4 md:px-6 py-4 ${from === 'home' ? 'bg-[#ffffff80]' : 'bg-white'} rounded-xl`"
     >
       <h2
         class="title w-full lg:w-1/4 mt-4 mb-8 lg:ml-[-0.75rem] lg:m-0 text-center text-3xl lg:text-2xl"
@@ -95,7 +96,10 @@ function searchAlternatives() {
       </div>
       <!-- Cas 3 : aucun resultat trouvé -->
       <div v-else-if="showAlternatives && !isLoading && props.products.length === 0" class="w-full">
-        <h3 class="text-center text-2xl font-semibold">Aucun produit trouvé</h3>
+        <h3 v-if="from === 'home'" class="text-center text-2xl font-semibold">
+          Erreur lors de la recherche, veuillez reessayer plus tard
+        </h3>
+        <h3 v-else class="text-center text-2xl font-semibold">Aucun produit trouvé</h3>
       </div>
     </section>
   </aside>
