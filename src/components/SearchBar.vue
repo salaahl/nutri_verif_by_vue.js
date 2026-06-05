@@ -70,7 +70,7 @@ const onFilterChange = (e: Event) => {
           <input
             type="text"
             id="search-input"
-            class="block w-full px-12 p-2.5 text-ellipsis bg-gray-50 border-4 text-gray-900 text-sm rounded-full outline-0 focus:ring-gray-400 focus:border-gray-400"
+            class="block w-full px-12 p-2.5 text-ellipsis bg-gray-50 border-4 border-[#e5e7eb] text-gray-900 text-sm rounded-full outline-0 focus:ring-gray-400 focus:border-gray-400"
             :value="input"
             placeholder="Entrez un nom de produit, un code-barres, une marque ou un type d'aliment"
             required
@@ -190,7 +190,6 @@ const onFilterChange = (e: Event) => {
 }
 
 #search-bar.blur-bg {
-  background: radial-gradient(circle, transparent, rgb(255 255 255));
   backdrop-filter: blur(5px);
   mask-image: linear-gradient(to right, transparent 0%, black 4%, black 96%, transparent 100%),
     linear-gradient(transparent 0%, black 6%, black 94%, transparent 100%);

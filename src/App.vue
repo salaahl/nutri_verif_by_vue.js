@@ -435,7 +435,6 @@ onMounted(() => {
 }
 
 header {
-  height: fit-content;
   padding: 20px var(--app-padding-x);
 }
 
