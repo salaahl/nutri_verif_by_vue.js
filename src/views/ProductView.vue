@@ -52,19 +52,18 @@ const searchProductsByCategory: Function = async (category: string) => {
 }
 
 const searchAlternatives = () => {
-  if (product.nutriscore !== 'a' || product.novaGroup !== 'a')
-    fetchSuggestedProducts({
-      id: product.id
-        ? product.id
-        : Array.isArray(route.params.id)
-          ? route.params.id[0]
-          : route.params.id,
-      brand: product.brand,
-      name: product.name,
-      nutriscore: product.nutriscore,
-      novaGroup: product.novaGroup,
-      categories: product.categories
-    })
+  fetchSuggestedProducts({
+    id: product.id
+      ? product.id
+      : Array.isArray(route.params.id)
+        ? route.params.id[0]
+        : route.params.id,
+    brand: product.brand,
+    name: product.name,
+    nutriscore: product.nutriscore,
+    novaGroup: product.novaGroup,
+    categories: product.categories
+  })
 }
 
 const resetProduct = () => {
@@ -495,6 +494,7 @@ onBeforeRouteUpdate((to) => {
     </section>
   </div>
   <AlternativesProducts
+    v-if="product.nutriscore !== 'a' || product.novaGroup !== 'a'"
     :from:="'product'"
     :hasProduct="product.id ? true : false"
     :isLoading="suggestedProductsIsLoading"

@@ -16,15 +16,16 @@ function handleBack() {
 }
 
 onMounted(() => {
-  fetch('https://jokes-api-platform.onrender.com/')
-    .then((res) => {
-      if (res.status === 204) {
-        console.log('Le serveur est prêt !')
-      }
-    })
-    .catch(() => {
-      console.log('Le serveur dort encore, réveil (toujours) en cours...')
-    })
+  if (window.location.hostname === 'localhost' || window.location.hostname === '127.0.0.1')
+    fetch('https://jokes-api-platform.onrender.com/')
+      .then((res) => {
+        if (res.status === 204) {
+          console.log('Le serveur est prêt !')
+        }
+      })
+      .catch(() => {
+        console.log('Le serveur dort encore, réveil (toujours) en cours...')
+      })
 })
 </script>
 
