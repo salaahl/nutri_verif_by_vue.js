@@ -35,6 +35,8 @@ const {
   lastProducts
 } = useProducts()
 
+const screenWidth = window.innerWidth
+
 const categories = [
   'yaourts',
   'céréales',
@@ -427,7 +429,22 @@ onUnmounted(() => {
       Produits <span class="text-[indianred]">récemment</span> ajoutés
     </h2>
     <div
-      v-if="!showLastProducts"
+      v-if="!showLastProducts && screenWidth < 768"
+      class="relative flex flex-wrap justify-between md:justify-start p-4 rounded-lg"
+    >
+      <ProductCard v-for="i in [0, 1, 2, 3]" :key="i" />
+      <article class="w-full flex items-center justify-center mt-[2.5%]">
+        <button
+          id="last-products-button"
+          class="h-full w-full flex items-center justify-center p-3 text-center text-white font-semibold bg-[#00bd7e] rounded-lg"
+          @click="searchLastProducts()"
+        >
+          Afficher les produits
+        </button>
+      </article>
+    </div>
+    <div
+      v-else-if="!showLastProducts && screenWidth >= 768"
       class="relative flex flex-wrap justify-between md:justify-start p-4 rounded-lg"
     >
       <ProductCard v-for="i in [0, 1, 2, 3, 4]" :key="i" @click="searchLastProducts()" />
@@ -525,29 +542,6 @@ h2::first-letter {
   margin-right: 4%;
 }
 
-#last-products > div > .product.placeholder::after {
-  content: 'Afficher les produits';
-  position: absolute;
-  top: 0;
-  left: 0;
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  height: 100%;
-  width: 100%;
-  padding: 1rem;
-  opacity: 0;
-  background: radial-gradient(circle, rgba(255, 255, 255, 0.5) 50%, rgba(0, 0, 0, 0) 100%);
-  text-align: center;
-  font-weight: 600;
-  color: black;
-  transition: opacity 0.15s ease-in-out;
-}
-
-#last-products > div > .product.placeholder:hover::after {
-  opacity: 1;
-}
-
 .cookies {
   background-image: url(https://i.ytimg.com/vi/D1jzT02IBRA/maxresdefault.jpg?sqp=-oaymwEmCIAKENAF8quKqQMa8AEB-AH-CYAC0AWKAgwIABABGGUgWShUMA8=&rs=AOn4CLC8xWb_RD5Ml98u-0_FNgJbU1WlHQ);
   background-size: 105% auto;
@@ -614,6 +608,29 @@ h2::first-letter {
 
   .product:nth-of-type(odd) {
     margin-right: unset;
+  }
+
+  #last-products > div > .product.placeholder::after {
+    content: 'Afficher les produits';
+    position: absolute;
+    top: 0;
+    left: 0;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    height: 100%;
+    width: 100%;
+    padding: 1rem;
+    opacity: 0;
+    background: radial-gradient(circle, rgba(255, 255, 255, 0.5) 50%, rgba(0, 0, 0, 0) 100%);
+    text-align: center;
+    font-weight: 600;
+    color: black;
+    transition: opacity 0.15s ease-in-out;
+  }
+
+  #last-products > div > .product.placeholder:hover::after {
+    opacity: 1;
   }
 
   #search-results .product:nth-of-type(even),
