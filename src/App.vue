@@ -1,4 +1,5 @@
 <script setup>
+import { onMounted } from 'vue'
 import { useRouter } from 'vue-router'
 import { useProducts } from '@/composables/useProducts'
 
@@ -13,6 +14,18 @@ function handleBack() {
   }
   router.back()
 }
+
+onMounted(() => {
+  fetch('https://jokes-api-platform.onrender.com/')
+    .then((res) => {
+      if (res.status === 204) {
+        console.log('Le serveur est prêt !')
+      }
+    })
+    .catch(() => {
+      console.log('Le serveur dort encore, réveil (toujours) en cours...')
+    })
+})
 </script>
 
 <template>

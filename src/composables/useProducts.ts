@@ -77,7 +77,31 @@ const API_BASE_URL_V3 = 'https://world.openfoodfacts.org/api/v3'
 const isLocalhost =
   window.location.hostname === 'localhost' || window.location.hostname === '127.0.0.1'
 
-async function fetchWithTimeout(
+async function fetchFromApi(
+  resource: string,
+  options: { timeout?: number; method?: string; headers?: HeadersInit; body?: string } = {}
+) {
+  const { timeout = 15000 } = options
+
+  const mergedHeaders = {
+    'User-Agent': 'NutriVérif/1.0 (sokhona.salaha@gmail.com)',
+    ...options.headers
+  }
+
+  const controller = new AbortController()
+  const id = setTimeout(() => controller.abort(), timeout)
+
+  const response = await fetch(resource, {
+    ...options,
+    headers: mergedHeaders,
+    signal: controller.signal
+  })
+
+  clearTimeout(id)
+  return response
+}
+
+async function fetchFromProxy(
   resource: string,
   options: { timeout?: number; method?: string; headers?: HeadersInit; body?: string } = {}
 ) {
@@ -263,7 +287,7 @@ export function useProducts() {
     try {
       productsIsLoading.value = true
       error.value = null
-      const response = await fetchWithTimeout(route)
+      const response = await fetchFromProxy(route)
       const data = await response.json()
 
       if (isLocalhost && data.products) {
@@ -302,16 +326,31 @@ export function useProducts() {
       ? '/data/mock-product.json'
       : `${API_BASE_URL_V3}/product/${id}?fields=${encodeURIComponent(fields)}&json=1`
 
-    try {
-      const response = await fetchWithTimeout(route)
-      const data = await response.json()
+    let data
 
-      Object.assign(product, transformProduct(data.product))
-    } catch (err: any) {
-      error.value = err.message || 'Une erreur est survenue'
-    } finally {
-      productIsLoading.value = false
+    try {
+      const response = await fetchFromApi(route)
+      if (!response.ok) throw new Error('Échec de la requête')
+      data = await response.json()
+    } catch (apiErr) {
+      try {
+        const response = await fetchFromProxy(route)
+        if (!response.ok) throw new Error(`Le proxy a répondu avec un statut ${response.status}`)
+        data = await response.json()
+      } catch (proxyErr: any) {
+        error.value = 'Impossible de récupérer le produit, même via le serveur de secours.'
+        productIsLoading.value = false
+        return
+      }
     }
+
+    if (data && data.product) {
+      Object.assign(product, transformProduct(data.product))
+    } else {
+      error.value = "Le produit n'existe pas dans la base de données."
+    }
+
+    productIsLoading.value = false
   }
 
   async function fetchLastProducts() {
@@ -325,7 +364,7 @@ export function useProducts() {
 
     try {
       lastProductsIsLoading.value = true
-      const response = await fetchWithTimeout(route)
+      const response = await fetchFromProxy(route)
       const data = await response.json()
 
       const filteredProducts = data.products
@@ -362,7 +401,7 @@ export function useProducts() {
       suggestedProductsIsLoading.value = true
       error.value = null
 
-      let response = await fetchWithTimeout(route, { timeout: 15000 })
+      let response = await fetchFromProxy(route, { timeout: 15000 })
       let data = await response.json()
 
       /*
@@ -419,7 +458,7 @@ export function useProducts() {
           ? '/data/mock-products.json'
           : `${API_BASE_URL}?code=${encodeURIComponent(codesParam)}&fields=${encodeURIComponent(fields)}&sort_by=nutriscore_score,nova_group,popularity_key&page_size=4&action=process&json=1`
 
-        response = await fetchWithTimeout(route)
+        response = await fetchFromProxy(route)
         data = await response.json()
 
         isFrom === 'home'
@@ -461,7 +500,7 @@ export function useProducts() {
     let translatedCategories: string[] = []
 
     try {
-      const response = await fetchWithTimeout('https://jokes-api-platform.onrender.com/translate', {
+      const response = await fetchFromProxy('https://jokes-api-platform.onrender.com/translate', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ text: categoriesToTranslate, target_lang: 'FR' })
