@@ -427,30 +427,9 @@ onUnmounted(() => {
       Produits <span class="text-[indianred]">récemment</span> ajoutés
     </h2>
     <div
-      v-if="showLastProducts"
+      v-if="!showLastProducts"
       class="relative flex flex-wrap justify-between md:justify-start p-4 rounded-lg"
     >
-      <div
-        v-if="lastProductsIsLoading"
-        class="loader-container w-fit flex justify-center items-center m-auto"
-      >
-        <div class="lds-hourglass"></div>
-      </div>
-      <ProductCard
-        v-else
-        v-for="product in lastProducts"
-        :key="product.id"
-        :product="product"
-        :id="product.id"
-        :image="product.image"
-        :brand="product.brand"
-        :generic-name="product.name"
-        :nutriscore="product.nutriscore"
-        :nova="product.nova"
-        :category="product.category"
-      />
-    </div>
-    <div v-else class="relative flex flex-wrap justify-between md:justify-start p-4 rounded-lg">
       <ProductCard v-for="i in [0, 1, 2, 3]" :key="i" />
       <article
         class="md:product w-full md:w-[18.6%] flex items-center justify-center mt-[2.5%] md:mt-0"
@@ -463,6 +442,30 @@ onUnmounted(() => {
           Afficher les produits
         </button>
       </article>
+    </div>
+    <div v-else class="relative flex flex-wrap justify-between md:justify-start p-4 rounded-lg">
+      <div
+        v-if="lastProductsIsLoading"
+        class="loader-container w-fit flex justify-center items-center m-auto"
+      >
+        <div class="lds-hourglass"></div>
+      </div>
+      <ProductCard
+        v-else-if="!lastProductsIsLoading && lastProducts.length > 0"
+        v-for="product in lastProducts"
+        :key="product.id"
+        :product="product"
+        :id="product.id"
+        :image="product.image"
+        :brand="product.brand"
+        :generic-name="product.name"
+        :nutriscore="product.nutriscore"
+        :nova="product.nova"
+        :category="product.category"
+      />
+      <div v-else class="w-full">
+        <h3 class="text-center text-2xl font-semibold">Aucun produit trouvé</h3>
+      </div>
     </div>
   </section>
   <section id="last-section">
