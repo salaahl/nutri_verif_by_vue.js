@@ -63,7 +63,7 @@ function searchAlternatives() {
             class="h-full w-full flex items-center justify-center p-3 text-center text-white font-semibold bg-[#00bd7e] rounded-lg"
             @click="searchAlternatives()"
           >
-            Rechercher
+            Afficher les alternatives
           </button>
         </article>
       </div>
@@ -148,7 +148,7 @@ function searchAlternatives() {
   }
 
   .product.placeholder::after {
-    content: 'Afficher';
+    content: 'Afficher les alternatives';
     position: absolute;
     top: 0;
     left: 0;
