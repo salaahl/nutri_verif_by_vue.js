@@ -55,20 +55,7 @@ function searchAlternatives() {
         v-if="!showAlternatives"
         class="relative w-full lg:w-3/4 flex flex-wrap md:flex-nowrap lg:justify-end"
       >
-        <ProductCard v-for="i in [0, 1, 2]" :key="i" />
-        <!-- Affichage de cette carte unique uniquement sur les petits écrans -->
-        <ProductCard class="md:hidden" :key="3" />
-        <article
-          class="md:product w-full md:w-[23.75%] flex items-center justify-center mt-[2.5%] md:mt-0"
-        >
-          <button
-            id="alternatives-products-button"
-            class="h-full w-full flex items-center justify-center p-3 text-center text-white font-semibold bg-[#00bd7e] rounded-lg"
-            @click="searchAlternatives()"
-          >
-            Afficher les produits
-          </button>
-        </article>
+        <ProductCard v-for="i in [0, 1, 2, 3]" :key="i" @click="searchAlternatives()" />
       </div>
       <!-- clic sur le bouton afficher les produits, chargement en cours -->
       <div
@@ -122,6 +109,29 @@ function searchAlternatives() {
 
 .product:nth-of-type(odd) {
   margin-right: 4%;
+}
+
+.product.placeholder::after {
+  content: 'Afficher les alternatives';
+  position: absolute;
+  top: 0;
+  left: 0;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  height: 100%;
+  width: 100%;
+  padding: 1rem;
+  opacity: 0;
+  background: radial-gradient(circle, rgba(255, 255, 255, 0.5) 50%, rgba(0, 0, 0, 0) 100%);
+  text-align: center;
+  font-weight: 600;
+  color: black;
+  transition: opacity 0.15s ease-in-out;
+}
+
+.product.placeholder:hover::after {
+  opacity: 1;
 }
 
 @media (min-width: 768px) {

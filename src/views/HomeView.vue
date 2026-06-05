@@ -430,21 +430,7 @@ onUnmounted(() => {
       v-if="!showLastProducts"
       class="relative flex flex-wrap justify-between md:justify-start p-4 rounded-lg"
     >
-      <ProductCard v-for="i in [0, 1, 2, 3]" :key="i" />
-      <article
-        class="md:product w-full md:w-[18.6%] flex items-center justify-center mt-[2.5%] md:mt-0"
-      >
-        <button
-          id="last-products-button"
-          class="h-full w-full flex items-center justify-center p-3 text-center text-white font-semibold bg-[#00bd7e] md:bg-[#343a40] rounded-lg"
-          @click="searchLastProducts()"
-        >
-          <span
-            class="md:backdrop-contrast-50 md:px-4 md:py-2 text-sm font-semibold md:rounded-[25px]"
-            >Afficher les produits</span
-          >
-        </button>
-      </article>
+      <ProductCard v-for="i in [0, 1, 2, 3, 4]" :key="i" @click="searchLastProducts()" />
     </div>
     <div v-else class="relative flex flex-wrap justify-between md:justify-start p-4 rounded-lg">
       <div
@@ -537,6 +523,29 @@ h2::first-letter {
 
 .product:nth-of-type(odd) {
   margin-right: 4%;
+}
+
+#last-products > div > .product.placeholder::after {
+  content: 'Afficher les produits';
+  position: absolute;
+  top: 0;
+  left: 0;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  height: 100%;
+  width: 100%;
+  padding: 1rem;
+  opacity: 0;
+  background: radial-gradient(circle, rgba(255, 255, 255, 0.5) 50%, rgba(0, 0, 0, 0) 100%);
+  text-align: center;
+  font-weight: 600;
+  color: black;
+  transition: opacity 0.15s ease-in-out;
+}
+
+#last-products > div > .product.placeholder:hover::after {
+  opacity: 1;
 }
 
 .cookies {

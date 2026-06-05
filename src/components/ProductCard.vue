@@ -93,7 +93,7 @@ const searchProductsByCategory: Function = async (category: string) => {
       </div>
     </RouterLink>
   </article>
-  <article v-else class="product">
+  <article v-else class="product placeholder">
     <div class="h-full w-full flex flex-col justify-between">
       <div class="thumbnail h-2/5 flex items-center justify-center m-auto aspect-square">
         <img
@@ -125,6 +125,7 @@ const searchProductsByCategory: Function = async (category: string) => {
 
 <style scoped>
 .product {
+  position: relative;
   height: 280px;
   padding: 15px;
   background-color: #f9f9f9;
