@@ -16,7 +16,7 @@ function handleBack() {
 }
 
 onMounted(() => {
-  if (window.location.hostname === 'localhost' || window.location.hostname === '127.0.0.1')
+  if (window.location.hostname !== 'localhost' || window.location.hostname !== '127.0.0.1')
     fetch('https://jokes-api-platform.onrender.com/')
       .then((res) => {
         if (res.status === 204) {
