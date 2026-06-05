@@ -495,6 +495,7 @@ onBeforeRouteUpdate((to) => {
     </section>
   </div>
   <AlternativesProducts
+    :hasProduct="product.id ? true : false"
     :isLoading="suggestedProductsIsLoading"
     :products="suggestedProducts"
     @trigger-search="searchAlternatives()"

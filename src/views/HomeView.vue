@@ -411,6 +411,7 @@ onUnmounted(() => {
       <span class="text-highlighted">mieux notées et tout aussi savoureuses</span> :
     </span>
     <AlternativesProducts
+      :hasProduct="product.id ? true : false"
       :isLoading="suggestedProductsIsLoading"
       :products="homeSuggestedProducts"
       :backgroundColor="'bg-[#ffffff80]'"

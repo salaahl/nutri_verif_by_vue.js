@@ -14,6 +14,7 @@ interface Products {
 
 const props = withDefaults(
   defineProps<{
+    hasProduct?: boolean
     isLoading?: boolean
     products?: Products[]
     backgroundColor?: string
@@ -38,7 +39,7 @@ function searchAlternatives() {
 </script>
 
 <template>
-  <aside v-if="props.products.length || isLoading" class="mb-16">
+  <aside v-if="hasProduct" class="mb-16">
     <section
       id="more-products"
       :class="`relative min-h-[125px] w-full flex flex-wrap lg:flex-nowrap items-stretch lg:items-center justify-between px-4 md:px-6 py-4 ${backgroundColor} rounded-xl`"
