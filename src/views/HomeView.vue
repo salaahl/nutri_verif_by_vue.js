@@ -409,7 +409,7 @@ onUnmounted(() => {
       </section>
     </div>
     <span class="inline-block my-8">
-      notre fonctionnalité intelligente vous propose instantanément des alternatives
+      notre fonctionnalité intelligente vous propose des alternatives
       <span class="text-highlighted">mieux notées et tout aussi savoureuses</span> :
     </span>
     <AlternativesProducts
@@ -440,7 +440,7 @@ onUnmounted(() => {
           class="h-full w-full flex items-center justify-center p-3 text-center text-white font-semibold bg-[#00bd7e] rounded-lg"
           @click="searchLastProducts()"
         >
-          Afficher les produits
+          Afficher
         </button>
       </article>
     </div>

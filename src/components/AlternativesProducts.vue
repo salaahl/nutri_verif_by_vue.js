@@ -49,6 +49,7 @@ function searchAlternatives() {
         class="title w-full lg:w-1/4 mt-4 mb-8 lg:ml-[-0.75rem] lg:m-0 text-center text-3xl lg:text-2xl"
       >
         Alternatives
+        <span class="block text-lg">(potentielles)</span>
       </h2>
       <!-- Cas 1 : affichage initial -->
       <div
@@ -62,7 +63,7 @@ function searchAlternatives() {
             class="h-full w-full flex items-center justify-center p-3 text-center text-white font-semibold bg-[#00bd7e] rounded-lg"
             @click="searchAlternatives()"
           >
-            Afficher les alternatives
+            Rechercher des alternatives
           </button>
         </article>
       </div>
