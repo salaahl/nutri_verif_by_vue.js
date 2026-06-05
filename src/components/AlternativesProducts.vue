@@ -49,29 +49,11 @@ function searchAlternatives() {
       >
         Alternatives
       </h2>
+      <!-- Cas 1 : affichage initial -->
       <div
-        v-if="isLoading"
-        class="loader-container md:absolute h-full w-full flex justify-center items-center"
-      >
-        <div class="lds-hourglass"></div>
-      </div>
-      <div
-        v-if="showAlternatives"
+        v-if="!showAlternatives"
         class="relative w-full lg:w-3/4 flex flex-wrap md:flex-nowrap lg:justify-end"
       >
-        <ProductCard
-          v-for="product in props.products"
-          :key="product.id"
-          :id="product.id"
-          :image="product.image"
-          :brand="product.brand"
-          :name="product.name"
-          :nutriscore="product.nutriscore"
-          :nova="product.nova"
-          :category="product.category"
-        />
-      </div>
-      <div v-else class="relative w-full lg:w-3/4 flex flex-wrap md:flex-nowrap lg:justify-end">
         <ProductCard v-for="i in [0, 1, 2]" :key="i" />
         <!-- Affichage de cette carte unique uniquement sur les petits écrans -->
         <ProductCard class="md:hidden" :key="3" />
@@ -86,6 +68,34 @@ function searchAlternatives() {
             Afficher les produits
           </button>
         </article>
+      </div>
+      <!-- clic sur le bouton afficher les produits, chargement en cours -->
+      <div
+        v-else-if="showAlternatives && isLoading"
+        class="loader-container md:absolute h-full w-full flex justify-center items-center"
+      >
+        <div class="lds-hourglass"></div>
+      </div>
+      <!-- Cas 2 : recherche concluante. Affichage des resultats -->
+      <div
+        v-if="showAlternatives && props.products.length > 0"
+        class="relative w-full lg:w-3/4 flex flex-wrap md:flex-nowrap lg:justify-end"
+      >
+        <ProductCard
+          v-for="product in props.products"
+          :key="product.id"
+          :id="product.id"
+          :image="product.image"
+          :brand="product.brand"
+          :name="product.name"
+          :nutriscore="product.nutriscore"
+          :nova="product.nova"
+          :category="product.category"
+        />
+      </div>
+      <!-- Cas 3 : aucun resultat trouvé -->
+      <div v-else-if="showAlternatives && props.products.length === 0" class="w-full">
+        <h3 class="text-center text-2xl font-semibold">Aucun produit trouvé</h3>
       </div>
     </section>
   </aside>
