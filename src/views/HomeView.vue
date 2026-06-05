@@ -413,8 +413,9 @@ onUnmounted(() => {
       <span class="text-highlighted">mieux notées et tout aussi savoureuses</span> :
     </span>
     <AlternativesProducts
+      :class="product.id ? '' : 'pointer-events-none opacity-50'"
       :from="'home'"
-      :hasProduct="product.id ? true : false"
+      :hasProduct="true"
       :isLoading="suggestedProductsIsLoading"
       :products="homeSuggestedProducts"
       @trigger-search="fetchSuggestedProducts({ isFrom: 'home' })"
