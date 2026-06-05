@@ -494,9 +494,12 @@ onBeforeRouteUpdate((to) => {
     </section>
   </div>
   <AlternativesProducts
-    v-if="product.nutriscore !== 'a' || product.novaGroup !== 'a'"
-    :from:="'product'"
-    :hasProduct="product.id ? true : false"
+    v-if="
+      (product.nutriscore && product.nutriscore !== 'a') ||
+      (product.novaGroup && product.novaGroup !== '1')
+    "
+    :from="'product'"
+    :hasProduct="!!product.id"
     :isLoading="suggestedProductsIsLoading"
     :products="suggestedProducts"
     @trigger-search="searchAlternatives()"
