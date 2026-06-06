@@ -394,7 +394,7 @@ export function useProducts() {
     let fields = 'id,nutriscore_grade,nova_group,popularity_key'
     let route = isLocalhost
       ? '/data/mock-products.json'
-      : `${API_BASE_URL}?search_terms=${encodeURIComponent(name ?? brand.split(',')[0])}&categories_tags=${encodeURIComponent(categories.join('|'))}&fields=${encodeURIComponent(fields)}&purchase_places_tags=france&states_tags=en:brands-completed,en:product-name-completed,en:photos-uploaded&sort_by=nutriscore_score,nova_group,popularity_key&page_size=500&action=process&json=1`
+      : `${API_BASE_URL}?search_terms=${encodeURIComponent(name ?? brand.split(',')[0])}&categories_tags=${encodeURIComponent(categories.join('|'))}&fields=${encodeURIComponent(fields)}&purchase_places_tags=france&states_tags=en:brands-completed,en:product-name-completed,en:photos-uploaded&sort_by=nutriscore_score,nova_group,popularity_key&page_size=100&action=process&json=1`
 
     try {
       suggestedProducts.value = []
