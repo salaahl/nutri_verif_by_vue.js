@@ -43,7 +43,7 @@ function searchAlternatives() {
   <aside v-if="hasProduct" class="mb-16">
     <section
       id="more-products"
-      :class="`relative min-h-[125px] w-full flex flex-wrap lg:flex-nowrap items-stretch lg:items-center justify-between px-4 md:px-6 py-4 ${from === 'home' ? 'bg-[#ffffff80]' : 'bg-white'} rounded-xl`"
+      :class="`relative min-h-[125px] w-full flex flex-wrap lg:flex-nowrap items-stretch lg:items-center justify-between px-4 md:px-6 py-4 ${from === 'home' ? 'bg-[#ffffff80]' : 'bg-gray-200/50'} rounded-xl`"
     >
       <h2
         class="title w-full lg:w-1/4 mt-4 mb-8 lg:ml-[-0.75rem] lg:m-0 text-center text-3xl lg:text-2xl"
