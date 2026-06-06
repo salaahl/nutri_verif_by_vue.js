@@ -53,7 +53,7 @@ function searchAlternatives() {
       </h2>
       <!-- Cas 1 : affichage initial -->
       <div
-        v-if="!showAlternatives"
+        v-if="!showAlternatives && !isLoading"
         class="relative w-full lg:w-3/4 flex flex-wrap md:flex-nowrap lg:justify-end"
       >
         <ProductCard v-for="i in [0, 1, 2, 3]" :key="i" @click="searchAlternatives()" />
@@ -76,7 +76,7 @@ function searchAlternatives() {
       </div>
       <!-- Cas 2 : recherche concluante. Affichage des resultats -->
       <div
-        v-if="showAlternatives && props.products.length > 0"
+        v-if="showAlternatives && !isLoading && props.products.length > 0"
         class="relative w-full lg:w-3/4 flex flex-wrap md:flex-nowrap lg:justify-end"
       >
         <ProductCard
