@@ -158,11 +158,6 @@ onMounted(() => {
     </div>
     <a href="/" class="block w-fit mx-auto">
       <img alt="Logo du site" id="logo" class="m-auto" src="/logo.png" width="125" height="125" />
-      <div class="wrapper">
-        <span id="website-name" class="relative text-2xl"
-          >Nutri<span class="text-[#00bd7e] md:text-white">Vérif</span></span
-        >
-      </div>
     </a>
   </header>
 
@@ -465,15 +460,6 @@ h1::first-letter {
 
 .radio-toolbar input[type='radio']:checked + label {
   background-color: var(--color-green);
-}
-
-#website-name {
-  width: fit-content;
-  margin: 10px auto;
-  font-family: 'Grand Hotel', cursive;
-  font-weight: 400;
-  font-style: normal;
-  transition: opacity 0.15s;
 }
 
 #logo {
