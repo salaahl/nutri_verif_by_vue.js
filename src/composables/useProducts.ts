@@ -30,13 +30,13 @@ interface Product {
 }
 
 interface APIProducts {
-  id?: string
+  code?: string
   image_front_small_url?: string
-  brands?: string
-  generic_name_fr?: string
+  brands?: string[]
+  product_name?: string
   nutriscore_grade?: string
   nova_group?: number | string
-  categories_hierarchy?: string[]
+  categories_tags?: string[]
 }
 
 interface APIProduct {
@@ -213,14 +213,14 @@ export function useProducts() {
 
   function transformProducts(product: APIProducts): Products {
     return {
-      id: product.id ?? '',
+      id: product.code ?? '',
       image: product.image_front_small_url ?? '/logo.png',
-      brand: product.brands ?? '',
-      name: product.generic_name_fr ?? '',
+      brand: product.brands ? product.brands.join(', ') : '',
+      name: product.product_name ?? '',
       nutriscore: product.nutriscore_grade ?? 'unknown',
       nova: product.nova_group ?? 'unknown',
       category:
-        product.categories_hierarchy?.find((category: string) => category.startsWith('fr:')) ?? ''
+        product.categories_tags?.find((category: string) => category.startsWith('fr:')) ?? ''
     }
   }
 
@@ -321,7 +321,7 @@ export function useProducts() {
     productIsLoading.value = true
     error.value = null
     const fields =
-      'id,image_front_url,brands,generic_name_fr,categories_hierarchy,last_updated_t,nutriscore_grade,nova_group,quantity,serving_size,ingredients_text_with_allergens_fr,nutriments,nutrient_levels,manufacturing_places,link'
+      'id,image_front_url,brands,generic_name_fr,categories_tags,last_updated_t,nutriscore_grade,nova_group,quantity,serving_size,ingredients_text_with_allergens_fr,nutriments,nutrient_levels,manufacturing_places,link'
     const route = isLocalhost
       ? '/data/mock-product.json'
       : `${API_BASE_URL_V3}/product/${id}?fields=${fields}&json=1`
@@ -391,22 +391,18 @@ export function useProducts() {
   }: FetchSuggestionsOptions = {}) {
     if (isFrom === 'home' && homeSuggestedProducts.value.length > 0) return
 
-    let fields = 'id,nutriscore_grade,nova_group,popularity_key'
-    const cleanName = name.trim().replace(/\s+/g, ' ').split(' ').slice(0, 1).join(' ')
+    let fields =
+      'code,image_front_small_url,brands,product_name,nutriscore_grade,nova_group,categories_tags,popularity_key'
     let route = isLocalhost
       ? '/data/mock-products.json'
-      : `${API_BASE_URL}?q=${encodeURIComponent(cleanName || brand.split(',')[0])}${
-          categories && categories.length
-            ? `&categories_tags=${categories.slice(0, 2).join(',')}`
-            : ''
-        }&purchase_places_tags=france&page_size=10&action=process&json=1`
+      : `${API_BASE_URL}?q=${encodeURIComponent(name ?? brand.split(',')[0])}&langs=['fr']&fields=${encodeURIComponent(fields)}&purchase_places_tags=france&states_tags=en:brands-completed,en:product-name-completed,en:photos-uploaded&page_size=500&action=process&json=1`
 
     try {
       suggestedProducts.value = []
       suggestedProductsIsLoading.value = true
       error.value = null
 
-      let response = await fetchFromProxy(route)
+      let response = await fetchFromProxy(route, { timeout: 15000 })
       let data = await response.json()
 
       /*
@@ -416,23 +412,31 @@ export function useProducts() {
        * - Avoir un nutriscore meilleur OU
        * - Avoir un nutriscore meilleur ET avoir un nova group meilleur
        * - Avoir un taux de complétude décent - retiré et remplacé par le filtre states_tags
+       * - Avoir deux catégories similaires
        * Ils sont ensuite triés par nutriscore, nova group puis popularité
        */
       const score = ['a', 'b', 'c', 'd', 'e']
-      const selectedProducts = data.products
+      const specificCategories = categories ? categories.slice(-2) : []
+
+      const selectedProducts = data.hits
         .filter(
           (e: {
-            id: string
+            code: string
             nutriscore_grade: string
-            nova_group: number /* completeness: number */
+            nova_group: number
+            categories_tags?: string[]
+            /* completeness: number */
           }) =>
-            e.id !== id &&
+            e.code !== id &&
             e.nutriscore_grade !== 'not-applicable' &&
             e.nutriscore_grade !== 'unknown' &&
             (score.indexOf(e.nutriscore_grade) < score.indexOf(nutriscore) ||
               (score.indexOf(e.nutriscore_grade) === score.indexOf(nutriscore) &&
                 typeof e.nova_group === 'number' &&
-                e.nova_group < Number(novaGroup)))
+                e.nova_group < Number(novaGroup))) &&
+            (specificCategories.length > 0
+              ? e.categories_tags?.some((tag) => specificCategories.includes(tag))
+              : true)
           /* && e.completeness >= 0.35 */
         )
         .sort(
@@ -452,24 +456,9 @@ export function useProducts() {
         )
         .slice(0, 4)
 
-      if (selectedProducts.length) {
-        // Je récupère les informations complètes des produits selectionnés
-        fields =
-          'id,image_front_small_url,brands,generic_name_fr,nutriscore_grade,nova_group,categories_hierarchy,popularity_key'
-
-        const codesParam = selectedProducts.map((e: { id: string }) => e.id).join('|')
-
-        route = isLocalhost
-          ? '/data/mock-products.json'
-          : `${API_BASE_URL}?code=${codesParam}&fields=${fields}&page_size=4&action=process&json=1`
-
-        response = await fetchFromProxy(route)
-        data = await response.json()
-
-        isFrom === 'home'
-          ? homeSuggestedProducts.value.push(...data.products.reverse().map(transformProducts))
-          : suggestedProducts.value.push(...data.products.reverse().map(transformProducts))
-      }
+      isFrom === 'home'
+        ? homeSuggestedProducts.value.push(...selectedProducts.map(transformProducts))
+        : suggestedProducts.value.push(...selectedProducts.map(transformProducts))
     } catch (err: any) {
       error.value = err.message || 'Une erreur est survenue'
     } finally {
