@@ -452,18 +452,39 @@ export function useProducts() {
         fields =
           'id,image_front_small_url,brands,generic_name_fr,nutriscore_grade,nova_group,categories_hierarchy,popularity_key'
 
-        const codesParam = selectedProducts.map((e: { id: string }) => e.id).join('|')
+        const detailedProducts = await Promise.all(
+          selectedProducts.map((p: { id: string }) => {
+            const route = isLocalhost
+              ? '/data/mock-product.json'
+              : `${API_BASE_URL_V3}/product/${p.id}?fields=${encodeURIComponent(fields)}&json=1`
 
-        route = isLocalhost
-          ? '/data/mock-products.json'
-          : `${API_BASE_URL}?code=${encodeURIComponent(codesParam)}&fields=${encodeURIComponent(fields)}&sort_by=nutriscore_score,nova_group,popularity_key&page_size=4&action=process&json=1`
+            return fetchFromApi(route)
+              .then((r) => r.json())
+              .then((d) => d.product)
+          })
+        )
 
-        response = await fetchFromProxy(route)
-        data = await response.json()
+        detailedProducts
+          .filter(Boolean) // retire les undefined/null
+          .sort(
+            (
+              a: { nutriscore_grade: string; nova_group: number; popularity_key: number },
+              b: { nutriscore_grade: string; nova_group: number; popularity_key: number }
+            ) => {
+              const nutriscoreComparison =
+                score.indexOf(a.nutriscore_grade) - score.indexOf(b.nutriscore_grade)
+              if (nutriscoreComparison !== 0) return nutriscoreComparison
+
+              const novaGroupComparison = a.nova_group - b.nova_group
+              if (novaGroupComparison !== 0) return novaGroupComparison
+
+              return b.popularity_key - a.popularity_key
+            }
+          )
 
         isFrom === 'home'
-          ? homeSuggestedProducts.value.push(...data.products.reverse().map(transformProducts))
-          : suggestedProducts.value.push(...data.products.reverse().map(transformProducts))
+          ? homeSuggestedProducts.value.push(...detailedProducts.reverse().map(transformProducts))
+          : suggestedProducts.value.push(...detailedProducts.reverse().map(transformProducts))
       }
     } catch (err: any) {
       error.value = err.message || 'Une erreur est survenue'
