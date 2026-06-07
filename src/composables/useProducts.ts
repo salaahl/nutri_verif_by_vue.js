@@ -399,14 +399,14 @@ export function useProducts() {
           categories && categories.length
             ? `&categories_tags=${categories.slice(0, 2).join(',')}`
             : ''
-        }&purchase_places_tags=france&states_tags=en:brands-completed,en:product-name-completed,en:photos-uploaded&sort_by=nutriscore_score&page_size=100&action=process&json=1`
+        }&purchase_places_tags=france&page_size=100&action=process&json=1`
 
     try {
       suggestedProducts.value = []
       suggestedProductsIsLoading.value = true
       error.value = null
 
-      let response = await fetchFromApi(route)
+      let response = await fetchFromProxy(route)
       let data = await response.json()
 
       /*
