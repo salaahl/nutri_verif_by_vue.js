@@ -392,7 +392,7 @@ export function useProducts() {
     if (isFrom === 'home' && homeSuggestedProducts.value.length > 0) return
 
     let fields = 'id,nutriscore_grade,nova_group,popularity_key'
-    const cleanName = name.trim().replace(/\s+/g, ' ').split(' ').slice(0, 3).join(' ')
+    const cleanName = name.trim().replace(/\s+/g, ' ').split(' ').slice(0, 1).join(' ')
     let route = isLocalhost
       ? '/data/mock-products.json'
       : `${API_BASE_URL}?search_terms=${encodeURIComponent(cleanName || brand.split(',')[0])}${
