@@ -399,7 +399,7 @@ export function useProducts() {
           categories && categories.length
             ? `&categories_tags=${categories.slice(0, 2).join(',')}`
             : ''
-        }&fields=${fields}&purchase_places_tags=france&states_tags=en:brands-completed,en:product-name-completed,en:photos-uploaded&sort_by=nutriscore_score&page_size=100&action=process&json=1`
+        }&purchase_places_tags=france&states_tags=en:brands-completed,en:product-name-completed,en:photos-uploaded&sort_by=nutriscore_score&page_size=100&action=process&json=1`
 
     try {
       suggestedProducts.value = []
