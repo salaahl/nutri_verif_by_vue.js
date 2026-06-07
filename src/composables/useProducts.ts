@@ -461,7 +461,7 @@ export function useProducts() {
 
         route = isLocalhost
           ? '/data/mock-products.json'
-          : `${API_BASE_URL}?code=${codesParam}&fields=${fields}&sort_by=nutriscore_score&page_size=4&action=process&json=1`
+          : `${API_BASE_URL}?code=${codesParam}&fields=${fields}&page_size=4&action=process&json=1`
 
         response = await fetchFromProxy(route)
         data = await response.json()
