@@ -69,7 +69,7 @@ interface FetchSuggestionsOptions {
 
 type SearchMethod = 'complete' | 'more'
 
-const API_BASE_URL = 'https://world.openfoodfacts.org/cgi/search.pl'
+const API_BASE_URL = 'https://search.openfoodfacts.org/search'
 const API_BASE_URL_V2 = 'https://world.openfoodfacts.org/api/v2'
 const API_BASE_URL_V3 = 'https://world.openfoodfacts.org/api/v3'
 
@@ -270,7 +270,7 @@ export function useProducts() {
 
     if (!isLocalhost) {
       const params = new URLSearchParams({
-        search_terms: input.value,
+        q: input.value,
         fields: fields,
         purchase_places_tags: 'france',
         sort_by: filter.value,
@@ -395,7 +395,7 @@ export function useProducts() {
     const cleanName = name.trim().replace(/\s+/g, ' ').split(' ').slice(0, 1).join(' ')
     let route = isLocalhost
       ? '/data/mock-products.json'
-      : `${API_BASE_URL}?search_terms=${encodeURIComponent(cleanName || brand.split(',')[0])}${
+      : `${API_BASE_URL}?q=${encodeURIComponent(cleanName || brand.split(',')[0])}${
           categories && categories.length
             ? `&categories_tags=${categories.slice(0, 2).join(',')}`
             : ''
