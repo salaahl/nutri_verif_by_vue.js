@@ -42,6 +42,7 @@ const nutrimentsKeys = [
 ]
 
 const categoriesIsLoading = ref(false)
+const showSuggestedProducts = ref(false)
 
 const searchProductsByCategory: Function = async (category: string) => {
   productsIsLoading.value = true
@@ -52,6 +53,7 @@ const searchProductsByCategory: Function = async (category: string) => {
 }
 
 const searchAlternatives = () => {
+  showSuggestedProducts.value = true
   fetchSuggestedProducts({
     id: product.id
       ? product.id
@@ -89,6 +91,7 @@ const resetProduct = () => {
 // Chargement du produit et des suggestions
 const updateProduct = async (productId: string) => {
   resetProduct()
+  showSuggestedProducts.value = false
   suggestedProducts.value = []
 
   await fetchProduct(productId)
@@ -498,6 +501,7 @@ onBeforeRouteUpdate((to) => {
       (product.nutriscore && product.nutriscore !== 'a') ||
       (product.novaGroup && product.novaGroup !== '1')
     "
+    :showAlternatives="showSuggestedProducts"
     :from="'product'"
     :hasProduct="!!product.id"
     :isLoading="suggestedProductsIsLoading"

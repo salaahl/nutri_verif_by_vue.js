@@ -47,7 +47,13 @@ const categories = [
   'sans gluten'
 ]
 
+const showSuggestedProducts = ref(false)
 const showLastProducts = ref(false)
+
+const searchAlternatives = () => {
+  showSuggestedProducts.value = true
+  fetchSuggestedProducts({ isFrom: 'home' })
+}
 
 const searchLastProducts: Function = () => {
   showLastProducts.value = true
@@ -414,11 +420,12 @@ onUnmounted(() => {
     </span>
     <AlternativesProducts
       :class="product.id ? '' : 'pointer-events-none opacity-50'"
+      :showAlternatives="showSuggestedProducts"
       :from="'home'"
       :hasProduct="true"
       :isLoading="suggestedProductsIsLoading"
       :products="homeSuggestedProducts"
-      @trigger-search="fetchSuggestedProducts({ isFrom: 'home' })"
+      @trigger-search="searchAlternatives()"
     />
     <span class="inline-block my-8">
       Trouvez des options <span class="text-highlighted">plus saines</span> et faites de chaque

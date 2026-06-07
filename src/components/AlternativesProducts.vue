@@ -14,12 +14,14 @@ interface Products {
 
 const props = withDefaults(
   defineProps<{
+    showAlternatives?: boolean
     from?: string
     hasProduct?: boolean
     isLoading?: boolean
     products?: Products[]
   }>(),
   {
+    showAlternatives: false,
     from: 'product',
     hasProduct: false,
     isLoading: false,
@@ -31,10 +33,7 @@ const emit = defineEmits<{
   (e: 'trigger-search'): void
 }>()
 
-const showAlternatives = ref(false)
-
 function searchAlternatives() {
-  showAlternatives.value = true
   emit('trigger-search')
 }
 </script>
