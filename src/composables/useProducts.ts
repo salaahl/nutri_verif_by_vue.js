@@ -399,7 +399,7 @@ export function useProducts() {
           categories && categories.length
             ? `&categories_tags=${categories.slice(0, 2).join(',')}`
             : ''
-        }&purchase_places_tags=france&page_size=100&action=process&json=1`
+        }&purchase_places_tags=france&page_size=10&action=process&json=1`
 
     try {
       suggestedProducts.value = []
