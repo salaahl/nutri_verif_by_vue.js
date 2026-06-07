@@ -324,7 +324,7 @@ export function useProducts() {
       'id,image_front_url,brands,generic_name_fr,categories_hierarchy,last_updated_t,nutriscore_grade,nova_group,quantity,serving_size,ingredients_text_with_allergens_fr,nutriments,nutrient_levels,manufacturing_places,link'
     const route = isLocalhost
       ? '/data/mock-product.json'
-      : `${API_BASE_URL_V3}/product/${id}?fields=${encodeURIComponent(fields)}&json=1`
+      : `${API_BASE_URL_V3}/product/${id}?fields=${fields}&json=1`
 
     let data
 
@@ -358,7 +358,7 @@ export function useProducts() {
       'id,image_front_small_url,brands,generic_name_fr,nutriscore_grade,nova_group,categories_hierarchy,created_t'
     const route = isLocalhost
       ? '/data/mock-products.json'
-      : `${API_BASE_URL_V2}/search?fields=${encodeURIComponent(fields)}&purchase_places_tags=france&states_tags=en:brands-completed,en:product-name-completed,en:photos-uploaded&sort_by=created_t&page_size=15&action=process&json=1`
+      : `${API_BASE_URL_V2}/search?fields=${fields}&purchase_places_tags=france&states_tags=en:brands-completed,en:product-name-completed,en:photos-uploaded&sort_by=created_t&page_size=15&action=process&json=1`
 
     error.value = null
 
@@ -392,9 +392,14 @@ export function useProducts() {
     if (isFrom === 'home' && homeSuggestedProducts.value.length > 0) return
 
     let fields = 'id,nutriscore_grade,nova_group,popularity_key'
+    const cleanName = name.trim().replace(/\s+/g, ' ').split(' ').slice(0, 3).join(' ')
     let route = isLocalhost
       ? '/data/mock-products.json'
-      : `${API_BASE_URL}?search_terms=${encodeURIComponent(name ?? brand.split(',')[0])}&categories_tags=${encodeURIComponent(categories.join('|'))}&fields=${encodeURIComponent(fields)}&purchase_places_tags=france&states_tags=en:brands-completed,en:product-name-completed,en:photos-uploaded&sort_by=nutriscore_score,nova_group,popularity_key&page_size=100&action=process&json=1`
+      : `${API_BASE_URL}?search_terms=${encodeURIComponent(cleanName || brand.split(',')[0])}${
+          categories && categories.length
+            ? `&categories_tags=${categories.slice(0, 2).join(',')}`
+            : ''
+        }&fields=${fields}&purchase_places_tags=france&states_tags=en:brands-completed,en:product-name-completed,en:photos-uploaded&sort_by=nutriscore_score&page_size=100&action=process&json=1`
 
     try {
       suggestedProducts.value = []
@@ -452,39 +457,18 @@ export function useProducts() {
         fields =
           'id,image_front_small_url,brands,generic_name_fr,nutriscore_grade,nova_group,categories_hierarchy,popularity_key'
 
-        const detailedProducts = await Promise.all(
-          selectedProducts.map((p: { id: string }) => {
-            const route = isLocalhost
-              ? '/data/mock-product.json'
-              : `${API_BASE_URL_V3}/product/${p.id}?fields=${encodeURIComponent(fields)}&json=1`
+        const codesParam = selectedProducts.map((e: { id: string }) => e.id).join('|')
 
-            return fetchFromApi(route)
-              .then((r) => r.json())
-              .then((d) => d.product)
-          })
-        )
+        route = isLocalhost
+          ? '/data/mock-products.json'
+          : `${API_BASE_URL}?code=${codesParam}&fields=${fields}&sort_by=nutriscore_score&page_size=4&action=process&json=1`
 
-        detailedProducts
-          .filter(Boolean) // retire les undefined/null
-          .sort(
-            (
-              a: { nutriscore_grade: string; nova_group: number; popularity_key: number },
-              b: { nutriscore_grade: string; nova_group: number; popularity_key: number }
-            ) => {
-              const nutriscoreComparison =
-                score.indexOf(a.nutriscore_grade) - score.indexOf(b.nutriscore_grade)
-              if (nutriscoreComparison !== 0) return nutriscoreComparison
-
-              const novaGroupComparison = a.nova_group - b.nova_group
-              if (novaGroupComparison !== 0) return novaGroupComparison
-
-              return b.popularity_key - a.popularity_key
-            }
-          )
+        response = await fetchFromProxy(route)
+        data = await response.json()
 
         isFrom === 'home'
-          ? homeSuggestedProducts.value.push(...detailedProducts.reverse().map(transformProducts))
-          : suggestedProducts.value.push(...detailedProducts.reverse().map(transformProducts))
+          ? homeSuggestedProducts.value.push(...data.products.reverse().map(transformProducts))
+          : suggestedProducts.value.push(...data.products.reverse().map(transformProducts))
       }
     } catch (err: any) {
       error.value = err.message || 'Une erreur est survenue'
