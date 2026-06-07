@@ -16,20 +16,41 @@ function handleBack() {
 }
 
 onMounted(() => {
-  if (window.location.hostname !== 'localhost' && window.location.hostname !== '127.0.0.1')
+  if (window.location.hostname !== 'localhost' && window.location.hostname !== '127.0.0.1') {
     fetch('https://jokes-api-platform.onrender.com/')
       .then((res) => {
         if (res.status === 204) {
-          console.log('Le serveur est prêt !')
+          document.getElementById('loader').classList.add('hide')
         }
       })
       .catch(() => {
         console.log('Le serveur dort encore, réveil (toujours) en cours...')
       })
+  } else {
+    setTimeout(() => {
+      document.getElementById('loader').classList.add('hide')
+    }, 1500)
+  }
 })
 </script>
 
 <template>
+  <div id="loader" class="z-50 fixed inset-0 flex items-center justify-center bg-zinc-950">
+    <div class="wrapper">
+      <span class="website-name text-6xl font-bold tracking-wide select-none text-white">
+        <span class="animate-letter inline-block" style="animation-delay: 0s">N</span>
+        <span class="animate-letter inline-block" style="animation-delay: 0.1s">u</span>
+        <span class="animate-letter inline-block" style="animation-delay: 0.2s">t</span>
+        <span class="animate-letter inline-block" style="animation-delay: 0.3s">r</span>
+        <span class="animate-letter inline-block" style="animation-delay: 0.4s">i</span>
+        <span class="animate-letter inline-block" style="animation-delay: 0.5s">V</span>
+        <span class="animate-letter inline-block" style="animation-delay: 0.6s">é</span>
+        <span class="animate-letter inline-block" style="animation-delay: 0.7s">r</span>
+        <span class="animate-letter inline-block" style="animation-delay: 0.8s">i</span>
+        <span class="animate-letter inline-block" style="animation-delay: 0.9s">f</span>
+      </span>
+    </div>
+  </div>
   <div
     :class="`${router.currentRoute.value.name}-view bg absolute inset-0 w-full h-full min-h-screen overflow-hidden -z-10 bg-[#ffffff]`"
   >
@@ -158,6 +179,11 @@ onMounted(() => {
     </div>
     <a href="/" class="block w-fit mx-auto">
       <img alt="Logo du site" id="logo" class="m-auto" src="/logo.png" width="125" height="125" />
+      <div class="wrapper">
+        <span class="website-name relative text-2xl"
+          >Nutri<span class="text-[#00bd7e] md:text-white">Vérif</span></span
+        >
+      </div>
     </a>
   </header>
 
@@ -211,6 +237,34 @@ onMounted(() => {
 .slide-fade-enter-from,
 .slide-fade-leave-to {
   opacity: 0;
+}
+
+#loader {
+  position: fixed;
+  top: 0;
+  left: 0;
+  height: 100%;
+  width: 100%;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  background-color: #ffffff;
+  opacity: 1;
+  pointer-events: auto;
+  transition: opacity 0.5s ease-in-out;
+}
+
+#loader.hide {
+  opacity: 0;
+  pointer-events: none;
+}
+
+#loader .animate-letter {
+  animation: waveEffect 2s ease-in-out infinite;
+}
+
+#loader.hide .animate-letter {
+  animation: none !important;
 }
 
 /* Fond de page */
@@ -462,6 +516,18 @@ h1::first-letter {
   background-color: var(--color-green);
 }
 
+.website-name {
+  font-family: 'Grand Hotel', cursive;
+  font-weight: 400;
+  font-style: normal;
+  transition: opacity 0.15s;
+}
+
+header .website-name {
+  width: fit-content;
+  margin: 10px auto;
+}
+
 #logo {
   height: 80px;
   width: auto;
@@ -510,11 +576,31 @@ footer > div,
     filter: invert(0.95);
   }
 
+  header .website-name {
+    display: none;
+  }
+
   footer > div {
     box-shadow:
       rgba(255, 255, 255, 0.1) 0px 1px 1px 0px inset,
       rgba(50, 50, 93, 0.25) 0px 50px 100px -20px,
       rgba(0, 0, 0, 0.3) 0px 30px 60px -30px;
+  }
+}
+
+@keyframes waveEffect {
+  0%,
+  100% {
+    transform: translateY(0);
+    color: #ffffff;
+  }
+  20% {
+    transform: translateY(-12px);
+    color: #00bd7e;
+  }
+  40% {
+    transform: translateY(0);
+    color: #ffffff;
   }
 }
 

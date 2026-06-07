@@ -77,6 +77,11 @@ onMounted(async () => {
     isFirstLaunch.value = false
   }
 
+  const websiteName = document.querySelector('header .website-name') as HTMLElement
+  if (websiteName) {
+    websiteName.classList.add('opacity-0')
+  }
+
   // Affichage conditionnel de la vidéo Youtube
   const videoContainer = document.getElementById('video-container') as HTMLElement
   const cookieAuthorisation = document.getElementById('accept-cookies') as HTMLElement
@@ -117,6 +122,13 @@ onMounted(async () => {
   }
 
   await fetchProduct('3608580758686')
+})
+
+onUnmounted(() => {
+  const websiteName = document.querySelector('header .website-name') as HTMLElement
+  if (websiteName) {
+    websiteName.classList.remove('opacity-0')
+  }
 })
 </script>
 
