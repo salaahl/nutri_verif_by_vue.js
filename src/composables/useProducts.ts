@@ -406,7 +406,7 @@ export function useProducts() {
       suggestedProductsIsLoading.value = true
       error.value = null
 
-      let response = await fetchFromProxy(route, { timeout: 15000 })
+      let response = await fetchFromApi(route)
       let data = await response.json()
 
       /*
