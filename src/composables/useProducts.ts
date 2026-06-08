@@ -103,42 +103,57 @@ async function fetchFromApi(
 
 async function fetchFromProxy(
   resource: string,
-  options: { timeout?: number; method?: string; headers?: HeadersInit; body?: string } = {}
-) {
+  options: RequestInit & { timeout?: number } = {}
+): Promise<Response> {
   // Timeout par défaut de 2 minutes pour laisser le temps au serveur de se réveiller lors de la 1ère requête
-  const { timeout = 120000, method = 'GET' } = options
+  const { timeout = 120000, method = 'GET', headers, body } = options
 
   const controller = new AbortController()
-  const id = setTimeout(() => controller.abort(), timeout)
+  const timerId = setTimeout(() => controller.abort(), timeout)
 
   if (resource.startsWith('/') || (resource.includes('localhost') && !resource.includes(':8000'))) {
-    const response = await fetch(resource, {
-      ...options,
-      signal: controller.signal
-    })
-    clearTimeout(id)
-    return response
+    try {
+      const response = await fetch(resource, {
+        ...options,
+        signal: controller.signal
+      })
+      return response
+    } finally {
+      clearTimeout(timerId)
+    }
   }
 
   const proxyUrl = 'https://jokes-api-platform.onrender.com/search-products'
 
+  // pour éviter que JSON.stringify() ne le transforme en "{}"
+  const serializedBody = body instanceof URLSearchParams ? body.toString() : body
+
   const proxyBody = JSON.stringify({
     url: resource,
-    method: method
+    method: method,
+    body: serializedBody
   })
 
-  const response = await fetch(proxyUrl, {
-    method: 'POST',
-    headers: {
-      'Content-Type': 'application/json',
-      ...options.headers
-    },
-    body: proxyBody,
-    signal: controller.signal
-  })
+  try {
+    const response = await fetch(proxyUrl, {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+        ...headers
+      },
+      body: proxyBody,
+      signal: controller.signal
+    })
 
-  clearTimeout(id)
-  return response
+    return response
+  } catch (err: any) {
+    if (err.name === 'AbortError') {
+      throw new Error(`Le proxy a mis trop de temps à répondre (${timeout}ms)`)
+    }
+    throw err
+  } finally {
+    clearTimeout(timerId)
+  }
 }
 
 export function useProducts() {
@@ -257,8 +272,10 @@ export function useProducts() {
   ) {
     if (userInput) input.value = userInput
     if (sortBy) filter.value = sortBy
+
+    // Gestion de la pagination
     if (method === 'complete') {
-      products.value = [] // Réinitialiser les produits en cas de nouvelle recherche
+      products.value = []
       page.value = 1
     } else if (method === 'more') {
       page.value++
@@ -266,28 +283,34 @@ export function useProducts() {
 
     const fields =
       'id,image_front_small_url,brands,generic_name_fr,nutriscore_grade,nova_group,categories_hierarchy'
-    let route = '/data/mock-products.json'
+
+    let route = isLocalhost ? '/data/mock-products.json' : API_BASE_URL
+    let fetchMethod = isLocalhost ? 'GET' : 'POST'
+
+    let fetchOptions: RequestInit & { timeout?: number } = {
+      method: fetchMethod,
+      timeout: 15000
+    }
 
     if (!isLocalhost) {
-      const params = new URLSearchParams({
+      fetchOptions.body = new URLSearchParams({
         search_terms: input.value,
         fields: fields,
         purchase_places_tags: 'france',
-        sort_by: filter.value,
+        sort_by: filter.value || 'popularity_key',
         page_size: '20',
         page: page.value.toString(),
         search_simple: '1',
         action: 'process',
         json: '1'
       })
-
-      route = `${API_BASE_URL}?${params.toString()}`
     }
 
     try {
       productsIsLoading.value = true
       error.value = null
-      const response = await fetchFromProxy(route)
+
+      const response = await fetchFromProxy(route, fetchOptions)
       const data = await response.json()
 
       if (isLocalhost && data.products) {
@@ -356,23 +379,41 @@ export function useProducts() {
   async function fetchLastProducts() {
     const fields =
       'id,image_front_small_url,brands,generic_name_fr,nutriscore_grade,nova_group,categories_hierarchy,created_t'
-    const route = isLocalhost
-      ? '/data/mock-products.json'
-      : `${API_BASE_URL_V2}/search?fields=${fields}&purchase_places_tags=france&states_tags=en:brands-completed,en:product-name-completed,en:photos-uploaded&sort_by=created_t&page_size=15&action=process&json=1`
+    let route = isLocalhost ? '/data/mock-products.json' : `${API_BASE_URL_V2}/search`
+    let fetchMethod = isLocalhost ? 'GET' : 'POST'
 
-    error.value = null
+    let fetchOptions: RequestInit & { timeout?: number } = {
+      method: fetchMethod,
+      timeout: 15000
+    }
+
+    if (!isLocalhost) {
+      fetchOptions.body = new URLSearchParams({
+        fields: fields,
+        purchase_places_tags: 'france',
+        states_tags: 'en:brands-completed,en:product-name-completed,en:photos-uploaded',
+        sort_by: 'created_t',
+        page_size: '5',
+        action: 'process',
+        json: '1'
+      })
+    }
 
     try {
+      error.value = null
       lastProductsIsLoading.value = true
-      const response = await fetchFromProxy(route)
+
+      const response = await fetchFromProxy(route, fetchOptions)
       const data = await response.json()
 
+      /*
       const filteredProducts = data.products
-        // .filter((product: { completeness: number }) => product.completeness >= 0.35)
+        .filter((product: { completeness: number }) => product.completeness >= 0.35)
         .sort((a: { created_t: number }, b: { created_t: number }) => b.created_t - a.created_t)
         .slice(0, 5)
+      */
 
-      lastProducts.value.push(...filteredProducts.map(transformProducts))
+      lastProducts.value.push(...data.products.map(transformProducts))
     } catch (err: any) {
       error.value = err.message || 'Une erreur est survenue'
     } finally {
@@ -393,16 +434,34 @@ export function useProducts() {
 
     let fields =
       'id,image_front_small_url,brands,generic_name_fr,nutriscore_grade,nova_group,categories_hierarchy,popularity_key'
-    let route = isLocalhost
-      ? '/data/mock-products.json'
-      : `${API_BASE_URL}?search_terms=${encodeURIComponent(name ?? brand.split(',')[0])}&fields=${fields}&purchase_places_tags=france&states_tags=en:brands-completed,en:product-name-completed,en:photos-uploaded&page_size=100&action=process&json=1`
+
+    let route = isLocalhost ? '/data/mock-products.json' : API_BASE_URL
+    let method = isLocalhost ? 'GET' : 'POST'
+
+    let fetchOptions: RequestInit & { timeout?: number } = {
+      method: method,
+      timeout: 25000
+    }
+
+    if (!isLocalhost) {
+      fetchOptions.body = new URLSearchParams({
+        search_terms: (name ?? brand.split(',')[0]).trim(),
+        fields: fields,
+        purchase_places_tags: 'france',
+        states_tags: 'en:brands-completed,en:product-name-completed,en:photos-uploaded',
+        sort_by: 'popularity_key',
+        page_size: '500',
+        action: 'process',
+        json: '1'
+      })
+    }
 
     try {
       suggestedProducts.value = []
       suggestedProductsIsLoading.value = true
       error.value = null
 
-      let response = await fetchFromProxy(route, { timeout: 15000 })
+      let response = await fetchFromProxy(route, fetchOptions)
       let data = await response.json()
 
       /*
