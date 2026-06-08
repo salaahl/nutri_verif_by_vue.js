@@ -24,6 +24,9 @@ onMounted(() => {
         }
       })
       .catch(() => {
+        setTimeout(() => {
+          document.getElementById('loader').classList.add('hide')
+        }, 10000)
         console.log('Le serveur dort encore, réveil (toujours) en cours...')
       })
   } else {
