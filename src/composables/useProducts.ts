@@ -513,17 +513,31 @@ export function useProducts() {
     } catch (err: any) {
       console.warn('Première tentative non concluate. Lancement du fallback...')
 
+      route = isLocalhost ? '/data/mock-productsV2.json' : API_BASE_URL_V4
       fields =
         'code,image_front_small_url,brands,product_name,nutriscore_grade,nova_group,categories_tags,popularity_key'
+
+      let fetchOptions: RequestInit & { timeout?: number } = { method, timeout: 25000 }
       const cleanedName = cleanProductTitle(
         name.trim().split(/\s+/).slice(0, 3).join(' ') ?? brand.split(',')[0]
       )
-      route = isLocalhost
-        ? '/data/mock-productsV2.json'
-        : `${API_BASE_URL_V4}?q=${encodeURIComponent(cleanedName)}&langs=fr&fields=${encodeURIComponent(fields)}&purchase_places_tags=france&states_tags=en:brands-completed,en:product-name-completed,en:photos-uploaded&page_size=100&action=process&json=1`
+
+      if (!isLocalhost) {
+        fetchOptions.body = new URLSearchParams({
+          q: cleanedName,
+          langs: 'fr',
+          fields: fields,
+          purchase_places_tags: 'france',
+          states_tags: 'en:brands-completed,en:product-name-completed,en:photos-uploaded',
+          sort_by: 'popularity_key',
+          page_size: '500',
+          action: 'process',
+          json: '1'
+        })
+      }
 
       try {
-        response = await fetchFromProxy(route, { method: 'GET', timeout: 25000 })
+        response = await fetchFromProxy(route, fetchOptions)
         data = await response.json()
       } catch (fallbackErr: any) {
         error.value = fallbackErr.message || 'Impossible de joindre Open Food Facts.'
