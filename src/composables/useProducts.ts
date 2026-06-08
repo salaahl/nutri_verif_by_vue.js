@@ -85,8 +85,8 @@ const API_BASE_URL_V3 = 'https://world.openfoodfacts.org/api/v3'
 const API_BASE_URL_V4 = 'https://search.openfoodfacts.org/search'
 
 // Détection du mode localhost / développement
-const isLocalhost = false
-//window.location.hostname === 'localhost' || window.location.hostname === '127.0.0.1'
+const isLocalhost =
+  window.location.hostname === 'localhost' || window.location.hostname === '127.0.0.1'
 
 async function fetchFromApi(
   resource: string,
@@ -357,65 +357,64 @@ export function useProducts() {
         console.warn('V1 indisponible, bascule sur V4...')
         searchProductsApi.value = 'V4'
       }
-
-      if (searchProductsApi.value === 'V4') {
-        const fields =
-          'code,image_front_small_url,brands,product_name,nutriscore_grade,nova_group,categories_tags'
-        const route = isLocalhost ? '/data/mock-productsV2.json' : API_BASE_URL_V4
-
-        let fetchOptions: RequestInit & { timeout?: number } = {
-          method: fetchMethod,
-          timeout: 15000
-        }
-
-        if (!isLocalhost) {
-          fetchOptions.body = new URLSearchParams({
-            q: input.value,
-            langs: 'fr',
-            fields: fields,
-            sort_by: filter.value || 'popularity_key',
-            page_size: '20',
-            page: page.value.toString(),
-            json: '1'
-          })
-        }
-
-        try {
-          const response = await fetchFromProxy(route, fetchOptions)
-          data = await response.json()
-        } catch (err: any) {
-          error.value = err.message || 'Une erreur est survenue'
-          productsIsLoading.value = false
-          return
-        }
-      }
-
-      let rawProducts = data?.hits ?? data?.products ?? []
-      let rawCount = data?.page_count ?? data?.count
-      const isV4 = !!data?.hits
-
-      if (isLocalhost && rawProducts) {
-        const multiplicationFactor = 5 // 4 produits issus de mock-products x 5 = 20 produits
-        const multipliedProducts: any[] = []
-
-        for (let i = 0; i < multiplicationFactor; i++) {
-          const clone = rawProducts.map((product: any, index: number) => ({
-            ...product,
-            id: Math.random().toString(36).substring(2, 9) + index.toString(),
-            generic_name: `${product.product_name} ${i + 1}`
-          }))
-          multipliedProducts.push(...clone)
-        }
-
-        rawProducts = multipliedProducts
-        rawCount = multipliedProducts.length * 2 // On multiplie le nombre de produits par 2 pour simuler la pagination
-      }
-
-      if (method === 'complete') pages.value = Math.ceil(rawCount / 20)
-
-      products.value.push(...rawProducts.map(isV4 ? transformProductsV2 : transformProducts))
-      productsIsLoading.value = false
     }
+
+    if (searchProductsApi.value === 'V4') {
+      const fields =
+        'code,image_front_small_url,brands,product_name,nutriscore_grade,nova_group,categories_tags'
+      const route = isLocalhost ? '/data/mock-productsV2.json' : API_BASE_URL_V4
+
+      let fetchOptions: RequestInit & { timeout?: number } = {
+        method: fetchMethod,
+        timeout: 15000
+      }
+
+      if (!isLocalhost) {
+        fetchOptions.body = new URLSearchParams({
+          q: input.value,
+          langs: 'fr',
+          fields: fields,
+          sort_by: filter.value || 'popularity_key',
+          page_size: '20',
+          page: page.value.toString()
+        })
+      }
+
+      try {
+        const response = await fetchFromProxy(route, fetchOptions)
+        data = await response.json()
+      } catch (err: any) {
+        error.value = err.message || 'Une erreur est survenue'
+        productsIsLoading.value = false
+        return
+      }
+    }
+
+    let rawProducts = data?.hits ?? data?.products ?? []
+    let rawCount = data?.page_count ?? data?.count
+    const isV4 = !!data?.hits
+
+    if (isLocalhost && rawProducts) {
+      const multiplicationFactor = 5 // 4 produits issus de mock-products x 5 = 20 produits
+      const multipliedProducts: any[] = []
+
+      for (let i = 0; i < multiplicationFactor; i++) {
+        const clone = rawProducts.map((product: any, index: number) => ({
+          ...product,
+          id: Math.random().toString(36).substring(2, 9) + index.toString(),
+          generic_name: `${product.product_name} ${i + 1}`
+        }))
+        multipliedProducts.push(...clone)
+      }
+
+      rawProducts = multipliedProducts
+      rawCount = multipliedProducts.length * 2 // On multiplie le nombre de produits par 2 pour simuler la pagination
+    }
+
+    if (method === 'complete') pages.value = Math.ceil(rawCount / 20)
+
+    products.value.push(...rawProducts.map(isV4 ? transformProductsV2 : transformProducts))
+    productsIsLoading.value = false
   }
 
   async function fetchProduct(id: string) {
