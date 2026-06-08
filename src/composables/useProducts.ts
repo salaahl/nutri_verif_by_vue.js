@@ -85,8 +85,8 @@ const API_BASE_URL_V3 = 'https://world.openfoodfacts.org/api/v3'
 const API_BASE_URL_V4 = 'https://search.openfoodfacts.org/search'
 
 // Détection du mode localhost / développement
-const isLocalhost =
-  window.location.hostname === 'localhost' || window.location.hostname === '127.0.0.1'
+const isLocalhost = false
+//window.location.hostname === 'localhost' || window.location.hostname === '127.0.0.1'
 
 async function fetchFromApi(
   resource: string,
@@ -371,12 +371,14 @@ export function useProducts() {
 
       if (!isLocalhost) {
         fetchOptions.body = new URLSearchParams({
-          q: input.value,
+          q: `product_name.fr:"${input.value}"`,
           langs: 'fr',
           fields: fields,
-          sort_by: filter.value || 'popularity_key',
+          purchase_places_tags: 'france',
+          states_tags: 'en:brands-completed,en:product-name-completed,en:photos-uploaded',
           page_size: '20',
-          page: page.value.toString()
+          page: page.value.toString(),
+          sort_by: filter.value || 'popularity_key'
         })
       }
 
@@ -568,13 +570,14 @@ export function useProducts() {
 
       if (!isLocalhost) {
         fetchOptions.body = new URLSearchParams({
-          q: (name
+          q: `product_name.fr:"${(name
             ? cleanProductTitle(name.trim().split(/\s+/).slice(0, 3).join(' '))
             : categories[0]
-          ).trim(),
+          ).trim()}"`,
           langs: 'fr',
           fields: fields,
           purchase_places_tags: 'france',
+          states_tags: 'en:brands-completed,en:product-name-completed,en:photos-uploaded',
           page_size: '50'
         })
       }
