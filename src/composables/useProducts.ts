@@ -11,6 +11,16 @@ interface Products {
   category: string
 }
 
+interface APIProductsV2 {
+  code?: string
+  image_front_small_url?: string
+  brands?: string[]
+  product_name?: string
+  nutriscore_grade?: string
+  nova_group?: number | string
+  categories_tags?: string[]
+}
+
 interface Product {
   id: string
   image: string
@@ -72,6 +82,7 @@ type SearchMethod = 'complete' | 'more'
 const API_BASE_URL = 'https://world.openfoodfacts.org/cgi/search.pl'
 const API_BASE_URL_V2 = 'https://world.openfoodfacts.org/api/v2'
 const API_BASE_URL_V3 = 'https://world.openfoodfacts.org/api/v3'
+const API_BASE_URL_V4 = 'https://search.openfoodfacts.org/search'
 
 // Détection du mode localhost / développement
 const isLocalhost =
@@ -144,6 +155,10 @@ async function fetchFromProxy(
       body: proxyBody,
       signal: controller.signal
     })
+
+    if (!response.ok) {
+      throw new Error(`Erreur locale HTTP ${response.status}`)
+    }
 
     return response
   } catch (err: any) {
@@ -236,6 +251,19 @@ export function useProducts() {
       nova: product.nova_group ?? 'unknown',
       category:
         product.categories_hierarchy?.find((category: string) => category.startsWith('fr:')) ?? ''
+    }
+  }
+
+  function transformProductsV2(product: APIProductsV2): Products {
+    return {
+      id: product.code ?? '',
+      image: product.image_front_small_url ?? '/logo.png',
+      brand: product.brands ? product.brands.join(', ') : '',
+      name: product.product_name ?? '',
+      nutriscore: product.nutriscore_grade ?? 'unknown',
+      nova: product.nova_group ?? 'unknown',
+      category:
+        product.categories_tags?.find((category: string) => category.startsWith('fr:')) ?? ''
     }
   }
 
@@ -432,89 +460,123 @@ export function useProducts() {
   }: FetchSuggestionsOptions = {}) {
     if (isFrom === 'home' && homeSuggestedProducts.value.length > 0) return
 
-    let fields =
-      'id,image_front_small_url,brands,generic_name_fr,nutriscore_grade,nova_group,categories_hierarchy,popularity_key'
+    function cleanProductTitle(name: string): string {
+      if (!name) return ''
 
-    let route = isLocalhost ? '/data/mock-products.json' : API_BASE_URL
-    let method = isLocalhost ? 'GET' : 'POST'
+      let cleaned = name.trim()
 
-    let fetchOptions: RequestInit & { timeout?: number } = {
-      method: method,
-      timeout: 25000
+      const startRegex = /^(le|la|les|un|une|des|du|de|a|à|au|aux|en)\b\s*|^(l|d)['’]\s*/i
+      const endRegex = /\s*\b(le|la|les|un|une|des|du|de|a|à|au|aux|en)$|\s*['’](l|d)$/i
+
+      let previous
+      do {
+        previous = cleaned
+        cleaned = cleaned.replace(startRegex, '').replace(endRegex, '').trim()
+      } while (cleaned !== previous)
+
+      return cleaned
     }
 
-    if (!isLocalhost) {
-      fetchOptions.body = new URLSearchParams({
-        search_terms: (name ?? brand.split(',')[0]).trim(),
-        fields: fields,
-        purchase_places_tags: 'france',
-        states_tags: 'en:brands-completed,en:product-name-completed,en:photos-uploaded',
-        sort_by: 'popularity_key',
-        page_size: '500',
-        action: 'process',
-        json: '1'
-      })
-    }
+    let response, data, fields, route, method
+
+    suggestedProducts.value = []
+    suggestedProductsIsLoading.value = true
+    error.value = null
 
     try {
-      suggestedProducts.value = []
-      suggestedProductsIsLoading.value = true
-      error.value = null
+      fields =
+        'id,image_front_small_url,brands,generic_name_fr,nutriscore_grade,nova_group,categories_hierarchy,popularity_key'
+      route = isLocalhost ? '/data/mock-products.json' : API_BASE_URL
+      method = isLocalhost ? 'GET' : 'POST'
 
-      let response = await fetchFromProxy(route, fetchOptions)
-      let data = await response.json()
+      let fetchOptions: RequestInit & { timeout?: number } = { method, timeout: 25000 }
 
-      /*
-       * Les produits suggérés doivent remplir les critères suivants :
-       * - Ne pas être le produit actuel
-       * - Avoir un nutriscore
-       * - Avoir un nutriscore meilleur OU
-       * - Avoir un nutriscore meilleur ET avoir un nova group meilleur
-       * - Avoir un taux de complétude décent - retiré et remplacé par le filtre states_tags
-       * Ils sont ensuite triés par nutriscore, nova group puis popularité
-       */
-      const score = ['a', 'b', 'c', 'd', 'e']
-      const selectedProducts = data.products
-        .filter(
-          (e: {
-            id: string
-            nutriscore_grade: string
-            nova_group: number /* completeness: number */
-          }) =>
-            e.id !== id &&
-            e.nutriscore_grade !== 'not-applicable' &&
-            e.nutriscore_grade !== 'unknown' &&
-            (score.indexOf(e.nutriscore_grade) < score.indexOf(nutriscore) ||
-              (score.indexOf(e.nutriscore_grade) === score.indexOf(nutriscore) &&
-                typeof e.nova_group === 'number' &&
-                e.nova_group < Number(novaGroup)))
-          /* && e.completeness >= 0.35 */
-        )
-        .sort(
-          (
-            a: { nutriscore_grade: string; nova_group: number; popularity_key: number },
-            b: { nutriscore_grade: string; nova_group: number; popularity_key: number }
-          ) => {
-            const nutriscoreComparison =
-              score.indexOf(a.nutriscore_grade) - score.indexOf(b.nutriscore_grade)
-            if (nutriscoreComparison !== 0) return nutriscoreComparison
+      if (!isLocalhost) {
+        fetchOptions.body = new URLSearchParams({
+          search_terms: (name ?? brand.split(',')[0]).trim(),
+          fields: fields,
+          purchase_places_tags: 'france',
+          states_tags: 'en:brands-completed,en:product-name-completed,en:photos-uploaded',
+          sort_by: 'popularity_key',
+          page_size: '500',
+          action: 'process',
+          json: '1'
+        })
+      }
 
-            const novaGroupComparison = a.nova_group - b.nova_group
-            if (novaGroupComparison !== 0) return novaGroupComparison
+      response = await fetchFromProxy(route, fetchOptions)
+      data = await response.json()
 
-            return b.popularity_key - a.popularity_key
-          }
-        )
-        .slice(0, 4)
-
-      isFrom === 'home'
-        ? homeSuggestedProducts.value.push(...selectedProducts.map(transformProducts))
-        : suggestedProducts.value.push(...selectedProducts.map(transformProducts))
+      if (data.products.length > 0) {
+        throw new Error("Aucun produit n'a pu être trouvé. Tentative avec le fallback...")
+      }
     } catch (err: any) {
-      error.value = err.message || 'Une erreur est survenue'
-    } finally {
-      suggestedProductsIsLoading.value = false
+      console.warn('Première tentative non concluate. Lancement du fallback...')
+
+      fields =
+        'code,image_front_small_url,brands,product_name,nutriscore_grade,nova_group,categories_tags,popularity_key'
+      const cleanedName = cleanProductTitle(
+        name.trim().split(/\s+/).slice(0, 3).join(' ') ?? brand.split(',')[0]
+      )
+      route = isLocalhost
+        ? '/data/mock-productsV2.json'
+        : `${API_BASE_URL_V4}?q=${encodeURIComponent(cleanedName)}&langs=fr&fields=${encodeURIComponent(fields)}&purchase_places_tags=france&states_tags=en:brands-completed,en:product-name-completed,en:photos-uploaded&page_size=100&action=process&json=1`
+
+      try {
+        response = await fetchFromProxy(route, { method: 'GET', timeout: 25000 })
+        data = await response.json()
+      } catch (fallbackErr: any) {
+        error.value = fallbackErr.message || 'Impossible de joindre Open Food Facts.'
+        suggestedProductsIsLoading.value = false
+        return
+      }
     }
+
+    // Normalisation et filtrage des données
+    const score = ['a', 'b', 'c', 'd', 'e']
+    const specificCategories = categories ? categories.slice(-2) : []
+
+    const rawProducts = data?.hits ?? data?.products ?? []
+    const isV4 = !!data?.hits
+
+    const selectedProducts = rawProducts
+      .filter((e: any) => {
+        const productCode = e.code ?? e.id
+        const itemNutriscore = e.nutriscore_grade
+        const itemNova = e.nova_group
+        const itemTags = e.categories_tags ?? e.categories_hierarchy ?? []
+
+        return (
+          productCode !== id &&
+          itemNutriscore !== 'not-applicable' &&
+          itemNutriscore !== 'unknown' &&
+          (score.indexOf(itemNutriscore) < score.indexOf(nutriscore) ||
+            (score.indexOf(itemNutriscore) === score.indexOf(nutriscore) &&
+              typeof itemNova === 'number' &&
+              itemNova < Number(novaGroup))) &&
+          // Filtrage par sous-catégories uniquement si v4
+          (isV4 && specificCategories.length > 0
+            ? itemTags.some((tag: string) => specificCategories.includes(tag))
+            : true)
+        )
+      })
+      // Nutriscore > nova > popularité
+      .sort((a: any, b: any) => {
+        const nutriscoreComparison =
+          score.indexOf(a.nutriscore_grade) - score.indexOf(b.nutriscore_grade)
+        if (nutriscoreComparison !== 0) return nutriscoreComparison
+
+        const novaGroupComparison = (a.nova_group ?? 4) - (b.nova_group ?? 4)
+        if (novaGroupComparison !== 0) return novaGroupComparison
+
+        return (b.popularity_key ?? 0) - (a.popularity_key ?? 0)
+      })
+      .slice(0, 4)
+
+    const targetArray = isFrom === 'home' ? homeSuggestedProducts : suggestedProducts
+    targetArray.value.push(...selectedProducts.map(isV4 ? transformProductsV2 : transformProducts))
+
+    suggestedProductsIsLoading.value = false
   }
 
   async function getTranslatedCategories(categories: string[]): Promise<string[]> {
