@@ -149,8 +149,8 @@ async function fetchFromProxy(
     const response = await fetch(proxyUrl, {
       method: 'POST',
       headers: {
-        'Content-Type': 'application/json',
-        ...headers
+        ...headers,
+        'Content-Type': 'application/json'
       },
       body: proxyBody,
       signal: controller.signal
@@ -508,15 +508,13 @@ export function useProducts() {
     categories = product.categories,
     isFrom = null
   }: FetchSuggestionsOptions = {}) {
-    if (isFrom === 'home' && homeSuggestedProducts.value.length > 0) return
-
     function cleanProductTitle(name: string): string {
       if (!name) return ''
 
       let cleaned = name.trim()
 
-      const startRegex = /^(le|la|les|un|une|des|du|de|a|à|au|aux|en)\b\s*|^(l|d)['’]\s*/i
-      const endRegex = /\s*\b(le|la|les|un|une|des|du|de|a|à|au|aux|en)$|\s*['’](l|d)$/i
+      const startRegex = /^(le|la|les|un|une|des|du|de|a|à|au|aux|en)(?:\s|$)|^(l|d)['’]\s*/i
+      const endRegex = /(?:\s|^)(le|la|les|un|une|des|du|de|a|à|au|aux|en)$|\s*['’](l|d)$/i
 
       let previous
       do {
@@ -543,12 +541,12 @@ export function useProducts() {
 
       if (!isLocalhost) {
         fetchOptions.body = new URLSearchParams({
-          search_terms: (name ?? brand.split(',')[0]).trim(),
+          search_terms: (name ? name : categories[0]).trim(),
           fields: fields,
           purchase_places_tags: 'france',
           states_tags: 'en:brands-completed,en:product-name-completed,en:photos-uploaded',
           sort_by: 'popularity_key',
-          page_size: '500',
+          page_size: '200',
           action: 'process',
           json: '1'
         })
@@ -568,21 +566,17 @@ export function useProducts() {
         'code,image_front_small_url,brands,product_name,nutriscore_grade,nova_group,categories_tags,popularity_key'
 
       let fetchOptions: RequestInit & { timeout?: number } = { method, timeout: 25000 }
-      const cleanedName = cleanProductTitle(
-        name.trim().split(/\s+/).slice(0, 3).join(' ') ?? brand.split(',')[0]
-      )
 
       if (!isLocalhost) {
         fetchOptions.body = new URLSearchParams({
-          q: cleanedName,
+          q: (name
+            ? cleanProductTitle(name.trim().split(/\s+/).slice(0, 3).join(' '))
+            : categories[0]
+          ).trim(),
           langs: 'fr',
           fields: fields,
           purchase_places_tags: 'france',
-          states_tags: 'en:brands-completed,en:product-name-completed,en:photos-uploaded',
-          sort_by: 'popularity_key',
-          page_size: '500',
-          action: 'process',
-          json: '1'
+          page_size: '50'
         })
       }
 
