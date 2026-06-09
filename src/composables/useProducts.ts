@@ -79,14 +79,14 @@ interface FetchSuggestionsOptions {
 
 type SearchMethod = 'complete' | 'more'
 
-const API_BASE_URL = 'https://world.openfoodfacts.org/cgi/search.pl'
+// const API_BASE_URL = 'https://world.openfoodfacts.org/cgi/search.pl'
 const API_BASE_URL_V2 = 'https://world.openfoodfacts.org/api/v2'
 const API_BASE_URL_V3 = 'https://world.openfoodfacts.org/api/v3'
 const API_BASE_URL_V4 = 'https://search.openfoodfacts.org/search'
 
 // Détection du mode localhost / développement
-const isLocalhost = false
-//window.location.hostname === 'localhost' || window.location.hostname === '127.0.0.1'
+const isLocalhost =
+  window.location.hostname === 'localhost' || window.location.hostname === '127.0.0.1'
 
 async function fetchFromApi(
   resource: string,
@@ -299,8 +299,7 @@ export function useProducts() {
     sortBy: string | null | undefined,
     method: SearchMethod
   ) {
-    let response, data
-    const fetchMethod = isLocalhost ? 'GET' : 'POST'
+    let data
 
     if (userInput) input.value = userInput
     if (sortBy) filter.value = sortBy
@@ -317,79 +316,37 @@ export function useProducts() {
     productsIsLoading.value = true
     error.value = null
 
-    if (searchProductsApi.value === 'V1') {
-      const fields =
-        'id,image_front_small_url,brands,generic_name_fr,nutriscore_grade,nova_group,categories_hierarchy'
+    const fields =
+      'code,image_front_small_url,brands,product_name,nutriscore_grade,nova_group,categories_tags'
+    let route = isLocalhost ? '/data/mock-productsV2.json' : API_BASE_URL_V4
 
-      const route = isLocalhost ? '/data/mock-products.json' : API_BASE_URL
-
-      let fetchOptions: RequestInit & { timeout?: number } = {
-        method: fetchMethod,
-        timeout: 15000
-      }
-
-      if (!isLocalhost) {
-        fetchOptions.body = new URLSearchParams({
-          search_terms: input.value,
-          fields: fields,
-          purchase_places_tags: 'france',
-          sort_by: filter.value || 'popularity_key',
-          page_size: '20',
-          page: page.value.toString(),
-          search_simple: '1',
-          action: 'process',
-          json: '1'
-        })
-      }
-
-      try {
-        response = await fetchFromProxy(route, fetchOptions)
-        data = await response.json()
-      } catch (err: any) {
-        // Impossible de récupérer proprement dans le cadre de l'infinite scroll car les deux api ne renvoient pas les mêmes résultats
-        // On incite donc l'utilisateur à recharger la page
-        if (method === 'more') {
-          error.value = err.message || 'Une erreur est survenue'
-          productsIsLoading.value = false
-          return
-        }
-
-        console.warn('V1 indisponible, bascule sur V4...')
-        searchProductsApi.value = 'V4'
-      }
+    let fetchOptions: RequestInit & { timeout?: number } = {
+      method: 'GET',
+      timeout: 15000
     }
 
-    if (searchProductsApi.value === 'V4') {
-      const fields =
-        'code,image_front_small_url,brands,product_name,nutriscore_grade,nova_group,categories_tags'
-      const route = isLocalhost ? '/data/mock-productsV2.json' : API_BASE_URL_V4
+    if (!isLocalhost) {
+      const params = new URLSearchParams({
+        q: `product_name.fr:"${input.value}"`,
+        langs: 'fr',
+        fields: fields,
+        purchase_places_tags: 'france',
+        states_tags: 'en:brands-completed,en:product-name-completed,en:photos-uploaded',
+        page_size: '20',
+        page: page.value.toString(),
+        sort_by: filter.value || 'popularity_key'
+      })
 
-      let fetchOptions: RequestInit & { timeout?: number } = {
-        method: fetchMethod,
-        timeout: 15000
-      }
+      route = `${API_BASE_URL_V4}?${params.toString()}`
+    }
 
-      if (!isLocalhost) {
-        fetchOptions.body = new URLSearchParams({
-          q: `product_name.fr:"${input.value}"`,
-          langs: 'fr',
-          fields: fields,
-          purchase_places_tags: 'france',
-          states_tags: 'en:brands-completed,en:product-name-completed,en:photos-uploaded',
-          page_size: '20',
-          page: page.value.toString(),
-          sort_by: filter.value || 'popularity_key'
-        })
-      }
-
-      try {
-        const response = await fetchFromProxy(route, fetchOptions)
-        data = await response.json()
-      } catch (err: any) {
-        error.value = err.message || 'Une erreur est survenue'
-        productsIsLoading.value = false
-        return
-      }
+    try {
+      const response = await fetchFromProxy(route, fetchOptions)
+      data = await response.json()
+    } catch (err: any) {
+      error.value = err.message || 'Une erreur est survenue'
+      productsIsLoading.value = false
+      return
     }
 
     let rawProducts = data?.hits ?? data?.products ?? []
@@ -502,7 +459,7 @@ export function useProducts() {
 
   async function fetchSuggestedProducts({
     id = product.id,
-    brand = product.brand,
+    // brand = product.brand,
     name = product.name,
     nutriscore = product.nutriscore,
     novaGroup = product.novaGroup,
@@ -526,70 +483,43 @@ export function useProducts() {
       return cleaned
     }
 
-    let response, data, fields, route, method
+    let response, data
 
     suggestedProducts.value = []
     suggestedProductsIsLoading.value = true
     error.value = null
 
+    let route = isLocalhost ? '/data/mock-productsV2.json' : API_BASE_URL_V4
+    const fields =
+      'code,image_front_small_url,brands,product_name,nutriscore_grade,nova_group,categories_tags,popularity_key'
+    const method = isLocalhost ? 'GET' : 'POST'
+
+    let fetchOptions: RequestInit & { timeout?: number } = { method: 'GET', timeout: 25000 }
+
+    if (!isLocalhost) {
+      const params = new URLSearchParams({
+        q: `product_name.fr:"${(name
+          ? cleanProductTitle(name.trim().split(/\s+/).slice(0, 3).join(' '))
+          : categories[0]
+        ).trim()}"`,
+        langs: 'fr',
+        fields: fields,
+        purchase_places_tags: 'france',
+        states_tags: 'en:brands-completed,en:product-name-completed,en:photos-uploaded',
+        page_size: '50',
+        sort_by: 'nutriscore_score'
+      })
+
+      route = `${API_BASE_URL_V4}?${params.toString()}`
+    }
+
     try {
-      fields =
-        'id,image_front_small_url,brands,generic_name_fr,nutriscore_grade,nova_group,categories_hierarchy,popularity_key'
-      route = isLocalhost ? '/data/mock-products.json' : API_BASE_URL
-      method = isLocalhost ? 'GET' : 'POST'
-
-      let fetchOptions: RequestInit & { timeout?: number } = { method, timeout: 25000 }
-
-      if (!isLocalhost) {
-        fetchOptions.body = new URLSearchParams({
-          search_terms: (name ? name : categories[0]).trim(),
-          fields: fields,
-          purchase_places_tags: 'france',
-          states_tags: 'en:brands-completed,en:product-name-completed,en:photos-uploaded',
-          sort_by: 'popularity_key',
-          page_size: '200',
-          action: 'process',
-          json: '1'
-        })
-      }
-
       response = await fetchFromProxy(route, fetchOptions)
       data = await response.json()
-
-      if (data.length > 0) {
-        throw new Error("Aucun produit n'a pu être trouvé. Tentative avec le fallback...")
-      }
-    } catch (err: any) {
-      console.warn('Première tentative non concluate. Lancement du fallback...')
-
-      route = isLocalhost ? '/data/mock-productsV2.json' : API_BASE_URL_V4
-      fields =
-        'code,image_front_small_url,brands,product_name,nutriscore_grade,nova_group,categories_tags,popularity_key'
-
-      let fetchOptions: RequestInit & { timeout?: number } = { method, timeout: 25000 }
-
-      if (!isLocalhost) {
-        fetchOptions.body = new URLSearchParams({
-          q: `product_name.fr:"${(name
-            ? cleanProductTitle(name.trim().split(/\s+/).slice(0, 3).join(' '))
-            : categories[0]
-          ).trim()}"`,
-          langs: 'fr',
-          fields: fields,
-          purchase_places_tags: 'france',
-          states_tags: 'en:brands-completed,en:product-name-completed,en:photos-uploaded',
-          page_size: '50'
-        })
-      }
-
-      try {
-        response = await fetchFromProxy(route, fetchOptions)
-        data = await response.json()
-      } catch (fallbackErr: any) {
-        error.value = fallbackErr.message || 'Impossible de joindre Open Food Facts.'
-        suggestedProductsIsLoading.value = false
-        return
-      }
+    } catch (fallbackErr: any) {
+      error.value = fallbackErr.message || 'Impossible de joindre Open Food Facts.'
+      suggestedProductsIsLoading.value = false
+      return
     }
 
     // Normalisation et filtrage des données

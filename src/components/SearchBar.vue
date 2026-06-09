@@ -107,7 +107,7 @@ const onFilterChange = (e: Event) => {
           type="radio"
           name="sort_by"
           id="popularity_key"
-          value="popularity_key"
+          value="-popularity_key"
           :checked="filter === 'popularity_key' || !filter"
         />
         <label
@@ -120,22 +120,22 @@ const onFilterChange = (e: Event) => {
         <input
           type="radio"
           name="sort_by"
-          id="product_name"
-          value="product_name"
-          :checked="filter === 'product_name'"
+          id="completeness"
+          value="-completeness"
+          :checked="filter === 'completeness'"
         />
         <label
           @click="onFilterChange"
           class="radio_label mt-2 md:mt-0 mr-4 text-sm font-semibold bg-gray-300 rounded-full"
-          for="product_name"
-          >Pertinence</label
+          for="completeness"
+          >Complétude</label
         >
 
         <input
           type="radio"
           name="sort_by"
           id="created_t"
-          value="created_t"
+          value="-created_t"
           :checked="filter === 'created_t'"
         />
         <label
@@ -162,14 +162,14 @@ const onFilterChange = (e: Event) => {
         <input
           type="radio"
           name="sort_by"
-          id="nova_score"
-          value="nova_score"
-          :checked="filter === 'nova_score'"
+          id="nova_group"
+          value="nova_group"
+          :checked="filter === 'nova_group'"
         />
         <label
           @click="onFilterChange"
           class="radio_label mt-2 md:mt-0 mr-4 text-sm font-semibold bg-gray-300 rounded-full"
-          for="nova_score"
+          for="nova_group"
           >Groupe Nova</label
         >
       </div>
@@ -191,7 +191,8 @@ const onFilterChange = (e: Event) => {
 
 #search-bar.blur-bg {
   backdrop-filter: blur(5px);
-  mask-image: linear-gradient(to right, transparent 0%, black 4%, black 96%, transparent 100%),
+  mask-image:
+    linear-gradient(to right, transparent 0%, black 4%, black 96%, transparent 100%),
     linear-gradient(transparent 0%, black 6%, black 94%, transparent 100%);
   mask-composite: intersect;
 }
@@ -210,7 +211,8 @@ const onFilterChange = (e: Event) => {
 
 @media (min-width: 1024px) {
   #search-bar.blur-bg {
-    mask-image: linear-gradient(to right, transparent 0%, black 3%, black 97%, transparent 100%),
+    mask-image:
+      linear-gradient(to right, transparent 0%, black 3%, black 97%, transparent 100%),
       linear-gradient(transparent 0%, black 15%, black 85%, transparent 100%);
   }
 }

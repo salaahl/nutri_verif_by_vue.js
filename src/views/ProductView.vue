@@ -60,7 +60,6 @@ const searchAlternatives = () => {
       : Array.isArray(route.params.id)
         ? route.params.id[0]
         : route.params.id,
-    brand: product.brand,
     name: product.name,
     nutriscore: product.nutriscore,
     novaGroup: product.novaGroup,
