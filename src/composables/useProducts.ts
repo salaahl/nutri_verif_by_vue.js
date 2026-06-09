@@ -543,11 +543,14 @@ export function useProducts() {
           (score.indexOf(itemNutriscore) < score.indexOf(nutriscore) ||
             (score.indexOf(itemNutriscore) === score.indexOf(nutriscore) &&
               typeof itemNova === 'number' &&
-              itemNova < Number(novaGroup))) &&
-          // Filtrage par sous-catégories uniquement si v4
+              itemNova < Number(novaGroup)))
+          /* 
+          &&
+          Filtrage par sous-catégories uniquement si v4
           (isV4 && specificCategories.length > 0
             ? itemTags.some((tag: string) => specificCategories.includes(tag))
             : true)
+          */
         )
       })
       // Nutriscore > nova > popularité
