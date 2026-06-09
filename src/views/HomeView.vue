@@ -507,27 +507,6 @@ h2::first-letter {
   backdrop-filter: blur(5px);
 }
 
-#search-bar {
-  position: sticky;
-  width: 100%;
-  max-width: 1024px;
-  margin-left: auto;
-  margin-right: auto;
-  margin-bottom: 1rem;
-  z-index: 99;
-  transition: top 0.25s;
-}
-
-.search-bar-icon {
-  height: auto;
-  width: 0.875rem;
-  filter: contrast(0.5);
-}
-
-#open-scanner .search-bar-icon {
-  width: 1.4rem;
-}
-
 .radio-toolbar label {
   background-color: #343a40;
 }
