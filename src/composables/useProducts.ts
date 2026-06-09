@@ -80,7 +80,7 @@ interface FetchSuggestionsOptions {
 type SearchMethod = 'complete' | 'more'
 
 // const API_BASE_URL = 'https://world.openfoodfacts.org/cgi/search.pl'
-const API_BASE_URL_V2 = 'https://world.openfoodfacts.org/api/v2'
+// const API_BASE_URL_V2 = 'https://world.openfoodfacts.org/api/v2'
 const API_BASE_URL_V3 = 'https://world.openfoodfacts.org/api/v3'
 const API_BASE_URL_V4 = 'https://search.openfoodfacts.org/search'
 
@@ -349,16 +349,12 @@ export function useProducts() {
       return
     }
 
-    let rawProducts = data?.hits ?? data?.products ?? []
-    let rawCount = data?.page_count ?? data?.count
-    const isV4 = !!data?.hits
-
-    if (isLocalhost && rawProducts) {
+    if (isLocalhost && data.hits) {
       const multiplicationFactor = 5 // 4 produits issus de mock-products x 5 = 20 produits
       const multipliedProducts: any[] = []
 
       for (let i = 0; i < multiplicationFactor; i++) {
-        const clone = rawProducts.map((product: any, index: number) => ({
+        const clone = data.hits.map((product: any, index: number) => ({
           ...product,
           id: Math.random().toString(36).substring(2, 9) + index.toString(),
           generic_name: `${product.product_name} ${i + 1}`
@@ -366,13 +362,13 @@ export function useProducts() {
         multipliedProducts.push(...clone)
       }
 
-      rawProducts = multipliedProducts
-      rawCount = multipliedProducts.length * 2 // On multiplie le nombre de produits par 2 pour simuler la pagination
+      data.hits = multipliedProducts
+      data.page_count = multipliedProducts.length * 2 // On multiplie le nombre de produits par 2 pour simuler la pagination
     }
 
-    if (method === 'complete') pages.value = Math.ceil(rawCount / 20)
+    if (method === 'complete') pages.value = Math.ceil(data.page_count / 20)
 
-    products.value.push(...rawProducts.map(isV4 ? transformProductsV2 : transformProducts))
+    products.value.push(...data.hits.map(transformProductsV2))
     productsIsLoading.value = false
   }
 
@@ -413,48 +409,50 @@ export function useProducts() {
   }
 
   async function fetchLastProducts() {
+    let data
+
     const fields =
-      'id,image_front_small_url,brands,generic_name_fr,nutriscore_grade,nova_group,categories_hierarchy,created_t'
-    let route = isLocalhost ? '/data/mock-products.json' : `${API_BASE_URL_V2}/search`
-    let fetchMethod = isLocalhost ? 'GET' : 'POST'
+      'code,image_front_small_url,brands,product_name,nutriscore_grade,nova_group,categories_tags,created_t'
+    let route = isLocalhost ? '/data/mock-products.json' : API_BASE_URL_V4
 
     let fetchOptions: RequestInit & { timeout?: number } = {
-      method: fetchMethod,
+      method: 'GET',
       timeout: 15000
     }
 
     if (!isLocalhost) {
-      fetchOptions.body = new URLSearchParams({
+      const params = new URLSearchParams({
         fields: fields,
         purchase_places_tags: 'france',
         states_tags: 'en:brands-completed,en:product-name-completed,en:photos-uploaded',
-        sort_by: 'created_t',
-        page_size: '5',
-        action: 'process',
-        json: '1'
+        sort_by: '-created_t',
+        page_size: '5'
       })
+
+      route = `${API_BASE_URL_V4}?${params.toString()}`
     }
 
+    error.value = null
+    lastProductsIsLoading.value = true
+
     try {
-      error.value = null
-      lastProductsIsLoading.value = true
-
       const response = await fetchFromProxy(route, fetchOptions)
-      const data = await response.json()
+      data = await response.json()
+    } catch (err: any) {
+      error.value = err.message || 'Une erreur est survenue'
+      lastProductsIsLoading.value = false
+      return
+    }
 
-      /*
+    /*
       const filteredProducts = data.products
         .filter((product: { completeness: number }) => product.completeness >= 0.35)
         .sort((a: { created_t: number }, b: { created_t: number }) => b.created_t - a.created_t)
         .slice(0, 5)
       */
 
-      lastProducts.value.push(...data.products.map(transformProducts))
-    } catch (err: any) {
-      error.value = err.message || 'Une erreur est survenue'
-    } finally {
-      lastProductsIsLoading.value = false
-    }
+    lastProducts.value.push(...data.hits.map(transformProductsV2))
+    lastProductsIsLoading.value = false
   }
 
   async function fetchSuggestedProducts({
@@ -524,17 +522,14 @@ export function useProducts() {
 
     // Normalisation et filtrage des données
     const score = ['a', 'b', 'c', 'd', 'e']
-    const specificCategories = categories ? categories.slice(-2) : []
+    // const specificCategories = categories ? categories.slice(-2) : []
 
-    const rawProducts = data?.hits ?? data?.products ?? []
-    const isV4 = !!data?.hits
-
-    const selectedProducts = rawProducts
+    const selectedProducts = data.hits
       .filter((e: any) => {
         const productCode = e.code ?? e.id
         const itemNutriscore = e.nutriscore_grade
         const itemNova = e.nova_group
-        const itemTags = e.categories_tags ?? e.categories_hierarchy ?? []
+        // const itemTags = e.categories_tags ?? e.categories_hierarchy ?? []
 
         return (
           productCode !== id &&
@@ -567,7 +562,7 @@ export function useProducts() {
       .slice(0, 4)
 
     const targetArray = isFrom === 'home' ? homeSuggestedProducts : suggestedProducts
-    targetArray.value.push(...selectedProducts.map(isV4 ? transformProductsV2 : transformProducts))
+    targetArray.value.push(...selectedProducts.map(transformProductsV2))
 
     suggestedProductsIsLoading.value = false
   }
