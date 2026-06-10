@@ -15,19 +15,6 @@
   --breakpoint-max-sm: 639px;
 }
 
-#app {
-  display: flex;
-  flex-direction: column;
-  justify-content: space-between;
-  align-items: center;
-  min-height: 100vh;
-  width: 100%;
-  max-width: 1280px;
-  margin: 0 auto;
-  padding: 0 var(--app-padding-x);
-  font-weight: normal;
-}
-
 .text-green {
   text-decoration: none;
   color: var(--color-green);

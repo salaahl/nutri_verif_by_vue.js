@@ -413,7 +413,7 @@ export function useProducts() {
 
     const fields =
       'code,image_front_small_url,brands,product_name,nutriscore_grade,nova_group,categories_tags,created_t'
-    let route = isLocalhost ? '/data/mock-products.json' : API_BASE_URL_V4
+    let route = isLocalhost ? '/data/mock-productsV2.json' : API_BASE_URL_V4
 
     let fetchOptions: RequestInit & { timeout?: number } = {
       method: 'GET',

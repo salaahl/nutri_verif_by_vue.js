@@ -66,6 +66,13 @@ const searchProductsByCategory: Function = async (category: string) => {
 }
 
 onMounted(async () => {
+  // Gestion de la largeur de l'app
+  const app = document.getElementById('app')
+  if (app && window.innerWidth >= 1440) {
+    app.classList.add('max-w-[1380px]')
+  }
+
+  // Animation des sections
   if (isFirstLaunch.value) {
     // Animation des sections
     document.querySelectorAll('main > div > section').forEach((section) => {
@@ -131,6 +138,12 @@ onMounted(async () => {
 })
 
 onUnmounted(() => {
+  // Gestion de la largeur de l'app
+  const app = document.getElementById('app')
+  if (app && window.innerWidth >= 1440) {
+    app.classList.remove('max-w-[1380px]')
+  }
+
   const websiteName = document.querySelector('header .website-name') as HTMLElement
   if (websiteName) {
     websiteName.classList.remove('opacity-0')
@@ -504,7 +517,11 @@ h2::first-letter {
   padding: calc(var(--app-padding-x) * 2) var(--app-padding-x);
   background: radial-gradient(circle, rgba(0, 0, 0, 0) 0%, rgba(255, 255, 255, 0.5) 50%);
   border-radius: 10px;
-  backdrop-filter: blur(5px);
+}
+
+#search-bar {
+  max-width: 1024px;
+  margin-bottom: 1rem;
 }
 
 .radio-toolbar label {
@@ -557,18 +574,6 @@ h2::first-letter {
   pointer-events: none;
 }
 
-#video-container::before {
-  content: '';
-  position: absolute;
-  left: 0;
-  width: 100%;
-  aspect-ratio: 2/1;
-  background-color: hsla(160, 100%, 37%, 1);
-  transform: rotateZ(2deg);
-  border-radius: 10px;
-  z-index: -1;
-}
-
 #video-container {
   z-index: 1;
 }
@@ -578,7 +583,6 @@ h2::first-letter {
   margin-right: calc(var(--app-padding-x) * -1);
   padding: 2rem var(--app-padding-x) 0 var(--app-padding-x);
   background-color: rgb(255 255 255 / 0.5);
-  backdrop-filter: blur(5px);
 }
 
 /* Container des alternatives */

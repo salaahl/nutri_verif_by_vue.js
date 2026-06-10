@@ -190,7 +190,7 @@ onMounted(() => {
     </a>
   </header>
 
-  <main class="content-center">
+  <main :class="`${router.currentRoute.value.name}-view content-center`">
     <router-view v-slot="{ Component, route }">
       <transition :name="route.meta.transition || 'slide-fade'">
         <div :key="route.name" class="min-h-[calc(100vh-272px)] flex flex-col justify-center">
@@ -229,6 +229,19 @@ onMounted(() => {
 </template>
 
 <style>
+#app {
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  align-items: center;
+  min-height: 100vh;
+  width: 100%;
+  max-width: 1280px;
+  margin: 0 auto;
+  padding: 0 var(--app-padding-x);
+  font-weight: normal;
+}
+
 .slide-fade-enter-active {
   transition: all 0.45s ease-in;
 }
@@ -581,6 +594,13 @@ footer > div,
 
   header .website-name {
     display: none;
+  }
+
+  main.home-view {
+    padding: 0 50px;
+    background: radial-gradient(circle, rgba(255, 255, 255, 0.5) 50%, rgba(0, 0, 0, 0) 100%);
+    backdrop-filter: blur(2.5px);
+    border-radius: 20px;
   }
 
   footer > div {
