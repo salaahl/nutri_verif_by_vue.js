@@ -469,13 +469,28 @@ export function useProducts() {
 
       let cleaned = name.trim()
 
+      const marketingStopWords = new RegExp(
+        '(?:\\s|^)(' +
+          'extra|supérieur|superieur|authentique|traditionnel|traditionnelle|artisanal|artisanale|sélection|selection|premium|gourmand|gourmande|' +
+          'allégé|allégée|allege|allegee|léger|leger|légère|legere|light|minceur|' +
+          'pur|pure|naturel|naturelle|naturels|naturelles|' +
+          'organic|nouveau|nouvelle|excellence|prestige' +
+          ')(?:\\s|$)',
+        'i'
+      )
+
       const startRegex = /^(le|la|les|un|une|des|du|de|a|à|au|aux|en)(?:\s|$)|^(l|d)['’]\s*/i
       const endRegex = /(?:\s|^)(le|la|les|un|une|des|du|de|a|à|au|aux|en)$|\s*['’](l|d)$/i
 
       let previous
       do {
         previous = cleaned
-        cleaned = cleaned.replace(startRegex, '').replace(endRegex, '').trim()
+        cleaned = cleaned
+          .replace(marketingStopWords, ' ')
+          .replace(startRegex, '')
+          .replace(endRegex, '')
+          .replace(/\s+/g, ' ')
+          .trim()
       } while (cleaned !== previous)
 
       return cleaned
