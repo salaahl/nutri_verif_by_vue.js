@@ -334,7 +334,7 @@ export function useProducts() {
         states_tags: 'en:brands-completed,en:product-name-completed,en:photos-uploaded',
         page_size: '20',
         page: page.value.toString(),
-        sort_by: filter.value || 'popularity_key'
+        sort_by: filter.value || '-popularity_key'
       })
 
       route = `${API_BASE_URL_V4}?${params.toString()}`

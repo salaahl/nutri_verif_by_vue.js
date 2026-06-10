@@ -120,7 +120,7 @@ const onFilterChange = (e: Event) => {
           name="sort_by"
           id="popularity_key"
           value="-popularity_key"
-          :checked="filter === 'popularity_key' || !filter"
+          :checked="filter === '-popularity_key' || !filter"
         />
         <label
           @click="onFilterChange"
