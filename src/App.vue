@@ -182,11 +182,6 @@ onMounted(() => {
     </div>
     <a href="/" class="block w-fit mx-auto">
       <img alt="Logo du site" id="logo" class="m-auto" src="/logo.png" width="125" height="125" />
-      <div class="wrapper">
-        <span class="website-name relative text-2xl"
-          >Nutri<span class="text-[#00bd7e] md:text-white">Vérif</span></span
-        >
-      </div>
     </a>
   </header>
 
@@ -281,6 +276,13 @@ onMounted(() => {
 
 #loader.hide .animate-letter {
   animation: none !important;
+}
+
+.website-name {
+  font-family: 'Grand Hotel', cursive;
+  font-weight: 400;
+  font-style: normal;
+  transition: opacity 0.15s;
 }
 
 /* Fond de page */
@@ -503,6 +505,21 @@ header {
   padding: 20px var(--app-padding-x);
 }
 
+header > a::before {
+  content: '';
+  position: absolute;
+  top: -25px;
+  left: 0;
+  height: 100%;
+  width: 100%;
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 900 600' width='900' height='600'%3E%3Cg transform='translate(416.34369726421266 281.01462663501235)'%3E%3Cpath d='M149 -145.8C185.3 -112.7 201.7 -56.3 208.9 7.2C216 70.7 214.1 141.4 177.8 180.8C141.4 220.1 70.7 228 11.7 216.4C-47.4 204.7 -94.8 173.4 -119.8 134.1C-144.8 94.8 -147.4 47.4 -143.3 4.1C-139.1 -39.1 -128.3 -78.3 -103.3 -111.4C-78.3 -144.6 -39.1 -171.8 8.6 -180.4C56.3 -189 112.7 -179 149 -145.8' fill='%2300BD7E'/%3E%3C/g%3E%3C/svg%3E");
+  background-size: 100% 140%;
+  background-repeat: no-repeat;
+  background-position: center;
+  z-index: 0;
+  pointer-events: none;
+}
+
 header,
 main {
   position: relative;
@@ -532,21 +549,10 @@ h1::first-letter {
   background-color: var(--color-green);
 }
 
-.website-name {
-  font-family: 'Grand Hotel', cursive;
-  font-weight: 400;
-  font-style: normal;
-  transition: opacity 0.15s;
-}
-
-header .website-name {
-  width: fit-content;
-  margin: 10px auto;
-}
-
 #logo {
   height: 80px;
   width: auto;
+  filter: invert(1);
 }
 
 #back-link {
@@ -571,29 +577,6 @@ footer > div,
 @media (min-width: 768px) {
   #back-link:hover {
     transform: translateX(-10px);
-  }
-
-  header > a::before {
-    content: '';
-    position: absolute;
-    top: -25px;
-    left: 0;
-    height: 100%;
-    width: 100%;
-    background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 900 600' width='900' height='600'%3E%3Cg transform='translate(416.34369726421266 281.01462663501235)'%3E%3Cpath d='M149 -145.8C185.3 -112.7 201.7 -56.3 208.9 7.2C216 70.7 214.1 141.4 177.8 180.8C141.4 220.1 70.7 228 11.7 216.4C-47.4 204.7 -94.8 173.4 -119.8 134.1C-144.8 94.8 -147.4 47.4 -143.3 4.1C-139.1 -39.1 -128.3 -78.3 -103.3 -111.4C-78.3 -144.6 -39.1 -171.8 8.6 -180.4C56.3 -189 112.7 -179 149 -145.8' fill='%2300BD7E'/%3E%3C/g%3E%3C/svg%3E");
-    background-size: 100% 140%;
-    background-repeat: no-repeat;
-    background-position: center;
-    z-index: 0;
-    pointer-events: none;
-  }
-
-  #logo {
-    filter: invert(0.95);
-  }
-
-  header .website-name {
-    display: none;
   }
 
   main.home-view {

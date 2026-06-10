@@ -119,7 +119,7 @@ onBeforeRouteUpdate((to) => {
   >
     <section
       id="product-images-container"
-      class="md:sticky top-[102px] md:max-h-[calc(100vh-204px)] w-full md:w-2/4 flex items-center justify-center md:mr-4 aspect-square md:aspect-auto bg-white rounded-[32px]"
+      class="md:sticky top-[102px] md:max-h-[calc(100vh-204px)] w-full md:w-2/4 flex items-center justify-center mb-4 md:mb-0 md:mr-4 aspect-square md:aspect-auto bg-white rounded-[32px]"
     >
       <div class="flex md:w-full">
         <div
