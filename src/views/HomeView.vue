@@ -21,6 +21,7 @@ const isFirstLaunch = computed<boolean>({
 })
 
 const {
+  input,
   searchProducts,
   productsIsLoading,
   products,
@@ -65,6 +66,14 @@ const searchProductsByCategory: Function = async (category: string) => {
   router.push({ name: 'search' })
 }
 
+const handleInput = (event: Event) => {
+  const target = event.target as HTMLInputElement
+  if (!target.value) {
+    input.value = ''
+    products.value = []
+  }
+}
+
 onMounted(async () => {
   // Gestion de la largeur de l'app
   const app = document.getElementById('app')
@@ -93,6 +102,11 @@ onMounted(async () => {
   const websiteName = document.querySelector('header .website-name') as HTMLElement
   if (websiteName) {
     websiteName.classList.add('opacity-0')
+  }
+
+  const searchInput = document.querySelector('#search-form #search-input') as HTMLInputElement
+  if (searchInput) {
+    searchInput.addEventListener('input', handleInput)
   }
 
   // Affichage conditionnel de la vidéo Youtube
@@ -147,6 +161,11 @@ onUnmounted(() => {
   const websiteName = document.querySelector('header .website-name') as HTMLElement
   if (websiteName) {
     websiteName.classList.remove('opacity-0')
+  }
+
+  const searchInput = document.querySelector('#search-form #search-input') as HTMLInputElement
+  if (searchInput) {
+    searchInput.removeEventListener('input', handleInput)
   }
 })
 </script>
@@ -515,7 +534,7 @@ h2::first-letter {
 
 #search-container {
   padding: calc(var(--app-padding-x) * 2) var(--app-padding-x);
-  background: radial-gradient(circle, rgba(0, 0, 0, 0) 0%, rgba(255, 255, 255, 0.5) 50%);
+  background: linear-gradient(180deg, rgba(255, 255, 255, 0.5) 50%, rgba(0, 0, 0, 0) 100%);
   border-radius: 10px;
 }
 
@@ -641,7 +660,7 @@ h2::first-letter {
 @media (min-width: 1024px) {
   #search-container {
     padding: calc(var(--app-padding-x) * 2) var(--app-padding-x);
-    border-radius: 100px;
+    border-radius: 50px;
   }
 
   .product {
