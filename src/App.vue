@@ -526,6 +526,10 @@ main {
   width: 100%;
 }
 
+main {
+  overflow: hidden;
+}
+
 h1::first-letter {
   font-weight: bold;
 }
@@ -586,11 +590,28 @@ footer > div,
     border-radius: 20px;
   }
 
-  footer > div {
-    box-shadow:
-      rgba(255, 255, 255, 0.1) 0px 1px 1px 0px inset,
-      rgba(50, 50, 93, 0.25) 0px 50px 100px -20px,
-      rgba(0, 0, 0, 0.3) 0px 30px 60px -30px;
+  main.home-view::before,
+  main.home-view::after {
+    content: '';
+    position: absolute;
+    width: 150px;
+    height: 150px;
+    border-color: indianred;
+    border-style: solid;
+  }
+
+  main.home-view::before {
+    top: 0;
+    left: 0;
+    border-radius: 20px 0 0 0;
+    border-width: 4px 0 0 4px;
+  }
+
+  main.home-view::after {
+    bottom: 0;
+    right: 0;
+    border-radius: 0 0 20px 0;
+    border-width: 0 4px 4px 0;
   }
 }
 
