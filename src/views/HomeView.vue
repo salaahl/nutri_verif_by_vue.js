@@ -172,7 +172,7 @@ onUnmounted(() => {
 
 <template>
   <section id="header" class="w-full my-20">
-    <h1 class="text-6xl font-light text-center text-[#00bd7e]">
+    <h1 class="website-name text-6xl text-center text-[#00bd7e]">
       Nutri<span class="text-black">Vérif</span>
     </h1>
     <h3 class="text-lg text-center">Manger (plus) sain</h3>
@@ -276,7 +276,7 @@ onUnmounted(() => {
     </article>
   </section>
   <section id="score-explanations" class="mb-24">
-    <h2 class="title mb-12 text-2xl lg:text-3xl font-light">
+    <h2 class="title mb-12 text-2xl lg:text-3xl font-thin">
       Votre alimentation <span class="text-[indianred]">décryptée</span>
     </h2>
     <div class="flex flex-wrap justify-between">
@@ -322,7 +322,7 @@ onUnmounted(() => {
     </div>
   </section>
   <section id="alternatives-functionality" class="mb-24">
-    <h2 class="title mb-12 text-2xl lg:text-3xl font-light text-center">
+    <h2 class="title mb-12 text-2xl lg:text-3xl font-thin text-center">
       Découvrez des <span class="text-[#00bd7e]">alternatives</span> plus saines
     </h2>
     <span class="inline-block mb-8">
@@ -465,7 +465,7 @@ onUnmounted(() => {
     >
   </section>
   <section id="last-products" class="mb-24">
-    <h2 class="title mb-12 text-2xl lg:text-3xl font-light text-right">
+    <h2 class="title mb-12 text-2xl lg:text-3xl font-thin text-right">
       Produits <span class="text-[indianred]">récemment</span> ajoutés
     </h2>
     <div
