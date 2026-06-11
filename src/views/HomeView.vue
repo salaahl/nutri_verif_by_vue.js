@@ -528,12 +528,13 @@ h1 {
   font-family: 'Grand Hotel', cursive;
 }
 
-h2:not(#alternatives-functionality > h2) {
-  text-decoration: 4px underline var(--color-green);
-}
-
 h2::first-letter {
   font-weight: bold;
+}
+
+#search-container,
+#last-products {
+  backdrop-filter: blur(1.5px);
 }
 
 #search-container {
@@ -643,20 +644,20 @@ h2::first-letter {
     position: absolute;
     width: 150px;
     height: 150px;
-    border-color: indianred;
+    border-color: var(--color-green);
     border-style: solid;
   }
   #alternatives-functionality::before {
     top: 0;
-    left: 0;
-    border-radius: 0.5rem 0 0 0;
-    border-width: 4px 0 0 4px;
+    right: 0;
+    border-radius: 0 0.5rem 0 0;
+    border-width: 4px 4px 0 0;
   }
   #alternatives-functionality::after {
     bottom: 0;
-    right: 0;
-    border-radius: 0 0 0.5rem 0;
-    border-width: 0 4px 4px 0;
+    left: 0;
+    border-radius: 0 0 0 0.5rem;
+    border-width: 0 0 4px 4px;
   }
 
   #last-products > div > .product.placeholder::after {

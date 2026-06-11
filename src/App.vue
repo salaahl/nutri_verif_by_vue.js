@@ -586,7 +586,6 @@ footer > div,
   main.home-view {
     padding: 0 50px;
     background: radial-gradient(circle, rgba(255, 255, 255, 0.5) 50%, rgba(0, 0, 0, 0) 100%);
-    backdrop-filter: blur(2.5px);
     border-radius: 20px;
   }
 
