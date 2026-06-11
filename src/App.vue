@@ -526,10 +526,6 @@ main {
   width: 100%;
 }
 
-main {
-  overflow: hidden;
-}
-
 h1::first-letter {
   font-weight: bold;
 }

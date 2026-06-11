@@ -279,7 +279,7 @@ onUnmounted(() => {
     <h2 class="title mb-12 text-2xl lg:text-3xl font-thin">
       Votre alimentation <span class="text-[indianred]">décryptée</span>
     </h2>
-    <div class="flex flex-wrap justify-between">
+    <div class="flex flex-wrap justify-between items-center">
       <article
         id="nutriscore-explanation"
         class="w-full md:w-[48%] mb-8 md:mb-0 p-8 md:p-12 bg-white rounded-lg text-justify"
@@ -300,6 +300,7 @@ onUnmounted(() => {
           </p>
         </div>
       </article>
+      <div class="separator hidden md:block h-[250px] border-2 border-[#00bd7e]"></div>
       <article
         id="nova-explanation"
         class="w-full md:w-[48%] p-8 md:p-12 bg-white rounded-lg text-justify"
@@ -603,6 +604,7 @@ h2::first-letter {
 }
 
 #alternatives-functionality {
+  position: relative;
   margin-left: calc(var(--app-padding-x) * -1);
   margin-right: calc(var(--app-padding-x) * -1);
   padding: 2rem var(--app-padding-x) 0 var(--app-padding-x);
@@ -645,7 +647,7 @@ h2::first-letter {
     width: 150px;
     height: 150px;
     border-color: var(--color-green);
-    border-style: solid;
+    border-style: dashed;
   }
   #alternatives-functionality::before {
     top: 0;
