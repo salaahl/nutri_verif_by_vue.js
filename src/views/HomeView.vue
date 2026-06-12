@@ -300,7 +300,7 @@ onUnmounted(() => {
           </p>
         </div>
       </article>
-      <div class="separator hidden md:block h-[250px] border-2 border-[#00bd7e]"></div>
+      <div class="separator hidden md:block h-[100px] border-2 border-[#00bd7e]"></div>
       <article
         id="nova-explanation"
         class="w-full md:w-[48%] p-8 md:p-12 bg-white rounded-lg text-justify"
