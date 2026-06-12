@@ -89,9 +89,21 @@ onMounted(async () => {
         y: window.innerWidth < 768 ? '15%' : '250',
         opacity: window.innerWidth < 768 ? 0 : 1,
         duration: 0.4,
+        willChange: 'transform, opacity', // Prépare le GPU à l'animation
         scrollTrigger: {
           trigger: section,
           start: window.innerWidth < 768 ? '0 85%' : '0 100%'
+        },
+        onComplete: () => {
+          // On nettoie le willChange pour libérer la mémoire du GPU
+          gsap.set(section, { clearProps: 'willChange' })
+
+          const containers = ['search-container', 'last-products']
+
+          // Faire bouger des containers avec un arrière-plan flouté est couteux en perfs, j'attends donc la fin de l'animation
+          if (containers.includes(section.id)) {
+            section.classList.add('blur')
+          }
         }
       })
     })
@@ -533,8 +545,8 @@ h2::first-letter {
   font-weight: bold;
 }
 
-#search-container,
-#last-products {
+#search-container.blur,
+#last-products.blur {
   backdrop-filter: blur(1.5px);
 }
 
