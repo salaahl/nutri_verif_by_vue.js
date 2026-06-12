@@ -102,7 +102,7 @@ onMounted(async () => {
 
           // Faire bouger des containers avec un arrière-plan flouté est couteux en perfs, j'attends donc la fin de l'animation
           if (containers.includes(section.id)) {
-            section.classList.add('blur')
+            section.classList.add('blur-bg')
           }
         }
       })
@@ -545,8 +545,8 @@ h2::first-letter {
   font-weight: bold;
 }
 
-#search-container.blur,
-#last-products.blur {
+#search-container.blur-bg,
+#last-products.blur-bg {
   backdrop-filter: blur(1.5px);
 }
 
