@@ -531,7 +531,7 @@ export function useProducts() {
 
     // Normalisation et filtrage des données
     const score = ['a', 'b', 'c', 'd', 'e']
-    // const specificCategories = categories ? categories.slice(-2) : []
+    const specificCategories = categories ? categories.slice(-2) : []
 
     const selectedProducts = data.hits
       .filter((e: any) => {
@@ -542,7 +542,7 @@ export function useProducts() {
             ? nutriscore
             : e.nutriscore_grade
         const itemNova = e.nova_group
-        // const itemTags = e.categories_tags ?? e.categories_hierarchy ?? []
+        const itemTags = e.categories_tags ?? e.categories_hierarchy ?? []
 
         return (
           productCode !== id &&
@@ -551,14 +551,10 @@ export function useProducts() {
           (score.indexOf(itemNutriscore) < score.indexOf(nutriscore) ||
             (score.indexOf(itemNutriscore) === score.indexOf(nutriscore) &&
               typeof itemNova === 'number' &&
-              itemNova < Number(novaGroup)))
-          /* 
-          &&
-          Filtrage par sous-catégories uniquement si v4
-          (isV4 && specificCategories.length > 0
+              itemNova < Number(novaGroup))) &&
+          (specificCategories.length > 0
             ? itemTags.some((tag: string) => specificCategories.includes(tag))
             : true)
-          */
         )
       })
       // Nutriscore > nova > popularité
