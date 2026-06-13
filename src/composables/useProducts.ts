@@ -327,11 +327,9 @@ export function useProducts() {
 
     if (!isLocalhost) {
       const params = new URLSearchParams({
-        q: `product_name.fr:"${input.value}"`,
+        q: `product_name.fr:"${input.value}" AND countries_tags:"en:france" AND states_tags:"en:brands-completed" AND states_tags:"en:product-name-completed" AND states_tags:"en:photos-uploaded"`,
         langs: 'fr',
         fields: fields,
-        purchase_places_tags: 'france',
-        states_tags: 'en:brands-completed,en:product-name-completed,en:photos-uploaded',
         page_size: '20',
         page: page.value.toString(),
         sort_by: filter.value || '-popularity_key'
@@ -422,9 +420,8 @@ export function useProducts() {
 
     if (!isLocalhost) {
       const params = new URLSearchParams({
+        q: 'countries_tags:"en:france" AND states_tags:"en:brands-completed" AND states_tags:"en:product-name-completed" AND states_tags:"en:photos-uploaded"',
         fields: fields,
-        purchase_places_tags: 'france',
-        states_tags: 'en:brands-completed,en:product-name-completed,en:photos-uploaded',
         sort_by: '-created_t',
         page_size: '5'
       })
@@ -514,11 +511,9 @@ export function useProducts() {
         q: `product_name.fr:"${(name
           ? cleanProductTitle(name.trim().split(/\s+/).slice(0, 3).join(' '))
           : categories[0]
-        ).trim()}"`,
+        ).trim()}" AND countries_tags:"en:france" AND states_tags:"en:brands-completed" AND states_tags:"en:product-name-completed" AND states_tags:"en:photos-uploaded"`,
         langs: 'fr',
         fields: fields,
-        purchase_places_tags: 'france',
-        states_tags: 'en:brands-completed,en:product-name-completed,en:photos-uploaded',
         page_size: '50',
         sort_by: 'nutriscore_score'
       })
