@@ -3,7 +3,7 @@
     "id": "1234567890123",
     "image_url": "../logo.png",
     "brands": "Fake Brand",
-    "generic_name_fr": "Fake Product",
+    "product_name_fr": "Fake Product",
     "main_category_fr": "Snacks",
     "categories_tags": ["Snacks", "Sweet snacks", "Chocolate products"],
     "last_modified_t": 1700000000,

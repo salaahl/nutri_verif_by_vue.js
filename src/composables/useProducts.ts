@@ -53,7 +53,7 @@ interface APIProduct {
   id?: string
   image_front_url?: string
   brands?: string
-  generic_name_fr?: string
+  product_name_fr?: string
   categories_hierarchy?: string[]
   last_updated_t?: number
   nutriscore_grade?: string
@@ -273,7 +273,7 @@ export function useProducts() {
       id: product.id ?? '',
       image: product.image_front_url ?? '/logo.png',
       brand: product.brands ?? '',
-      name: product.generic_name_fr ?? '',
+      name: product.product_name_fr ?? '',
       categories: product.categories_hierarchy ?? [],
       lastUpdate: product.last_updated_t
         ? new Date(product.last_updated_t * 1000).toLocaleDateString('fr-FR', {
@@ -374,7 +374,7 @@ export function useProducts() {
     productIsLoading.value = true
     error.value = null
     const fields =
-      'id,image_front_url,brands,generic_name_fr,categories_hierarchy,last_updated_t,nutriscore_grade,nova_group,quantity,serving_size,ingredients_text_with_allergens_fr,nutriments,nutrient_levels,manufacturing_places,link'
+      'id,image_front_url,brands,product_name_fr,categories_hierarchy,last_updated_t,nutriscore_grade,nova_group,quantity,serving_size,ingredients_text_with_allergens_fr,nutriments,nutrient_levels,manufacturing_places,link'
     const route = isLocalhost
       ? '/data/mock-product.json'
       : `${API_BASE_URL_V3}/product/${id}?fields=${fields}&json=1`
