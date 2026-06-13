@@ -536,14 +536,18 @@ export function useProducts() {
     const selectedProducts = data.hits
       .filter((e: any) => {
         const productCode = e.code ?? e.id
-        const itemNutriscore = e.nutriscore_grade
+        // Si le nutriscore n'est pas défini, je lui applique la valeur du produit courant
+        const itemNutriscore =
+          e.nutriscore_grade === 'not-applicable' || e.nutriscore_grade === 'unknown'
+            ? nutriscore
+            : e.nutriscore_grade
         const itemNova = e.nova_group
         // const itemTags = e.categories_tags ?? e.categories_hierarchy ?? []
 
         return (
           productCode !== id &&
-          itemNutriscore !== 'not-applicable' &&
-          itemNutriscore !== 'unknown' &&
+          // itemNutriscore !== 'not-applicable' &&
+          // itemNutriscore !== 'unknown' &&
           (score.indexOf(itemNutriscore) < score.indexOf(nutriscore) ||
             (score.indexOf(itemNutriscore) === score.indexOf(nutriscore) &&
               typeof itemNova === 'number' &&
