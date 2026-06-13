@@ -502,14 +502,13 @@ export function useProducts() {
     let route = isLocalhost ? '/data/mock-productsV2.json' : API_BASE_URL_V4
     const fields =
       'code,image_front_small_url,brands,product_name,nutriscore_grade,nova_group,categories_tags,popularity_key'
-    const method = isLocalhost ? 'GET' : 'POST'
 
     let fetchOptions: RequestInit & { timeout?: number } = { method: 'GET', timeout: 25000 }
 
     if (!isLocalhost) {
       const params = new URLSearchParams({
         q: `product_name.fr:"${(name
-          ? cleanProductTitle(name.trim().split(/\s+/).slice(0, 3).join(' '))
+          ? cleanProductTitle(name.trim().split(/\s+/).slice(0, 5).join(' '))
           : categories[0]
         ).trim()}" AND countries_tags:"en:france" AND states_tags:"en:brands-completed" AND states_tags:"en:product-name-completed" AND states_tags:"en:photos-uploaded"`,
         langs: 'fr',
