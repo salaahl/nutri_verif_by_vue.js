@@ -555,7 +555,7 @@ h2::first-letter {
 #search-container {
   padding: calc(var(--app-padding-x) * 2) var(--app-padding-x);
   background: linear-gradient(180deg, rgba(255, 255, 255, 0.5) 50%, rgba(0, 0, 0, 0) 100%);
-  border-radius: 10px;
+  border-radius: 40px;
 }
 
 #search-bar {

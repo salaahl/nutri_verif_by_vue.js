@@ -11,9 +11,7 @@ onMounted(() => {
 </script>
 
 <template>
-  <h1
-    class="title md:translate-y-[-100px] text-xl md:text-2xl text-center uppercase"
-  >
+  <h1 class="title md:translate-y-[-100px] text-xl md:text-2xl text-center uppercase">
     A propos de nous
   </h1>
   <h2 class="w-fit mx-auto md:translate-y-[-100px] text-xs">(et un peu d'Open Food Facts)</h2>

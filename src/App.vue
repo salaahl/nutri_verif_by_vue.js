@@ -4,6 +4,14 @@ import { useRouter } from 'vue-router'
 import { useProducts } from '@/composables/useProducts'
 
 const router = useRouter()
+// Déclenchement de l'animation des blobs
+router.afterEach(() => {
+  document.querySelectorAll('#background-blobs g').forEach((el) => {
+    el.style.animation = 'none'
+    el.getBoundingClientRect()
+    el.style.animation = ''
+  })
+})
 
 const { input, products } = useProducts()
 
@@ -304,6 +312,28 @@ onMounted(() => {
   fill: white;
 }
 
+#background-blobs > g {
+  transition: fill 0.5s 0.5s;
+  animation: translateBlobs 2s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+#background-blobs > g:nth-child(2),
+#background-blobs > g:nth-child(5) {
+  animation-delay: 0.2s;
+}
+
+#background-blobs > g:nth-child(3),
+#background-blobs > g:nth-child(6) {
+  animation-delay: 0.3s;
+}
+
+#background-blobs > g:nth-child(4),
+#background-blobs > g:nth-child(5),
+#background-blobs > g:nth-child(6) {
+  --blob-direction: -1;
+}
+
+/* Couleurs par défaut */
 #background-blobs > g:nth-child(1),
 #background-blobs > g:nth-child(4) {
   fill: hsla(160, 100%, 37%, 0.25);
@@ -319,28 +349,35 @@ onMounted(() => {
   fill: hsla(160, 100%, 37%, 1);
 }
 
+/* Couleurs personnalisées  */
 .about-view > svg > #background-blobs > g:nth-child(1),
+.scanner-view > svg > #background-blobs > g:nth-child(1),
 .legal-notice-view > svg > #background-blobs > g:nth-child(1),
 .search-view > svg > #background-blobs > g:nth-child(1),
 .about-view > svg > #background-blobs > g:nth-child(4),
+.scanner-view > svg > #background-blobs > g:nth-child(4),
 .legal-notice-view > svg > #background-blobs > g:nth-child(4),
 .search-view > svg > #background-blobs > g:nth-child(4) {
-  fill: rgb(245, 245, 245, 0.25);
+  fill: rgb(245, 245, 245, 0.33);
 }
 
 .about-view > svg > #background-blobs > g:nth-child(2),
+.scanner-view > svg > #background-blobs > g:nth-child(2),
 .legal-notice-view > svg > #background-blobs > g:nth-child(2),
 .search-view > svg > #background-blobs > g:nth-child(2),
 .about-view > svg > #background-blobs > g:nth-child(5),
+.scanner-view > svg > #background-blobs > g:nth-child(5),
 .legal-notice-view > svg > #background-blobs > g:nth-child(5),
 .search-view > svg > #background-blobs > g:nth-child(5) {
-  fill: rgb(245, 245, 245, 0.5);
+  fill: rgb(245, 245, 245, 0.66);
 }
 
 .about-view > svg > #background-blobs > g:nth-child(3),
+.scanner-view > svg > #background-blobs > g:nth-child(3),
 .legal-notice-view > svg > #background-blobs > g:nth-child(3),
 .search-view > svg > #background-blobs > g:nth-child(3),
 .about-view > svg > #background-blobs > g:nth-child(6),
+.scanner-view > svg > #background-blobs > g:nth-child(6),
 .legal-notice-view > svg > #background-blobs > g:nth-child(6),
 .search-view > svg > #background-blobs > g:nth-child(6),
 .product-view > svg > #background-blobs > g {
@@ -355,125 +392,6 @@ onMounted(() => {
 .bg .plant-primary,
 .bg .plant-secondary {
   transition: all 0.5s;
-}
-
-#background-blobs > g {
-  transition: fill 0.5s 0.5s;
-}
-
-.home-view > svg > #background-blobs > g {
-  animation: translateBlobsHome 2s cubic-bezier(0.4, 0, 0.2, 1);
-}
-
-.home-view > svg > #background-blobs > g:nth-child(2) {
-  animation-delay: 0.1s;
-}
-.home-view > svg > #background-blobs > g:nth-child(3) {
-  animation-delay: 0.2s;
-}
-.home-view > svg > #background-blobs > g:nth-child(5) {
-  animation-delay: 0.2s;
-}
-.home-view > svg > #background-blobs > g:nth-child(6) {
-  animation-delay: 0.3s;
-}
-
-.home-view > svg > #background-blobs > g:nth-child(4),
-.home-view > svg > #background-blobs > g:nth-child(5),
-.home-view > svg > #background-blobs > g:nth-child(6) {
-  --blob-direction: -1;
-}
-
-.about-view > svg > #background-blobs > g {
-  animation: translateBlobsAbout 2s cubic-bezier(0.4, 0, 0.2, 1);
-}
-
-.about-view > svg > #background-blobs > g:nth-child(2) {
-  animation-delay: 0.1s;
-}
-.about-view > svg > #background-blobs > g:nth-child(3) {
-  animation-delay: 0.2s;
-}
-.about-view > svg > #background-blobs > g:nth-child(5) {
-  animation-delay: 0.2s;
-}
-.about-view > svg > #background-blobs > g:nth-child(6) {
-  animation-delay: 0.3s;
-}
-
-.about-view > svg > #background-blobs > g:nth-child(4),
-.about-view > svg > #background-blobs > g:nth-child(5),
-.about-view > svg > #background-blobs > g:nth-child(6) {
-  --blob-direction: -1;
-}
-
-.legal-notice-view > svg > #background-blobs > g {
-  animation: translateBlobsLegalNotice 2s cubic-bezier(0.4, 0, 0.2, 1);
-}
-
-.legal-notice-view > svg > #background-blobs > g:nth-child(2) {
-  animation-delay: 0.1s;
-}
-.legal-notice-view > svg > #background-blobs > g:nth-child(3) {
-  animation-delay: 0.2s;
-}
-.legal-notice-view > svg > #background-blobs > g:nth-child(5) {
-  animation-delay: 0.2s;
-}
-.legal-notice-view > svg > #background-blobs > g:nth-child(6) {
-  animation-delay: 0.3s;
-}
-
-.legal-notice-view > svg > #background-blobs > g:nth-child(4),
-.legal-notice-view > svg > #background-blobs > g:nth-child(5),
-.legal-notice-view > svg > #background-blobs > g:nth-child(6) {
-  --blob-direction: -1;
-}
-
-.search-view > svg > #background-blobs > g {
-  animation: translateBlobsProducts 2s cubic-bezier(0.4, 0, 0.2, 1);
-}
-
-.search-view > svg > #background-blobs > g:nth-child(2) {
-  animation-delay: 0.1s;
-}
-.search-view > svg > #background-blobs > g:nth-child(3) {
-  animation-delay: 0.2s;
-}
-.search-view > svg > #background-blobs > g:nth-child(5) {
-  animation-delay: 0.2s;
-}
-.search-view > svg > #background-blobs > g:nth-child(6) {
-  animation-delay: 0.3s;
-}
-
-.search-view > svg > #background-blobs > g:nth-child(4),
-.search-view > svg > #background-blobs > g:nth-child(5),
-.search-view > svg > #background-blobs > g:nth-child(6) {
-  --blob-direction: -1;
-}
-
-.product-view > svg > #background-blobs > g {
-  animation: translateBlobsProduct 2s cubic-bezier(0.4, 0, 0.2, 1);
-}
-
-.product-view > svg > #background-blobs > g:nth-child(2) {
-  animation-delay: 0.1s;
-}
-.product-view > svg > #background-blobs > g:nth-child(3) {
-  animation-delay: 0.2s;
-}
-.product-view > svg > #background-blobs > g:nth-child(5) {
-  animation-delay: 0.2s;
-}
-.product-view > svg > #background-blobs > g:nth-child(6) {
-  animation-delay: 0.3s;
-}
-
-.product-view > svg > #background-blobs > g:nth-child(4),
-.product-view > svg > #background-blobs > g:nth-child(5),
-.product-view > svg > #background-blobs > g:nth-child(6) {
-  --blob-direction: -1;
 }
 
 .bg .plant-primary,
@@ -619,55 +537,7 @@ footer > div,
   }
 }
 
-@keyframes translateBlobsHome {
-  0% {
-    translate: 0%;
-  }
-  50% {
-    translate: calc(var(--blob-direction, 1) * 100%);
-  }
-  100% {
-    translate: 0%;
-  }
-}
-
-@keyframes translateBlobsAbout {
-  0% {
-    translate: 0%;
-  }
-  50% {
-    translate: calc(var(--blob-direction, 1) * 100%);
-  }
-  100% {
-    translate: 0%;
-  }
-}
-
-@keyframes translateBlobsLegalNotice {
-  0% {
-    translate: 0%;
-  }
-  50% {
-    translate: calc(var(--blob-direction, 1) * 100%);
-  }
-  100% {
-    translate: 0%;
-  }
-}
-
-@keyframes translateBlobsProducts {
-  0% {
-    translate: 0%;
-  }
-  50% {
-    translate: calc(var(--blob-direction, 1) * 100%);
-  }
-  100% {
-    translate: 0%;
-  }
-}
-
-@keyframes translateBlobsProduct {
+@keyframes translateBlobs {
   0% {
     translate: 0%;
   }
