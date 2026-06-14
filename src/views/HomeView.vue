@@ -87,7 +87,7 @@ onMounted(async () => {
     document.querySelectorAll('main > div > section').forEach((section) => {
       gsap.from(section, {
         y: window.innerWidth < 768 ? '15%' : '250',
-        opacity: window.innerWidth < 768 ? 0 : 1,
+        opacity: 0,
         duration: 0.4,
         willChange: 'transform, opacity', // Prépare le GPU à l'animation
         scrollTrigger: {
