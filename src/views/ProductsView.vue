@@ -64,6 +64,7 @@ const animateNewProducts = () => {
     const delay = window.innerWidth < 768 ? (index % 2) * 0.08 : (index % 5) * 0.08
 
     if (isInViewport(product)) {
+      /*
       // Carte déjà visible, animation directe
       gsap.fromTo(
         product,
@@ -80,6 +81,7 @@ const animateNewProducts = () => {
           }
         }
       )
+      */
     } else {
       // Carte hors viewport, animation via le ScrollTrigger
       gsap.from(product, {
