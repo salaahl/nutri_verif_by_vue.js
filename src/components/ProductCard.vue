@@ -83,7 +83,7 @@ const searchProductsByCategory: Function = async (category: string) => {
               v-if="category !== '' && category?.startsWith('fr:')"
               class="product-card-tag max-h-[30px] ml-2 md:ml-6 py-1 lg:py-1.5 px-2 truncate text-[10px] lg:text-xs font-semibold bg-white rounded-full"
               @click.prevent="
-                searchProductsByCategory(category.split(':')[1].replace(/-/g, ' ').trim())
+                searchProductsByCategory(category)
               "
             >
               #{{ category.trim().split(':')[1].replace(/-/g, ' ').trim() }}

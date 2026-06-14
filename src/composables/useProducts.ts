@@ -172,7 +172,6 @@ async function fetchFromProxy(
 }
 
 export function useProducts() {
-  const searchProductsApi = ref<'V1' | 'V4'>('V1')
   const productsStore = useProductsStore()
   const products = computed<Products[]>({
     get: () => productsStore.getProducts,
@@ -306,7 +305,6 @@ export function useProducts() {
 
     // Gestion de la pagination
     if (method === 'complete') {
-      searchProductsApi.value = 'V1'
       products.value = []
       page.value = 1
     } else if (method === 'more') {
@@ -327,7 +325,7 @@ export function useProducts() {
 
     if (!isLocalhost) {
       const params = new URLSearchParams({
-        q: `product_name.fr:"${input.value}" AND countries_tags:"en:france" AND states_tags:"en:brands-completed" AND states_tags:"en:product-name-completed" AND states_tags:"en:photos-uploaded"`,
+        q: `${input.value.startsWith('fr:') || input.value.startsWith('en:') ? 'categories_tags' : 'product_name.fr'}:"${input.value}" AND countries_tags:"en:france" AND states_tags:"en:brands-completed" AND states_tags:"en:product-name-completed" AND states_tags:"en:photos-uploaded"`,
         langs: 'fr',
         fields: fields,
         page_size: '20',
