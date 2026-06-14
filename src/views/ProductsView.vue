@@ -1,8 +1,13 @@
 <script setup lang="ts">
-import { onMounted, onUnmounted } from 'vue'
+import { onMounted, onUnmounted, nextTick, watch } from 'vue'
 import { useProducts } from '../composables/useProducts'
 import SearchBar from '@/components/SearchBar.vue'
 import ProductCard from '@/components/ProductCard.vue'
+
+import gsap from 'gsap'
+import { ScrollTrigger } from 'gsap/ScrollTrigger'
+
+gsap.registerPlugin(ScrollTrigger)
 
 const { products, productsIsLoading, page, pages, searchProducts } = useProducts()
 
@@ -46,12 +51,81 @@ const onScroll = async () => {
   prevScrollpos = currentScrollPos
 }
 
+const isInViewport = (el: Element) => {
+  const rect = el.getBoundingClientRect()
+  return rect.top < window.innerHeight && rect.bottom > 0
+}
+
+const animateNewProducts = () => {
+  const newProducts = document.querySelectorAll('.product.animate')
+  if (newProducts.length === 0) return
+
+  newProducts.forEach((product, index) => {
+    const delay = window.innerWidth < 768 ? (index % 2) * 0.08 : (index % 5) * 0.08
+
+    if (isInViewport(product)) {
+      // Carte déjà visible, animation directe
+      gsap.fromTo(
+        product,
+        { y: '30%', opacity: 0 },
+        {
+          y: 0,
+          opacity: 1,
+          duration: 0.4,
+          delay,
+          willChange: 'transform, opacity',
+          onComplete: () => {
+            gsap.set(product, { clearProps: 'all' })
+            product.classList.remove('animate')
+          }
+        }
+      )
+    } else {
+      // Carte hors viewport, animation via le ScrollTrigger
+      gsap.from(product, {
+        y: '30%',
+        opacity: 0,
+        duration: 0.4,
+        delay,
+        willChange: 'transform, opacity',
+        scrollTrigger: {
+          trigger: product,
+          start: 'top bottom',
+          once: true,
+          fastScrollEnd: true
+        },
+        onComplete: () => {
+          gsap.set(product, { clearProps: 'all' })
+          product.classList.remove('animate')
+        }
+      })
+    }
+  })
+}
+
+watch(
+  products,
+  async (newProductsList) => {
+    if (!newProductsList || newProductsList.length === 0) return
+
+    await nextTick()
+    // Laisser le browser peindre avant de mesurer les positions
+    requestAnimationFrame(() => {
+      requestAnimationFrame(() => {
+        animateNewProducts()
+      })
+    })
+  },
+  { deep: true, immediate: true }
+)
+
 onMounted(() => {
   window.addEventListener('scroll', onScroll)
 })
 
 onUnmounted(() => {
   window.removeEventListener('scroll', onScroll)
+  ScrollTrigger.getAll().forEach((trigger) => trigger.kill())
 })
 </script>
 
@@ -67,6 +141,7 @@ onUnmounted(() => {
     <ProductCard
       v-for="product in products"
       :key="product.id"
+      :class="'animate'"
       :id="product.id"
       :image="product.image"
       :brand="product.brand"

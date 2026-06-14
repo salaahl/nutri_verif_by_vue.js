@@ -30,9 +30,7 @@ onMounted(() => {
         console.log('Le serveur dort encore, réveil (toujours) en cours...')
       })
   } else {
-    setTimeout(() => {
-      document.getElementById('loader').classList.add('hide')
-    }, 1500)
+    document.getElementById('loader').classList.add('hide')
   }
 })
 </script>
@@ -363,124 +361,119 @@ onMounted(() => {
   transition: fill 0.5s 0.5s;
 }
 
-.home-view > svg > #background-blobs > g:nth-child(1) {
-  animation: translateRightBlobsHome 2s cubic-bezier(0.4, 0, 0.2, 1);
+.home-view > svg > #background-blobs > g {
+  animation: translateBlobsHome 2s cubic-bezier(0.4, 0, 0.2, 1);
 }
 
 .home-view > svg > #background-blobs > g:nth-child(2) {
-  animation: translateRightBlobsHome 2s 0.1s cubic-bezier(0.4, 0, 0.2, 1);
+  animation-delay: 0.1s;
 }
-
 .home-view > svg > #background-blobs > g:nth-child(3) {
-  animation: translateRightBlobsHome 2s 0.2s cubic-bezier(0.4, 0, 0.2, 1);
+  animation-delay: 0.2s;
 }
-
-.home-view > svg > #background-blobs > g:nth-child(4) {
-  animation: translateLeftBlobsHome 2s cubic-bezier(0.4, 0, 0.2, 1);
-}
-
 .home-view > svg > #background-blobs > g:nth-child(5) {
-  animation: translateLeftBlobsHome 2s 0.2s cubic-bezier(0.4, 0, 0.2, 1);
+  animation-delay: 0.2s;
 }
-
 .home-view > svg > #background-blobs > g:nth-child(6) {
-  animation: translateLeftBlobsHome 2s 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+  animation-delay: 0.3s;
 }
 
-.about-view > svg > #background-blobs > g:nth-child(1) {
-  animation: translateRightBlobsAbout 2s cubic-bezier(0.4, 0, 0.2, 1);
+.home-view > svg > #background-blobs > g:nth-child(4),
+.home-view > svg > #background-blobs > g:nth-child(5),
+.home-view > svg > #background-blobs > g:nth-child(6) {
+  --blob-direction: -1;
+}
+
+.about-view > svg > #background-blobs > g {
+  animation: translateBlobsAbout 2s cubic-bezier(0.4, 0, 0.2, 1);
 }
 
 .about-view > svg > #background-blobs > g:nth-child(2) {
-  animation: translateRightBlobsAbout 2s 0.2s cubic-bezier(0.4, 0, 0.2, 1);
+  animation-delay: 0.1s;
 }
-
 .about-view > svg > #background-blobs > g:nth-child(3) {
-  animation: translateRightBlobsAbout 2s 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+  animation-delay: 0.2s;
 }
-
-.about-view > svg > #background-blobs > g:nth-child(4) {
-  animation: translateLeftBlobsAbout 2s cubic-bezier(0.4, 0, 0.2, 1);
-}
-
 .about-view > svg > #background-blobs > g:nth-child(5) {
-  animation: translateLeftBlobsAbout 2s 0.2s cubic-bezier(0.4, 0, 0.2, 1);
+  animation-delay: 0.2s;
 }
-
 .about-view > svg > #background-blobs > g:nth-child(6) {
-  animation: translateLeftBlobsAbout 2s 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+  animation-delay: 0.3s;
 }
 
-.legal-notice-view > svg > #background-blobs > g:nth-child(1) {
-  animation: translateRightBlobsLegalNotice 2s cubic-bezier(0.4, 0, 0.2, 1);
+.about-view > svg > #background-blobs > g:nth-child(4),
+.about-view > svg > #background-blobs > g:nth-child(5),
+.about-view > svg > #background-blobs > g:nth-child(6) {
+  --blob-direction: -1;
+}
+
+.legal-notice-view > svg > #background-blobs > g {
+  animation: translateBlobsLegalNotice 2s cubic-bezier(0.4, 0, 0.2, 1);
 }
 
 .legal-notice-view > svg > #background-blobs > g:nth-child(2) {
-  animation: translateRightBlobsLegalNotice 2s 0.15s cubic-bezier(0.4, 0, 0.2, 1);
+  animation-delay: 0.1s;
 }
-
 .legal-notice-view > svg > #background-blobs > g:nth-child(3) {
-  animation: translateRightBlobsLegalNotice 2s 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+  animation-delay: 0.2s;
 }
-
-.legal-notice-view > svg > #background-blobs > g:nth-child(4) {
-  animation: translateLeftBlobsLegalNotice 2s cubic-bezier(0.4, 0, 0.2, 1);
-}
-
 .legal-notice-view > svg > #background-blobs > g:nth-child(5) {
-  animation: translateLeftBlobsLegalNotice 2s 0.15s cubic-bezier(0.4, 0, 0.2, 1);
+  animation-delay: 0.2s;
 }
-
 .legal-notice-view > svg > #background-blobs > g:nth-child(6) {
-  animation: translateLeftBlobsLegalNotice 2s 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+  animation-delay: 0.3s;
 }
 
-.search-view > svg > #background-blobs > g:nth-child(1) {
-  animation: translateRightBlobsProducts 2s cubic-bezier(0.4, 0, 0.2, 1);
+.legal-notice-view > svg > #background-blobs > g:nth-child(4),
+.legal-notice-view > svg > #background-blobs > g:nth-child(5),
+.legal-notice-view > svg > #background-blobs > g:nth-child(6) {
+  --blob-direction: -1;
+}
+
+.search-view > svg > #background-blobs > g {
+  animation: translateBlobsProducts 2s cubic-bezier(0.4, 0, 0.2, 1);
 }
 
 .search-view > svg > #background-blobs > g:nth-child(2) {
-  animation: translateRightBlobsProducts 2s 0.15s cubic-bezier(0.4, 0, 0.2, 1);
+  animation-delay: 0.1s;
 }
-
 .search-view > svg > #background-blobs > g:nth-child(3) {
-  animation: translateRightBlobsProducts 2s 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+  animation-delay: 0.2s;
 }
-
-.search-view > svg > #background-blobs > g:nth-child(4) {
-  animation: translateLeftBlobsProducts 2s cubic-bezier(0.4, 0, 0.2, 1);
-}
-
 .search-view > svg > #background-blobs > g:nth-child(5) {
-  animation: translateLeftBlobsProducts 2s 0.15s cubic-bezier(0.4, 0, 0.2, 1);
+  animation-delay: 0.2s;
 }
-
 .search-view > svg > #background-blobs > g:nth-child(6) {
-  animation: translateLeftBlobsProducts 2s 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+  animation-delay: 0.3s;
 }
 
-.product-view > svg > #background-blobs > g:nth-child(1) {
-  animation: translateRightBlobsProduct 2s cubic-bezier(0.4, 0, 0.2, 1);
+.search-view > svg > #background-blobs > g:nth-child(4),
+.search-view > svg > #background-blobs > g:nth-child(5),
+.search-view > svg > #background-blobs > g:nth-child(6) {
+  --blob-direction: -1;
+}
+
+.product-view > svg > #background-blobs > g {
+  animation: translateBlobsProduct 2s cubic-bezier(0.4, 0, 0.2, 1);
 }
 
 .product-view > svg > #background-blobs > g:nth-child(2) {
-  animation: translateRightBlobsProduct 2s 0.15s cubic-bezier(0.4, 0, 0.2, 1);
+  animation-delay: 0.1s;
 }
-
 .product-view > svg > #background-blobs > g:nth-child(3) {
-  animation: translateRightBlobsProduct 2s 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+  animation-delay: 0.2s;
 }
-
-.product-view > svg > #background-blobs > g:nth-child(4) {
-  animation: translateLeftBlobsProduct 2s cubic-bezier(0.4, 0, 0.2, 1);
-}
-
 .product-view > svg > #background-blobs > g:nth-child(5) {
-  animation: translateLeftBlobsProduct 2s 0.15s cubic-bezier(0.4, 0, 0.2, 1);
+  animation-delay: 0.2s;
+}
+.product-view > svg > #background-blobs > g:nth-child(6) {
+  animation-delay: 0.3s;
 }
 
+.product-view > svg > #background-blobs > g:nth-child(4),
+.product-view > svg > #background-blobs > g:nth-child(5),
 .product-view > svg > #background-blobs > g:nth-child(6) {
-  animation: translateLeftBlobsProduct 2s 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+  --blob-direction: -1;
 }
 
 .bg .plant-primary,
@@ -626,120 +619,60 @@ footer > div,
   }
 }
 
-@keyframes translateRightBlobsHome {
+@keyframes translateBlobsHome {
   0% {
     translate: 0%;
   }
   50% {
-    translate: 100%;
+    translate: calc(var(--blob-direction, 1) * 100%);
   }
   100% {
     translate: 0%;
   }
 }
 
-@keyframes translateLeftBlobsHome {
+@keyframes translateBlobsAbout {
   0% {
     translate: 0%;
   }
   50% {
-    translate: -100%;
+    translate: calc(var(--blob-direction, 1) * 100%);
   }
   100% {
     translate: 0%;
   }
 }
 
-@keyframes translateRightBlobsAbout {
+@keyframes translateBlobsLegalNotice {
   0% {
     translate: 0%;
   }
   50% {
-    translate: 100%;
+    translate: calc(var(--blob-direction, 1) * 100%);
   }
   100% {
     translate: 0%;
   }
 }
 
-@keyframes translateLeftBlobsAbout {
+@keyframes translateBlobsProducts {
   0% {
     translate: 0%;
   }
   50% {
-    translate: -100%;
+    translate: calc(var(--blob-direction, 1) * 100%);
   }
   100% {
     translate: 0%;
   }
 }
 
-@keyframes translateRightBlobsLegalNotice {
+@keyframes translateBlobsProduct {
   0% {
     translate: 0%;
   }
   50% {
-    translate: 100%;
-  }
-  100% {
-    translate: 0%;
-  }
-}
-
-@keyframes translateLeftBlobsLegalNotice {
-  0% {
-    translate: 0%;
-  }
-  50% {
-    translate: -100%;
-  }
-  100% {
-    translate: 0%;
-  }
-}
-
-@keyframes translateRightBlobsProducts {
-  0% {
-    translate: 0%;
-  }
-  50% {
-    translate: 100%;
-  }
-  100% {
-    translate: 0%;
-  }
-}
-
-@keyframes translateLeftBlobsProducts {
-  0% {
-    translate: 0%;
-  }
-  50% {
-    translate: -100%;
-  }
-  100% {
-    translate: 0%;
-  }
-}
-
-@keyframes translateRightBlobsProduct {
-  0% {
-    translate: 0%;
-  }
-  50% {
-    translate: 100%;
-  }
-  100% {
-    translate: 0%;
-  }
-}
-
-@keyframes translateLeftBlobsProduct {
-  0% {
-    translate: 0%;
-  }
-  50% {
-    translate: -100%;
+    translate: calc(var(--blob-direction, 1) * 100%);
   }
   100% {
     translate: 0%;

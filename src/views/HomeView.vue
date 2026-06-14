@@ -83,7 +83,6 @@ onMounted(async () => {
 
   // Animation des sections
   if (isFirstLaunch.value) {
-    // Animation des sections
     document.querySelectorAll('main > div > section').forEach((section) => {
       gsap.from(section, {
         y: window.innerWidth < 768 ? '15%' : '250',
@@ -92,7 +91,8 @@ onMounted(async () => {
         willChange: 'transform, opacity', // Prépare le GPU à l'animation
         scrollTrigger: {
           trigger: section,
-          start: window.innerWidth < 768 ? '0 85%' : '0 100%'
+          start: window.innerWidth < 768 ? '0 85%' : '0 100%',
+          once: true
         },
         onComplete: () => {
           // On nettoie le willChange pour libérer la mémoire du GPU
@@ -179,6 +179,8 @@ onUnmounted(() => {
   if (searchInput) {
     searchInput.removeEventListener('input', handleInput)
   }
+
+  ScrollTrigger.getAll().forEach((trigger) => trigger.kill())
 })
 </script>
 
