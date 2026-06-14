@@ -466,6 +466,8 @@ export function useProducts() {
 
       let cleaned = name.trim()
 
+      const percentRegex = /\d+(?:[.,]\d+)?\s*%/g
+
       const marketingStopWords = new RegExp(
         '(?:\\s|^)(' +
           'extra|supérieur|superieur|authentique|traditionnel|traditionnelle|artisanal|artisanale|sélection|selection|premium|gourmand|gourmande|' +
@@ -483,6 +485,7 @@ export function useProducts() {
       do {
         previous = cleaned
         cleaned = cleaned
+          .replace(percentRegex, ' ')
           .replace(marketingStopWords, ' ')
           .replace(startRegex, '')
           .replace(endRegex, '')
