@@ -494,6 +494,10 @@ export function useProducts() {
       return cleaned
     }
 
+    // Si aucune valeur n'est renseignée sur la fiche du produit, on prend une valeur par défaut
+    if (!nutriscore) nutriscore = 'e'
+    if (!novaGroup) novaGroup = 4
+
     let response, data
 
     suggestedProducts.value = []
