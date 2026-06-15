@@ -324,7 +324,7 @@ onUnmounted(() => {
           </p>
         </div>
       </article>
-      <div class="separator hidden md:block h-[100px] border-2 border-[#00bd7e]"></div>
+      <div class="separator hidden md:block h-[100px] border-2 border-[indianred]"></div>
       <article
         id="nova-explanation"
         class="w-full md:w-[48%] p-8 md:p-12 bg-white rounded-lg text-justify"
@@ -535,7 +535,7 @@ onUnmounted(() => {
         :category="product.category"
       />
       <div v-else class="w-full">
-        <h3 class="text-center text-2xl font-semibold">Aucun produit trouvé</h3>
+        <h3 class="text-center text-xl font-semibold">Aucun produit trouvé</h3>
       </div>
     </div>
   </section>

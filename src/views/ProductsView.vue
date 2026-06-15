@@ -70,7 +70,7 @@ const animateNewProducts = () => {
 
     ScrollTrigger.create({
       trigger: product,
-      start: 'top bottom+=50', // Déclenche 50px avant d'entrer dans l'écran
+      start: 'top bottom',
       once: true,
       onEnter: () => {
         product.classList.add('is-visible')
