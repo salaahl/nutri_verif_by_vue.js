@@ -74,6 +74,11 @@ const animateNewProducts = () => {
       once: true,
       onEnter: () => {
         product.classList.add('is-visible')
+
+        setTimeout(() => {
+          product.classList.add('animated')
+          product.classList.remove('is-visible')
+        }, 800) // Delay à 0.32 au maximum + 0.4s de transition + 0.08 de marge
       }
     })
   })
@@ -180,11 +185,7 @@ onUnmounted(() => {
   margin-bottom: 2rem;
   opacity: 0;
   transform: translateY(30%);
-  transition:
-    opacity 0.4s ease-in,
-    transform 0.4s ease-in;
-  transition-delay: var(--delay, 0s);
-  will-change: transform, opacity;
+  will-change: opacity, transform;
 }
 
 .product:nth-of-type(2n) {
@@ -194,6 +195,23 @@ onUnmounted(() => {
 .product.is-visible {
   opacity: 1;
   transform: translateY(0);
+  transition:
+    opacity 0.4s ease-in-out,
+    transform 0.4s ease-in-out;
+  transition-delay: var(--delay, 0s);
+}
+
+/* Je stabilise l'animation à l'aide de la nouvelle classe .animated */
+.product.animated {
+  opacity: 1;
+  transform: translateY(0);
+  will-change: auto;
+}
+
+/* Redéclaration issue de la productCard.
+Elle a été adaptée au fonctionnement de la productsView */
+.product.animated:hover {
+  transform: translateY(-1%);
 }
 
 @media (min-width: 375px) {
