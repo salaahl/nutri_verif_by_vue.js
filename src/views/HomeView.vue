@@ -48,6 +48,7 @@ const categories = [
   'sans gluten'
 ]
 
+const searchCompleted = ref(false)
 const showSuggestedProducts = ref(false)
 const showLastProducts = ref(false)
 
@@ -71,6 +72,7 @@ const handleInput = (event: Event) => {
   if (!target.value) {
     input.value = ''
     products.value = []
+    searchCompleted.value = false
   }
 }
 
@@ -192,7 +194,7 @@ onUnmounted(() => {
     <h3 class="text-lg text-center">Manger (plus) sain</h3>
   </section>
   <section id="search-container" class="w-full mb-20">
-    <SearchBar />
+    <SearchBar @search-status="searchCompleted = $event" />
     <div
       v-if="categories.length"
       class="radio-toolbar relative flex flex-wrap justify-center mb-12"
@@ -207,7 +209,7 @@ onUnmounted(() => {
       </label>
     </div>
     <div
-      :class="`${products.length > 0 || productsIsLoading ? 'max-h-[750px] md:max-h-[400px]' : 'max-h-0'} overflow-hidden transition-all duration-300 ease-in-out`"
+      :class="`${productsIsLoading || searchCompleted ? 'max-h-[750px] md:max-h-[400px]' : 'max-h-0'} overflow-hidden transition-all duration-300 ease-in-out`"
     >
       <div
         id="search-results"
@@ -219,7 +221,15 @@ onUnmounted(() => {
         >
           <div class="lds-hourglass"></div>
         </div>
+        <div v-else-if="searchCompleted && products.length === 0" class="w-full">
+          <h3
+            class="w-fit m-auto px-4 py-2 text-white text-center font-semibold bg-[indianred] rounded-full"
+          >
+            Aucun produit trouvé
+          </h3>
+        </div>
         <ProductCard
+          v-else
           v-for="product in products.slice(0, 4)"
           :key="product.id"
           :id="product.id"

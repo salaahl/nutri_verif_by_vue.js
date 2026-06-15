@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { onMounted, onUnmounted, nextTick, watch } from 'vue'
+import { onMounted, onUnmounted, nextTick, ref, watch } from 'vue'
 import { useProducts } from '../composables/useProducts'
 import SearchBar from '@/components/SearchBar.vue'
 import ProductCard from '@/components/ProductCard.vue'
@@ -10,6 +10,7 @@ import { ScrollTrigger } from 'gsap/ScrollTrigger'
 gsap.registerPlugin(ScrollTrigger)
 
 const { products, productsIsLoading, page, pages, searchProducts } = useProducts()
+const searchCompleted = ref(false)
 
 let prevScrollpos = 0
 let refresh: boolean = true
@@ -130,7 +131,7 @@ onUnmounted(() => {
 </script>
 
 <template>
-  <SearchBar :toolbarIsVisible="true" />
+  <SearchBar :toolbarIsVisible="true" @search-status="searchCompleted = $event" />
   <section
     id="search-results"
     :class="
@@ -138,7 +139,15 @@ onUnmounted(() => {
       (products.length === 0 ? '' : ' show')
     "
   >
+    <div v-if="searchCompleted && products.length === 0" class="w-full">
+      <h3
+        class="w-fit m-auto px-4 py-2 text-white text-center font-semibold bg-[indianred] rounded-full"
+      >
+        Aucun produit trouvé
+      </h3>
+    </div>
     <ProductCard
+      v-else
       v-for="product in products"
       :key="product.id"
       :class="'animate'"

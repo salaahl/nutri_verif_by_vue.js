@@ -16,13 +16,16 @@ const route = useRoute()
 const router = useRouter()
 
 const toolbarIsVisible = computed(() => props.toolbarIsVisible)
+const emit = defineEmits(['search-status'])
 const { filter, input, searchProducts } = useProducts()
 
 // Gestion du formulaire de recherche
 const onSubmit = async (event: Event) => {
   event.preventDefault()
+
   const searchInput = document.querySelector('#search-form #search-input') as HTMLInputElement
   if (!searchInput) return
+  emit('search-status', false)
 
   const regex = /^[0-9]{8,13}$/
   if (regex.test(searchInput.value)) {
@@ -42,6 +45,7 @@ const onSubmit = async (event: Event) => {
 
     window.scrollTo({ top: 0, behavior: 'smooth' })
     await searchProducts(searchInput.value, searchFilter, 'complete')
+    emit('search-status', true)
   }
 }
 
