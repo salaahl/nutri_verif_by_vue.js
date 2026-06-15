@@ -35,6 +35,7 @@ interface Product {
   ingredients: string
   nutriments: { [key: string]: string }
   nutrient_levels: string
+  additives: string[]
   manufacturingPlace: string
   link: string
 }
@@ -62,6 +63,7 @@ interface APIProduct {
   serving_size?: string
   ingredients_text_with_allergens_fr?: string
   nutriments?: { [key: string]: string }
+  additives_tags?: string[]
   nutrient_levels?: string
   manufacturing_places?: string
   link?: string
@@ -288,6 +290,7 @@ export function useProducts() {
       ingredients: product.ingredients_text_with_allergens_fr ?? '',
       nutriments: product.nutriments ?? {},
       nutrient_levels: product.nutrient_levels ?? '',
+      additives: product.additives_tags ?? [],
       manufacturingPlace: product.manufacturing_places ?? '',
       link: product.link ?? ''
     }

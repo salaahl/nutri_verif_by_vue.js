@@ -25,6 +25,7 @@
       "sugars": "high",
       "salt": "moderate"
     },
+    "additives_tags": ["en:e440", "en:e631", "en:e951"],
     "manufacturing_places": "Fake City, Fake Country",
     "url": "../logo.png",
     "popularity_key": 100,

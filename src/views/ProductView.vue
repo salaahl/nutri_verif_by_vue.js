@@ -4,6 +4,8 @@ import { useRoute, useRouter, onBeforeRouteUpdate } from 'vue-router'
 import { useProducts } from '../composables/useProducts'
 import AlternativesProducts from '@/components/AlternativesProducts.vue'
 
+import { additivesDatabase } from '../utils/ingredientParser/additives.ts'
+
 const router = useRouter()
 const route = useRoute()
 
@@ -97,6 +99,39 @@ const updateProduct = async (productId: string) => {
   categoriesIsLoading.value = true
   product.categories = await getTranslatedCategories(product.categories)
   categoriesIsLoading.value = false
+}
+
+const formatAdditiveCode = (additiveStr: string): string => {
+  if (!additiveStr || !additiveStr.includes(':')) return ''
+  return additiveStr.split(':')[1].toUpperCase()
+}
+
+const getAdditiveName = (additiveStr: string): string => {
+  return additivesDatabase[formatAdditiveCode(additiveStr)]?.name || 'Additif inconnu'
+}
+
+const getAdditiveDescription = (additiveStr: string): string => {
+  return (
+    additivesDatabase[formatAdditiveCode(additiveStr)]?.description ||
+    'Aucune description disponible pour cet additif.'
+  )
+}
+const getAdditiveColor = (additiveStr: string): string => {
+  const code = formatAdditiveCode(additiveStr)
+  const score = additivesDatabase[code]?.score
+
+  switch (score) {
+    case 1:
+      return 'underline decoration-4 decoration-[#00bd7e]'
+    case 2:
+      return 'underline decoration-4 decoration-yellow-500'
+    case 3:
+      return 'underline decoration-4 decoration-orange-500'
+    case 4:
+      return 'underline decoration-4 decoration-red-500'
+    default:
+      return 'underline decoration-4 decoration-gray-400'
+  }
 }
 
 onBeforeMount(async () => {
@@ -214,6 +249,44 @@ onBeforeRouteUpdate((to) => {
                     ? 'valeur modérée'
                     : 'valeur élevée'
               }}</span>
+            </div>
+          </div>
+          <div v-if="product.additives" id="additives" class="flex md:block mt-6">
+            <h3
+              class="w-fit flex md:block justify-center items-center px-2 py-1 text-sm font-semibold text-white bg-[#343e40] rounded-l-lg md:rounded-b-none md:rounded-t-lg"
+            >
+              Additifs
+            </h3>
+
+            <div
+              class="inline-flex flex-wrap items-center px-2 py-1 md:py-2 bg-white rounded-r-lg md:rounded-b-lg gap-2"
+            >
+              <div
+                v-for="additive in product.additives"
+                :key="additive"
+                :class="[
+                  'additive group relative pt-0.5 pb-1 px-1.5 rounded-full cursor-help',
+                  getAdditiveColor(additive)
+                ]"
+              >
+                <span class="text-sm font-bold text-black">
+                  {{ formatAdditiveCode(additive) }}
+                </span>
+
+                <div
+                  class="pointer-events-none absolute bottom-full left-1/2 z-50 mb-2 w-64 -translate-x-1/2 scale-95 rounded-lg bg-gray-900 p-2.5 text-xs font-normal text-white shadow-xl opacity-0 transition-all duration-200 group-hover:opacity-100 group-hover:scale-100"
+                >
+                  <p class="font-bold border-b-4 border-gray-700 pb-1 mb-1 text-[#00bd7e]">
+                    {{ formatAdditiveCode(additive) }} - {{ getAdditiveName(additive) }}
+                  </p>
+                  <p class="text-gray-300 leading-relaxed">
+                    {{ getAdditiveDescription(additive) }}
+                  </p>
+                  <div
+                    class="absolute top-full left-1/2 h-2 w-2 -translate-x-1/2 -translate-y-1 bg-gray-900 rotate-45"
+                  ></div>
+                </div>
+              </div>
             </div>
           </div>
           <h3 v-if="product.quantity" class="mt-6 font-semibold">Quantité :</h3>
