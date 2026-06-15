@@ -495,8 +495,8 @@ export function useProducts() {
     }
 
     // Si aucune valeur n'est renseignée sur la fiche du produit, on prend une valeur par défaut
-    if (!nutriscore) nutriscore = 'e'
-    if (!novaGroup) novaGroup = 4
+    if (nutriscore === 'unknown') nutriscore = 'e'
+    if (novaGroup === 'unknown') novaGroup = 4
 
     let response, data
 
