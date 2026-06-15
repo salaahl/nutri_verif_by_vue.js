@@ -251,7 +251,7 @@ onBeforeRouteUpdate((to) => {
               }}</span>
             </div>
           </div>
-          <div v-if="product.additives" id="additives" class="flex md:block mt-6">
+          <div v-if="product.additives.length > 0" id="additives" class="flex md:block mt-6">
             <h3
               class="w-fit flex md:block justify-center items-center px-2 py-1 text-sm font-semibold text-white bg-[#343e40] rounded-l-lg md:rounded-b-none md:rounded-t-lg"
             >
