@@ -587,15 +587,21 @@ export function useProducts() {
         .replace(/-/g, ' ')
         .trim()
 
-    const frenchCategories: string[] = categories
-      .filter((c) => c.startsWith('fr:'))
-      .map((c) => cleanCategory(c, 'fr'))
+    const recomposeCategory = (cat: string, langPrefix: string): string => {
+      if (!cat) return ''
+
+      const cleanedCategory = cat.trim().replace(/ /g, '-').toLowerCase()
+
+      return `${langPrefix}:${cleanedCategory}`
+    }
+
+    const frenchCategories: string[] = categories.filter((c) => c.startsWith('fr:'))
 
     const englishCategories: string[] = categories
       .filter((c) => c.startsWith('en:'))
       .map((c) => cleanCategory(c, 'en'))
 
-    // Limite de 4 catégories TTC
+    // Limite de 4 catégories TTC. Si j'ai déjà le compte en français, j'annule la traduction du reste
     const categoriesToTranslate: string = englishCategories
       .slice(0, 4 - frenchCategories.length)
       .join('<SEP>')
@@ -620,9 +626,15 @@ export function useProducts() {
       translatedCategories = (data.translations?.[0]?.text.split('<SEP>') ?? []).map((c: string) =>
         c.trim()
       )
+      translatedCategories.forEach((c, i) => {
+        translatedCategories[i] = recomposeCategory(c, 'fr')
+      })
     } catch (error) {
       // Je conserve quand même les catégories anglaises
       translatedCategories = englishCategories.slice(0, 4 - frenchCategories.length)
+      translatedCategories.forEach((c, i) => {
+        translatedCategories[i] = recomposeCategory(c, 'en')
+      })
       console.error('Erreur pendant la traduction :', error)
     }
 

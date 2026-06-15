@@ -5,7 +5,7 @@
     "brands": "Fake Brand",
     "product_name_fr": "Fake Product",
     "main_category_fr": "Snacks",
-    "categories_tags": ["Snacks", "Sweet snacks", "Chocolate products"],
+    "categories_hierarchy": ["en:snacks", "en:sweet-snacks", "fr:chocolat"],
     "last_modified_t": 1700000000,
     "nutriscore_grade": "d",
     "nova_group": "2",

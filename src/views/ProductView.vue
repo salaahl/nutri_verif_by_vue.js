@@ -488,7 +488,7 @@ onBeforeRouteUpdate((to) => {
               class="tag mt-2 mr-2 py-2 px-3 text-sm font-semibold text-white bg-neutral-400 text-white rounded-full"
               @click="searchProductsByCategory(category)"
             >
-              #{{ category }}
+              #{{ category.trim().split(':')[1].replace(/-/g, ' ').trim() }}
             </button>
           </div>
         </div>
