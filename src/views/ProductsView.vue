@@ -52,56 +52,34 @@ const onScroll = async () => {
   prevScrollpos = currentScrollPos
 }
 
-const isInViewport = (el: Element) => {
-  const rect = el.getBoundingClientRect()
-  return rect.top < window.innerHeight && rect.bottom > 0
-}
-
 const animateNewProducts = () => {
-  const newProducts = document.querySelectorAll('.product.animate')
+  // Nettoyage des anciens triggers pour éviter l'empilement
+  ScrollTrigger.getAll().forEach((trigger) => trigger.kill())
+
+  const newProducts = document.querySelectorAll('.product:not(.is-visible)')
   if (newProducts.length === 0) return
 
   newProducts.forEach((product, index) => {
-    const delay = window.innerWidth < 768 ? (index % 2) * 0.08 : (index % 5) * 0.08
+    const isMobile = window.innerWidth < 768
+    const gridColumns = isMobile ? 2 : 5
 
-    if (isInViewport(product)) {
-      // Carte déjà visible, animation directe
-      gsap.fromTo(
-        product,
-        { y: '30%', opacity: 0 },
-        {
-          y: 0,
-          opacity: 1,
-          duration: 0.4,
-          delay,
-          willChange: 'transform, opacity',
-          onComplete: () => {
-            gsap.set(product, { clearProps: 'all' })
-            product.classList.remove('animate')
-          }
-        }
-      )
-    } else {
-      // Carte hors viewport, animation via le ScrollTrigger
-      gsap.from(product, {
-        y: '30%',
-        opacity: 0,
-        duration: 0.4,
-        delay,
-        willChange: 'transform, opacity',
-        scrollTrigger: {
-          trigger: product,
-          start: 'top bottom',
-          once: true,
-          fastScrollEnd: true
-        },
-        onComplete: () => {
-          gsap.set(product, { clearProps: 'all' })
-          product.classList.remove('animate')
-        }
-      })
-    }
+    // On calcule le délai en JS et on l'injecte en variable CSS personnalisée (--delay)
+    const localIndex = index % gridColumns
+    const delay = localIndex * 0.08
+    ;(product as HTMLElement).style.setProperty('--delay', `${delay}s`)
+
+    ScrollTrigger.create({
+      trigger: product,
+      start: 'top bottom+=50', // Déclenche 50px avant d'entrer dans l'écran
+      once: true,
+      onEnter: () => {
+        product.classList.add('is-visible')
+      }
+    })
   })
+
+  ScrollTrigger.clearScrollMemory()
+  ScrollTrigger.refresh(true)
 }
 
 watch(
@@ -150,7 +128,6 @@ onUnmounted(() => {
       v-else
       v-for="product in products"
       :key="product.id"
-      :class="'animate'"
       :id="product.id"
       :image="product.image"
       :brand="product.brand"
@@ -201,14 +178,22 @@ onUnmounted(() => {
   width: 48%;
   margin-right: 4%;
   margin-bottom: 2rem;
+  opacity: 0;
+  transform: translateY(30%);
+  transition:
+    opacity 0.4s ease-in,
+    transform 0.4s ease-in;
+  transition-delay: var(--delay, 0s);
+  will-change: transform, opacity;
 }
 
 .product:nth-of-type(2n) {
   margin-right: unset;
 }
 
-.product.animate {
-  opacity: 0;
+.product.is-visible {
+  opacity: 1;
+  transform: translateY(0);
 }
 
 @media (min-width: 375px) {
