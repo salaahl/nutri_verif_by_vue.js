@@ -290,6 +290,8 @@ onBeforeRouteUpdate((to) => {
           </div>
           <h3 v-if="product.quantity" class="mt-6 font-semibold">Quantité :</h3>
           <h4 id="quantity">{{ product.quantity }}</h4>
+          <h3 v-if="product.ingredients" class="mt-6 font-semibold">Ingrédients :</h3>
+          <h4 v-html="product.ingredients" id="ingredients"></h4>
           <div
             v-if="nutrimentsKeys.some((nutriment) => nutriment in product.nutriments)"
             id="nutriments"
@@ -531,9 +533,7 @@ onBeforeRouteUpdate((to) => {
             </div>
             <span class="text-xs text-gray-700 mt-2"> * Apports Journaliers Recommandés </span>
           </div>
-          <h3 v-if="product.ingredients" class="mt-6 font-semibold">Ingrédients :</h3>
-          <h4 v-html="product.ingredients" id="ingredients"></h4>
-          <h3 v-if="product.manufacturingPlace" class="mt-4 font-semibold">
+          <h3 v-if="product.manufacturingPlace" class="mt-6 font-semibold">
             Lieu de fabrication :
           </h3>
           <h4 id="manufacturing-place">
