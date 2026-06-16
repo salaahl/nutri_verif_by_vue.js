@@ -290,7 +290,7 @@ onBeforeRouteUpdate((to) => {
           </div>
           <h3 v-if="product.quantity" class="mt-6 font-semibold">Quantité :</h3>
           <h4 id="quantity">{{ product.quantity }}</h4>
-          <h3 v-if="product.ingredients" class="mt-6 font-semibold">Ingrédients :</h3>
+          <h3 v-if="product.ingredients" class="mt-4 font-semibold">Ingrédients :</h3>
           <h4 v-html="product.ingredients" id="ingredients"></h4>
           <div
             v-if="nutrimentsKeys.some((nutriment) => nutriment in product.nutriments)"
