@@ -229,6 +229,12 @@ export const additivesDatabase: Record<string, AdditiveInfo> = {
     score: 3,
     description: "Émulsifiant des pains industriels. Suspecté d'altérer la barrière intestinale."
   },
+  E481: {
+    name: 'Stéaroyl-2-lactylate de sodium',
+    score: 3,
+    description:
+      'Émulsifiant et agent de traitement des farines très fréquent dans les pains de mie et viennoiseries industrielles. Suspecté de perturber la perméabilité de la barrière intestinale et de modifier le microbiote.'
+  },
 
   // === ANTI-AGGLOMÉRANTS & CORRECTEURS (E500 - E599) ===
   E500: {
