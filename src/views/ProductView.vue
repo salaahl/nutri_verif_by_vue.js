@@ -257,15 +257,14 @@ onBeforeRouteUpdate((to) => {
             >
               Additifs
             </h3>
-
             <div
-              class="inline-flex flex-wrap items-center px-2 py-1 md:py-2 bg-white rounded-r-lg md:rounded-b-lg gap-2"
+              class="md:min-w-[80px] inline-flex flex-wrap items-center px-2 py-1 md:py-2 bg-white rounded-r-lg md:rounded-b-lg gap-2"
             >
               <div
                 v-for="additive in product.additives"
                 :key="additive"
                 :class="[
-                  'additive group relative pt-0.5 pb-1 px-1.5 rounded-full cursor-help',
+                  'additive group relative pb-1 px-1.5 rounded-full cursor-help',
                   getAdditiveColor(additive)
                 ]"
               >

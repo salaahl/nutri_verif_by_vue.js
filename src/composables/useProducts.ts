@@ -375,7 +375,7 @@ export function useProducts() {
     productIsLoading.value = true
     error.value = null
     const fields =
-      'id,image_front_url,brands,product_name_fr,categories_hierarchy,last_updated_t,nutriscore_grade,nova_group,quantity,serving_size,ingredients_text_with_allergens_fr,nutriments,nutrient_levels,manufacturing_places,link'
+      'id,image_front_url,brands,product_name_fr,categories_hierarchy,last_updated_t,nutriscore_grade,nova_group,quantity,serving_size,ingredients_text_with_allergens_fr,nutriments,nutrient_levels,additives_tags,manufacturing_places,link'
     const route = isLocalhost
       ? '/data/mock-product.json'
       : `${API_BASE_URL_V3}/product/${id}?fields=${fields}&json=1`
