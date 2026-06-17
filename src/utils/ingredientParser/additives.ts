@@ -147,6 +147,12 @@ export const additivesDatabase: Record<string, AdditiveInfo> = {
     score: 1,
     description: 'Lécithine de soja ou de tournesol. Émulsifiant naturel inoffensif.'
   },
+  E322I: {
+    name: 'Lécithines (brutes / standards)',
+    score: 1,
+    description:
+      "Émulsifiant d'origine naturelle (généralement extrait de soja, de tournesol ou de colza). Totalement inoffensif pour l'organisme, c'est un constituant naturel de nos cellules. Attention toutefois aux risques d'OGM (si soja) et d'allergies chez les personnes très sensibles."
+  },
   E330: {
     name: 'Acide citrique',
     score: 1,
