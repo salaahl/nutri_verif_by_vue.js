@@ -79,7 +79,7 @@ const handleInput = (event: Event) => {
 onMounted(async () => {
   // Gestion de la largeur de l'app
   const app = document.getElementById('app')
-  if (app && window.innerWidth >= 1440) {
+  if (app && screenWidth >= 1440) {
     app.classList.add('max-w-[1380px]')
   }
 
@@ -87,13 +87,13 @@ onMounted(async () => {
   if (isFirstLaunch.value) {
     document.querySelectorAll('main > div > section').forEach((section) => {
       gsap.from(section, {
-        y: window.innerWidth < 768 ? '15%' : '250',
+        y: screenWidth < 768 ? '15%' : '250',
         opacity: 0,
         duration: 0.4,
         willChange: 'transform, opacity', // Prépare le GPU à l'animation
         scrollTrigger: {
           trigger: section,
-          start: window.innerWidth < 768 ? '0 85%' : '0 100%',
+          start: screenWidth < 768 ? '0 85%' : '0 100%',
           once: true
         },
         onComplete: () => {
@@ -168,7 +168,7 @@ onMounted(async () => {
 onUnmounted(() => {
   // Gestion de la largeur de l'app
   const app = document.getElementById('app')
-  if (app && window.innerWidth >= 1440) {
+  if (app && screenWidth >= 1440) {
     app.classList.remove('max-w-[1380px]')
   }
 
