@@ -636,7 +636,8 @@ onBeforeRouteUpdate((to) => {
   background-color: whitesmoke;
 }
 
-#nutriments table tbody th td:nth-of-type(odd) {
+table > thead > tr > th:nth-of-type(even),
+table > tbody > tr > td:nth-of-type(odd) {
   background-color: whitesmoke;
 }
 </style>
