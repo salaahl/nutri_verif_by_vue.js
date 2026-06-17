@@ -283,7 +283,7 @@ onBeforeRouteUpdate((to) => {
             class="flex flex-col mt-6"
           >
             <div
-              class="w-fit md:min-w-[80px] inline-flex flex-wrap items-center px-2 pt-2 pb-1 bg-[#343e40] border-3 border-b-0 border-[#343e40] translate-y-[3px] rounded-t-lg gap-2"
+              class="w-fit inline-flex flex-wrap items-center px-2 pt-2 pb-1 bg-[#343e40] border-3 border-b-0 border-[#343e40] translate-y-[3px] rounded-t-lg gap-2"
             >
               <button
                 v-for="additive in product.additives"
