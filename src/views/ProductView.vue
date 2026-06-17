@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { onBeforeMount, ref } from 'vue'
+import { onBeforeMount, ref, watch } from 'vue'
 import { useRoute, useRouter, onBeforeRouteUpdate } from 'vue-router'
 import { useProducts } from '../composables/useProducts'
 import AlternativesProducts from '@/components/AlternativesProducts.vue'
@@ -43,6 +43,7 @@ const nutrimentsKeys = [
   'proteins_serving'
 ]
 
+const activeAdditive = ref<string | null>(null)
 const categoriesIsLoading = ref(false)
 const showSuggestedProducts = ref(false)
 
@@ -116,6 +117,19 @@ const getAdditiveDescription = (additiveStr: string): string => {
     'Aucune description disponible pour cet additif.'
   )
 }
+
+const getAdditiveTextColor = (additiveStr: string): string => {
+  const code = formatAdditiveCode(additiveStr)
+  return (
+    {
+      1: 'text-[#00bd7e]',
+      2: 'text-yellow-600',
+      3: 'text-orange-600',
+      4: 'text-red-600'
+    }[additivesDatabase[code]?.score] || 'text-gray-500'
+  )
+}
+
 const getAdditiveColor = (additiveStr: string): string => {
   const code = formatAdditiveCode(additiveStr)
   const score = additivesDatabase[code]?.score
@@ -133,6 +147,18 @@ const getAdditiveColor = (additiveStr: string): string => {
       return 'underline decoration-4 decoration-gray-400'
   }
 }
+
+watch(
+  () => product.additives,
+  (newAdditives) => {
+    if (newAdditives && newAdditives.length > 0) {
+      activeAdditive.value = newAdditives[0]
+    } else {
+      activeAdditive.value = null
+    }
+  },
+  { immediate: true }
+)
 
 onBeforeMount(async () => {
   await fetchProduct(Array.isArray(route.params.id) ? route.params.id[0] : route.params.id)
@@ -251,41 +277,43 @@ onBeforeRouteUpdate((to) => {
               }}</span>
             </div>
           </div>
-          <div v-if="product.additives.length > 0" id="additives" class="flex md:block mt-6">
-            <h3
-              class="w-fit flex md:block justify-center items-center px-2 py-1 text-sm font-semibold text-white bg-[#343e40] rounded-l-lg md:rounded-b-none md:rounded-t-lg"
-            >
-              Additifs
-            </h3>
+          <div
+            v-if="product.additives && product.additives.length > 0"
+            id="additives"
+            class="flex flex-col mt-6"
+          >
             <div
-              class="md:min-w-[80px] inline-flex flex-wrap items-center px-2 py-1 md:py-2 bg-white rounded-r-lg md:rounded-b-lg gap-2"
+              class="w-fit md:min-w-[80px] inline-flex flex-wrap items-center px-2 pt-2 pb-1 bg-[#343e40] border-3 border-b-0 border-[#343e40] translate-y-[3px] rounded-t-lg gap-2"
             >
-              <div
+              <button
                 v-for="additive in product.additives"
                 :key="additive"
+                type="button"
+                @click="activeAdditive = additive"
+                @mouseenter="activeAdditive = additive"
                 :class="[
-                  'additive group relative pb-1 px-1.5 rounded-full cursor-help',
-                  getAdditiveColor(additive)
+                  'additive relative pb-2 px-2 transition-all duration-200',
+                  getAdditiveColor(additive),
+                  activeAdditive === additive ? 'z-10' : 'opacity-50 hover:opacity-100'
                 ]"
               >
-                <span class="text-sm font-bold text-black">
+                <span class="text-sm font-bold text-white">
                   {{ formatAdditiveCode(additive) }}
                 </span>
+              </button>
+            </div>
 
-                <div
-                  class="pointer-events-none absolute bottom-full left-1/2 z-50 mb-2 w-64 -translate-x-1/2 scale-95 rounded-lg bg-gray-900 p-2.5 text-xs font-normal text-white shadow-xl opacity-0 transition-all duration-200 group-hover:opacity-100 group-hover:scale-100"
-                >
-                  <p class="font-bold border-b-4 border-gray-700 pb-1 mb-1 text-[#00bd7e]">
-                    {{ formatAdditiveCode(additive) }} - {{ getAdditiveName(additive) }}
-                  </p>
-                  <p class="text-gray-300 leading-relaxed">
-                    {{ getAdditiveDescription(additive) }}
-                  </p>
-                  <div
-                    class="absolute top-full left-1/2 h-2 w-2 -translate-x-1/2 -translate-y-1 bg-gray-900 rotate-45"
-                  ></div>
-                </div>
-              </div>
+            <div
+              v-if="activeAdditive"
+              class="description w-full md:w-fit px-4 py-3 bg-white border-3 border-[#343e40] rounded-b-lg rounded-r-lg transition-all duration-300"
+            >
+              <p class="font-bold text-sm mb-1" :class="getAdditiveTextColor(activeAdditive)">
+                {{ formatAdditiveCode(activeAdditive) }} — {{ getAdditiveName(activeAdditive) }}
+              </p>
+              <div
+                class="text-xs text-gray-600 leading-relaxed"
+                v-html="getAdditiveDescription(activeAdditive)"
+              ></div>
             </div>
           </div>
           <h3 v-if="product.quantity" class="mt-6 font-semibold">Quantité :</h3>
