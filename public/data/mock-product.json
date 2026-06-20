@@ -11,7 +11,7 @@
     "nova_group": "2",
     "quantity": "200g",
     "serving_size": "50g",
-    "ingredients_text_fr": "Sugar, Cocoa Butter, Milk Powder, Cocoa Mass, Emulsifier, Flavoring",
+    "ingredients_text_with_allergens_fr": "Sugar, Cocoa Butter, Milk Powder, Cocoa Mass, Emulsifier, Flavoring",
     "nutriments": {
       "added-sugars": 28.5535087719298,
       "added-sugars_100g": 28.5535087719298,
@@ -121,6 +121,7 @@
     "additives_tags": ["en:e440", "en:e631", "en:e951"],
     "manufacturing_places": "Fake City, Fake Country",
     "url": "../logo.png",
+    "link": "https://....fr",
     "popularity_key": 100,
     "created_t": 1234567890,
     "completeness": 0.5

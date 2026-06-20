@@ -283,7 +283,7 @@ onBeforeRouteUpdate((to) => {
             class="flex flex-col mt-6"
           >
             <div
-              class="w-fit inline-flex flex-wrap items-center px-2 pt-2 pb-1 bg-[#343e40] border-3 border-b-0 border-[#343e40] translate-y-[3px] rounded-t-lg gap-2"
+              class="w-fit inline-flex flex-wrap items-center px-2 pt-2 pb-1 bg-[#343e40] border-3 border-b-0 border-[#343e40] translate-y-[3px] rounded-t-xl gap-2"
             >
               <button
                 v-for="additive in product.additives"
@@ -305,7 +305,7 @@ onBeforeRouteUpdate((to) => {
 
             <div
               v-if="activeAdditive"
-              class="description w-full md:w-fit px-4 py-3 bg-white border-3 border-[#343e40] rounded-b-lg rounded-r-lg transition-all duration-300"
+              class="description w-full md:w-fit px-4 py-3 bg-white border-3 border-[#343e40] rounded-b-xl rounded-r-xl transition-all duration-300"
             >
               <p class="font-bold text-sm mb-1" :class="getAdditiveTextColor(activeAdditive)">
                 {{ formatAdditiveCode(activeAdditive) }} — {{ getAdditiveName(activeAdditive) }}
@@ -316,10 +316,158 @@ onBeforeRouteUpdate((to) => {
               ></div>
             </div>
           </div>
-          <h3 v-if="product.quantity" class="mt-6 font-semibold">Quantité :</h3>
-          <h4 id="quantity">{{ product.quantity }}</h4>
-          <h3 v-if="product.ingredients" class="mt-4 font-semibold">Ingrédients :</h3>
-          <h4 v-html="product.ingredients" id="ingredients"></h4>
+          <div v-if="product.quantity" class="mt-6 w-full max-w-2xl">
+            <details class="group bg-white rounded-xl">
+              <summary
+                class="flex justify-between items-center p-4 font-semibold text-gray-800 cursor-pointer list-none select-none outline-none"
+              >
+                <h3 class="text-base font-semibold flex items-center gap-2">
+                  <span class="h-auto w-[20px]">
+                    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 640 640">
+                      <path
+                        d="M118.2 126.4C101.5 120.8 92.4 102.6 98 85.9C103.6 69.2 121.7 60.1 138.5 65.6L251.5 103.3C265.4 79.8 291.1 64 320.4 64C364.6 64 400.4 99.8 400.4 144C400.4 147 400.2 149.9 399.9 152.8L522.5 193.7C539.3 199.3 548.3 217.4 542.7 234.2C537.1 251 519 260 502.2 254.4L366.7 209.2C362.2 212.4 357.4 215.1 352.3 217.4L352.3 544.1C352.3 561.8 338 576.1 320.3 576.1L128.3 576.1C110.6 576.1 96.3 561.8 96.3 544.1C96.3 526.4 110.6 512.1 128.3 512.1L288.3 512.1L288.3 217.4C267.3 208.2 251.1 190.4 244.1 168.4L118.2 126.4zM200.8 352L128.3 227.8L55.9 352L200.8 352zM128.4 448C65.5 448 13.2 414 2.4 369.1C-.2 358.1 3.4 346.8 9.1 337L104.3 173.8C109.3 165.2 118.5 160 128.4 160C138.3 160 147.5 165.3 152.5 173.8L247.7 337C253.4 346.8 257 358.1 254.4 369.1C243.6 413.9 191.3 448 128.4 448zM511.2 355.8L438.8 480L583.7 480L511.3 355.8zM637.2 497.1C626.4 542 574.1 576 511.2 576C448.3 576 396 542 385.2 497.1C382.6 486.1 386.2 474.8 391.9 465L487.1 301.8C492.1 293.2 501.3 288 511.2 288C521.1 288 530.3 293.3 535.3 301.8L630.5 465C636.2 474.8 639.8 486.1 637.2 497.1z"
+                      />
+                    </svg>
+                  </span>
+                  Quantité
+                </h3>
+                <span class="text-gray-400 transition-transform duration-300 group-open:rotate-180">
+                  <svg
+                    xmlns="http://www.w3.org/2000/svg"
+                    fill="none"
+                    viewBox="0 0 24 24"
+                    stroke-width="2.5"
+                    stroke="currentColor"
+                    class="w-4 h-4"
+                  >
+                    <path
+                      stroke-linecap="round"
+                      stroke-linejoin="round"
+                      d="M19.5 8.25l-7.5 7.5-7.5-7.5"
+                    />
+                  </svg>
+                </span>
+              </summary>
+              <div class="border-t-3 border-gray-100 p-4 bg-gray-50/50 rounded-b-xl">
+                <h4 id="quantity" class="text-sm text-gray-600 leading-relaxed font-semibold">
+                  {{ product.quantity }}
+                </h4>
+              </div>
+            </details>
+          </div>
+          <div v-if="product.ingredients" class="mt-2 w-full max-w-2xl">
+            <details class="group bg-white rounded-xl">
+              <summary
+                class="flex justify-between items-center p-4 font-semibold text-gray-800 cursor-pointer list-none select-none outline-none"
+              >
+                <h3 class="text-base font-semibold flex items-center gap-2">
+                  <span class="h-auto w-[20px]"
+                    ><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 640 640">
+                      <path
+                        d="M453.1 27.3L440.9 39.4C409.7 70.6 409.7 121.3 440.9 152.5C456.5 168.1 472.1 183.7 487.8 199.4C519 230.6 569.7 230.6 600.9 199.4L613 187.3C619.2 181.1 619.2 170.9 613 164.7L600.9 152.6C569.7 121.4 519 121.4 487.8 152.6C519 121.4 519 70.7 487.8 39.5L475.7 27.3C469.5 21.1 459.3 21.1 453.1 27.3zM331.6 160C286.4 160 244.5 180.4 216.6 214.3L273.3 271C282.7 280.4 282.7 295.6 273.3 304.9C263.9 314.2 248.7 314.3 239.4 304.9L191.6 257.2L67.2 530.8C61.7 542.9 64.3 557.2 73.7 566.7C83.1 576.2 97.4 578.7 109.6 573.2L251.2 508.8L207.4 465C198 455.6 198 440.4 207.4 431.1C216.8 421.8 232 421.7 241.3 431.1L297.8 487.6L393.1 444.3C446.2 420.2 480.3 367.2 480.3 308.8C480.3 226.6 413.7 160 331.5 160z"
+                      /></svg></span
+                  >Ingrédients
+                </h3>
+                <span class="text-gray-400 transition-transform duration-300 group-open:rotate-180">
+                  <svg
+                    xmlns="http://www.w3.org/2000/svg"
+                    fill="none"
+                    viewBox="0 0 24 24"
+                    stroke-width="2.5"
+                    stroke="currentColor"
+                    class="w-4 h-4"
+                  >
+                    <path
+                      stroke-linecap="round"
+                      stroke-linejoin="round"
+                      d="M19.5 8.25l-7.5 7.5-7.5-7.5"
+                    />
+                  </svg>
+                </span>
+              </summary>
+              <div class="border-t-3 border-gray-100 p-4 bg-gray-50/50 rounded-b-xl">
+                <h4
+                  v-html="product.ingredients"
+                  id="ingredients"
+                  class="text-sm text-gray-600 leading-relaxed font-normal"
+                ></h4>
+              </div>
+            </details>
+          </div>
+          <div
+            v-if="product.manufacturingPlace || product.id || product.link"
+            class="mt-2 w-full max-w-2xl"
+          >
+            <details class="group bg-white rounded-xl">
+              <summary
+                class="flex justify-between items-center p-4 font-semibold text-gray-800 cursor-pointer list-none select-none outline-none"
+              >
+                <h3 class="text-base font-semibold flex items-center gap-2">
+                  <span class="h-auto w-[20px]"
+                    ><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 640 640">
+                      <path
+                        d="M511.6 239C480 164.4 406.1 112 320 112C297.9 112 276.6 115.5 256.6 121.8C256.2 123.8 256 125.9 256 128L256 201.4C256 213.9 266.1 224 278.6 224C284.6 224 290.4 221.6 294.6 217.4L310.6 201.4C316.6 195.4 324.7 192 333.2 192L338.7 192C367.2 192 381.5 226.5 361.3 246.6C355.3 252.6 347.2 256 338.7 256L277.2 256C268.7 256 260.6 259.4 254.6 265.4L233.3 286.7C227.3 292.7 223.9 300.8 223.9 309.3L223.9 352C223.9 369.7 238.2 384 255.9 384L287.9 384C305.6 384 319.9 398.3 319.9 416L319.9 448C319.9 465.7 334.2 480 351.9 480L354.6 480C363.1 480 371.2 476.6 377.2 470.6L406.5 441.3C412.5 435.3 415.9 427.2 415.9 418.7L415.9 400C415.9 391.2 423.1 384 431.9 384C440.7 384 447.9 376.8 447.9 368L447.9 333.3C447.9 324.8 444.5 316.7 438.5 310.7L422.5 294.7C418.3 290.5 415.9 284.7 415.9 278.7C415.9 266.2 426 256.1 438.5 256.1L483.5 256.1C495.9 256.1 506.2 249 511.5 239.1zM64 320C64 178.6 178.6 64 320 64C461.4 64 576 178.6 576 320C576 461.4 461.4 576 320 576C178.6 576 64 461.4 64 320z"
+                      />
+                    </svg>
+                  </span>
+                  Informations complémentaires
+                </h3>
+                <span class="text-gray-400 transition-transform duration-300 group-open:rotate-180">
+                  <svg
+                    xmlns="http://www.w3.org/2000/svg"
+                    fill="none"
+                    viewBox="0 0 24 24"
+                    stroke-width="2.5"
+                    stroke="currentColor"
+                    class="w-4 h-4"
+                  >
+                    <path
+                      stroke-linecap="round"
+                      stroke-linejoin="round"
+                      d="M19.5 8.25l-7.5 7.5-7.5-7.5"
+                    />
+                  </svg>
+                </span>
+              </summary>
+              <div class="border-t-3 border-gray-100 p-4 bg-gray-50/50 rounded-b-xl space-y-4">
+                <div v-if="product.manufacturingPlace">
+                  <h4 class="text-xs font-bold text-gray-400 uppercase">Lieu de fabrication</h4>
+                  <p id="manufacturing-place" class="text-sm font-semibold text-gray-700 mt-0.5">
+                    {{ product.manufacturingPlace }}
+                  </p>
+                </div>
+                <div v-if="product.id">
+                  <h4 class="text-xs font-bold text-gray-400 uppercase">Code-barres</h4>
+                  <p id="barcode" class="text-sm font-mono text-gray-700 mt-0.5">
+                    {{ product.id }}
+                  </p>
+                </div>
+                <div v-if="product.link">
+                  <h4 class="text-xs font-bold text-gray-400 uppercase">Fiche produit</h4>
+                  <p class="mt-0.5">
+                    <a
+                      :href="product.link"
+                      target="_blank"
+                      id="link"
+                      class="text-sm font-semibold text-blue-600 hover:text-blue-800 underline inline-flex items-center gap-1 window-link break-all"
+                    >
+                      Voir la fiche officielle
+                      <svg
+                        xmlns="http://www.w3.org/2000/svg"
+                        viewBox="0 0 640 640"
+                        class="w-3.5 h-3.5 inline"
+                      >
+                        <path
+                          fill="currentColor"
+                          d="M354.4 83.8C359.4 71.8 371.1 64 384 64L544 64C561.7 64 576 78.3 576 96L576 256C576 268.9 568.2 280.6 556.2 285.6C544.2 290.6 530.5 287.8 521.3 278.7L464 221.3L310.6 374.6C298.1 387.1 277.8 387.1 265.3 374.6C252.8 362.1 252.8 341.8 265.3 329.3L418.7 176L361.4 118.6C352.2 109.4 349.5 95.7 354.5 83.7zM64 240C64 195.8 99.8 160 144 160L224 160C241.7 160 256 174.3 256 192C256 209.7 241.7 224 224 224L144 224C135.2 224 128 231.2 128 240L128 496C128 504.8 135.2 512 144 512L400 512C408.8 512 416 504.8 416 496L416 416C416 398.3 430.3 384 448 384C465.7 384 480 398.3 480 416L480 496C480 540.2 444.2 576 400 576L144 576C99.8 576 64 540.2 64 496L64 240z"
+                        />
+                      </svg>
+                    </a>
+                  </p>
+                </div>
+              </div>
+            </details>
+          </div>
           <div
             v-if="nutrimentsKeys.some((nutriment) => nutriment in product.nutriments)"
             id="nutriments"
@@ -354,7 +502,7 @@ onBeforeRouteUpdate((to) => {
                 >Homme</label
               >
             </div>
-            <div class="relative mt-4 overflow-x-auto shadow-md rounded-lg">
+            <div class="relative mt-4 overflow-x-auto shadow-md rounded-xl">
               <table class="w-full text-sm text-left rtl:text-right text-pretty text-gray-500">
                 <thead class="text-xs text-gray-700 uppercase">
                   <tr>
@@ -561,20 +709,6 @@ onBeforeRouteUpdate((to) => {
             </div>
             <span class="text-xs text-gray-700 mt-2"> * Apports Journaliers Recommandés </span>
           </div>
-          <h3 v-if="product.manufacturingPlace" class="mt-6 font-semibold">
-            Lieu de fabrication :
-          </h3>
-          <h4 id="manufacturing-place">
-            {{ product.manufacturingPlace }}
-          </h4>
-          <h3 v-if="product.id" class="mt-4 font-semibold">Code-barres :</h3>
-          <h4 id="barcode">{{ product.id }}</h4>
-          <h3 v-if="product.link" class="mt-4 font-semibold">Plus d'infos :</h3>
-          <h4>
-            <a :href="product.link" target="_blank" id="link" class="underline">{{
-              product.link
-            }}</a>
-          </h4>
           <div v-if="product.categories.length" id="tags" class="relative mt-4">
             <div
               v-if="categoriesIsLoading || productsIsLoading"
