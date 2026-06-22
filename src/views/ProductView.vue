@@ -10,6 +10,7 @@ const router = useRouter()
 const route = useRoute()
 
 const {
+  error,
   searchProducts,
   product,
   suggestedProducts,
@@ -162,6 +163,11 @@ watch(
 
 onBeforeMount(async () => {
   await fetchProduct(Array.isArray(route.params.id) ? route.params.id[0] : route.params.id)
+  if (error.value) {
+    alert("Le produit n'existe pas dans la base de données.")
+    router.back()
+    return
+  }
   categoriesIsLoading.value = true
   product.categories = await getTranslatedCategories(product.categories)
   categoriesIsLoading.value = false

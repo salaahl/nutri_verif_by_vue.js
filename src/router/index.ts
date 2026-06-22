@@ -38,7 +38,7 @@ const routes = [
   {
     path: '/:pathMatch(.*)*',
     component: NotFound,
-    name: 'NotFound',
+    name: 'not-found',
     meta: { transition: 'slide-fade' }
   }
 ]

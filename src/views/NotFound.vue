@@ -1,5 +1,8 @@
 <script setup lang="ts">
 import { onMounted } from 'vue'
+import { useRouter } from 'vue-router'
+
+const router = useRouter()
 
 onMounted(() => {
   const notFound = document.querySelector('#not-found') as HTMLElement
@@ -18,9 +21,9 @@ onMounted(() => {
 <template>
   <div id="not-found">
     <h1 class="title w-fit mx-auto text-xl md:text-2xl text-center uppercase">Page introuvable</h1>
-    <RouterLink :to="'/'">
-      <h3 class="w-fit mx-auto text-sm text-center uppercase">Retourner sur la page précédente</h3>
-    </RouterLink>
+    <button type="button" class="block w-fit mx-auto" @click="router.back()">
+      <h3 class="text-sm text-center uppercase">Retourner sur la page précédente</h3>
+    </button>
   </div>
 </template>
 
