@@ -311,7 +311,7 @@ onUnmounted(() => {
         <div class="h-full flex flex-col md:flex-col items-center">
           <img
             src="https://static.openfoodfacts.org/images/attributes/dist/nutriscore-a.svg"
-            alt="Nutriscore"
+            alt="Image du nutriscore"
             class="w-[10rem] mb-8"
           />
           <p class="w-full font-thin">
@@ -332,7 +332,7 @@ onUnmounted(() => {
         <div class="h-full flex flex-col md:flex-col items-center">
           <img
             src="https://static.openfoodfacts.org/images/attributes/dist/nova-group-1.svg"
-            alt="NOVA"
+            alt="Image du novascore"
             class="w-[2.5rem] mb-8"
           />
           <p class="w-full font-thin">
