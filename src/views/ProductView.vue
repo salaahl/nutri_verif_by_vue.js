@@ -4,7 +4,7 @@ import { useRoute, useRouter, onBeforeRouteUpdate } from 'vue-router'
 import { useProducts } from '../composables/useProducts'
 import AlternativesProducts from '@/components/AlternativesProducts.vue'
 
-import { additivesDatabase } from '../utils/ingredientParser/additives.ts'
+import { additivesDatabase } from '../utils/ingredients/additives.ts'
 
 const router = useRouter()
 const route = useRoute()
@@ -19,6 +19,7 @@ const {
   suggestedProductsIsLoading,
   fetchSuggestedProducts,
   fetchProduct,
+  nutriscoreDescription,
   novaDescription,
   ajrSelected,
   ajrValues,
@@ -231,7 +232,7 @@ onBeforeRouteUpdate((to) => {
                 product.nutriscore +
                 '.svg'
               "
-              :alt="'Nutriscore : ' + product.nutriscore"
+              :alt="nutriscoreDescription[product.nutriscore as keyof typeof nutriscoreDescription]"
             />
             <img
               id="nova-group-img"
@@ -243,11 +244,8 @@ onBeforeRouteUpdate((to) => {
               "
               :alt="'Groupe Nova : ' + product.novaGroup"
             />
-            <div
-              v-if="novaDescription[product.novaGroup as '1' | '2' | '3' | '4']"
-              class="text-xs mt-2"
-            >
-              ({{ novaDescription[product.novaGroup as '1' | '2' | '3' | '4'] }})
+            <div class="text-xs mt-2">
+              ({{ novaDescription[product.novaGroup as keyof typeof novaDescription] }})
             </div>
           </div>
           <div v-if="product.nutrient_levels" id="nutrient-levels" class="flex flex-wrap mt-2">

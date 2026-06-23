@@ -5,7 +5,7 @@ import { useProducts } from '../composables/useProducts'
 
 const route = useRoute()
 const router = useRouter()
-const { searchProducts } = useProducts()
+const { nutriscoreDescription, novaDescription, searchProducts } = useProducts()
 
 interface ProductProps {
   id?: string
@@ -65,7 +65,7 @@ const searchProductsByCategory: Function = async (category: string) => {
               nutriscore +
               '.svg'
             "
-            :alt="'Nutriscore : ' + nutriscore"
+            :alt="nutriscoreDescription[nutriscore as keyof typeof nutriscoreDescription]"
             class="h-[40px]"
           />
           <div class="flex justify-between items-end mt-1">
@@ -75,16 +75,14 @@ const searchProductsByCategory: Function = async (category: string) => {
                 nova +
                 '.svg'
               "
-              :alt="'Groupe Nova : ' + nova"
+              :alt="novaDescription[nova as keyof typeof novaDescription]"
               class="h-[35px]"
             />
             <!-- ".prevent" permet d'éviter la remontée du clic au RouterLink -->
             <button
               v-if="category !== '' && category?.startsWith('fr:')"
               class="product-card-tag max-h-[30px] ml-2 md:ml-6 py-1 lg:py-1.5 px-2 truncate text-[10px] lg:text-xs font-semibold bg-white rounded-full"
-              @click.prevent="
-                searchProductsByCategory(category)
-              "
+              @click.prevent="searchProductsByCategory(category)"
             >
               #{{ category.trim().split(':')[1].replace(/-/g, ' ').trim() }}
             </button>

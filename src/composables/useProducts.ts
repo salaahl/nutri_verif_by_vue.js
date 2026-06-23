@@ -194,11 +194,20 @@ export function useProducts() {
     get: () => productsStore.getAjrSelected,
     set: (val) => productsStore.updateAjrSelected(val)
   })
+  const nutriscoreDescription = {
+    a: 'Excellente qualité nutritionnelle',
+    b: 'Bonne qualité nutritionnelle',
+    c: 'Qualité nutritionnelle moyenne',
+    d: 'Qualité nutritionnelle médiocre',
+    e: 'Faible qualité nutritionnelle',
+    unknown: 'Nutriscore inconnu'
+  }
   const novaDescription = {
     '1': 'Aliments non transformés / minimalement',
     '2': 'Ingrédients culinaires transformés',
     '3': 'Aliments transformés',
-    '4': 'Produits ultra-transformés'
+    '4': 'Produits ultra-transformés',
+    unknown: 'Niveau de transformation inconnu'
   }
   const ajrValues = computed<{ [key: string]: number }>(() => {
     if (ajrSelected.value === 'women') {
@@ -659,6 +668,7 @@ export function useProducts() {
     homeSuggestedProducts,
     suggestedProductsIsLoading,
     ajrSelected,
+    nutriscoreDescription,
     novaDescription,
     ajrValues,
     filter,
