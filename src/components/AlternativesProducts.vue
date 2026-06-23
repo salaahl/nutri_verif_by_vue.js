@@ -1,5 +1,4 @@
 <script setup lang="ts">
-import { ref } from 'vue'
 import ProductCard from './ProductCard.vue'
 
 interface Products {
