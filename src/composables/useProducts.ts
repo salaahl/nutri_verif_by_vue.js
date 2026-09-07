@@ -124,7 +124,7 @@ async function fetchFromProxy(
   const controller = new AbortController()
   const timerId = setTimeout(() => controller.abort(), timeout)
 
-  if (resource.startsWith('/') || (resource.includes('localhost') && !resource.includes(':8000'))) {
+  if (resource.startsWith('/') || resource.includes('localhost')) {
     try {
       const response = await fetch(resource, {
         ...options,
@@ -136,25 +136,33 @@ async function fetchFromProxy(
     }
   }
 
-  const proxyUrl = 'https://jokes-api-platform.onrender.com/search-products'
+  let proxyUrl: string = ''
+  let requestBody: any
+  const finalHeaders = new Headers(headers || {})
 
-  // pour éviter que JSON.stringify() ne le transforme en "{}"
-  const serializedBody = body instanceof URLSearchParams ? body.toString() : body
+  if (resource.includes('dish')) {
+    proxyUrl = 'https://jokes-api-platform.onrender.com/search-dish'
+    requestBody = body
+    finalHeaders.delete('Content-Type')
+  } else {
+    proxyUrl = 'https://jokes-api-platform.onrender.com/search-products'
+    // pour éviter que JSON.stringify() ne le transforme en "{}"
+    const serializedBody = body instanceof URLSearchParams ? body.toString() : body
 
-  const proxyBody = JSON.stringify({
-    url: resource,
-    method: method,
-    body: serializedBody
-  })
+    requestBody = JSON.stringify({
+      url: resource,
+      method: method,
+      body: serializedBody
+    })
+
+    finalHeaders.set('Content-Type', 'application/json')
+  }
 
   try {
     const response = await fetch(proxyUrl, {
       method: 'POST',
-      headers: {
-        ...headers,
-        'Content-Type': 'application/json'
-      },
-      body: proxyBody,
+      headers: finalHeaders,
+      body: requestBody,
       signal: controller.signal
     })
 
@@ -411,6 +419,52 @@ export function useProducts() {
       Object.assign(product, transformProduct(data.product))
     } else {
       error.value = "Le produit n'existe pas dans la base de données."
+    }
+
+    productIsLoading.value = false
+  }
+
+  async function fetchDish(image: Blob | File, notes: string) {
+    productIsLoading.value = true
+    error.value = null
+
+    const MAX_IMAGE_SIZE = 8 * 1024 * 1024 // 8 Mo
+
+    if (image.size > MAX_IMAGE_SIZE) {
+      const sizeInMo = (image.size / (1024 * 1024)).toFixed(1)
+      error.value = `L'image est trop volumineuse (${sizeInMo} Mo). La taille maximale autorisée est de 8 Mo.`
+      productIsLoading.value = false
+      return
+    }
+
+    let data: APIProduct | null = null
+
+    try {
+      const formData = new FormData()
+      formData.append('image', image, 'dish.jpg')
+      formData.append('notes', notes)
+
+      const response = await fetchFromProxy('https://jokes-api-platform.onrender.com/search-dish', {
+        method: 'POST',
+        body: formData
+      })
+
+      if (!response.ok) {
+        const errorText = await response.text()
+        throw new Error(`Erreur HTTP ${response.status}: ${errorText}`)
+      }
+
+      data = await response.json()
+    } catch (apiErr) {
+      error.value = "Échec de l'analyse du plat."
+      productIsLoading.value = false
+      return
+    }
+
+    if (data && data.id) {
+      Object.assign(product, transformProduct(data))
+    } else {
+      error.value = "Impossible d'analyser les informations du plat."
     }
 
     productIsLoading.value = false
@@ -678,6 +732,7 @@ export function useProducts() {
     error,
     searchProducts,
     fetchProduct,
+    fetchDish,
     fetchLastProducts,
     fetchSuggestedProducts,
     getTranslatedCategories

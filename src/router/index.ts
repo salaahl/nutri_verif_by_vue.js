@@ -30,6 +30,12 @@ const routes = [
     meta: { transition: 'slide-fade' }
   },
   {
+    path: '/dish',
+    component: ProductView,
+    name: 'dish',
+    meta: { transition: 'slide-fade' }
+  },
+  {
     path: '/legal-notice',
     component: LegalNoticeView,
     name: 'legal-notice',

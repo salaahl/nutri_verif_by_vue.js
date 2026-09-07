@@ -94,14 +94,16 @@ const resetProduct = () => {
 
 // Chargement du produit et des suggestions
 const updateProduct = async (productId: string) => {
-  resetProduct()
-  showSuggestedProducts.value = false
-  suggestedProducts.value = []
+  if (window.location.hostname.includes('product')) {
+    resetProduct()
+    showSuggestedProducts.value = false
+    suggestedProducts.value = []
 
-  await fetchProduct(productId)
-  categoriesIsLoading.value = true
-  product.categories = await getTranslatedCategories(product.categories)
-  categoriesIsLoading.value = false
+    await fetchProduct(productId)
+    categoriesIsLoading.value = true
+    product.categories = await getTranslatedCategories(product.categories)
+    categoriesIsLoading.value = false
+  }
 }
 
 const formatAdditiveCode = (additiveStr: string): string => {
@@ -163,15 +165,21 @@ watch(
 )
 
 onBeforeMount(async () => {
-  await fetchProduct(Array.isArray(route.params.id) ? route.params.id[0] : route.params.id)
-  if (error.value) {
-    alert("Le produit n'existe pas dans la base de données.")
-    router.back()
-    return
+  const rawId = Array.isArray(route.params.id) ? route.params.id[0] : route.params.id
+  const hasId = Boolean(rawId && rawId !== 'undefined')
+
+  if (hasId) {
+    await fetchProduct(rawId as string)
+
+    if (error.value) {
+      alert("Le produit n'existe pas dans la base de données.")
+      router.back()
+      return
+    }
+    categoriesIsLoading.value = true
+    product.categories = await getTranslatedCategories(product.categories)
+    categoriesIsLoading.value = false
   }
-  categoriesIsLoading.value = true
-  product.categories = await getTranslatedCategories(product.categories)
-  categoriesIsLoading.value = false
 })
 
 onBeforeRouteUpdate((to) => {
@@ -181,7 +189,13 @@ onBeforeRouteUpdate((to) => {
 
 <template>
   <div
-    :key="Array.isArray(route.params.id) ? route.params.id[0] : route.params.id"
+    :key="
+      Array.isArray(route.params.id)
+        ? route.params.id[0]
+        : route.params.id
+          ? route.params.id
+          : product.id
+    "
     id="product-container"
     class="md:min-h-[calc(100vh-204px)] flex flex-wrap justify-between md:flex-nowrap flex-col md:flex-row mb-16"
   >
@@ -735,7 +749,9 @@ onBeforeRouteUpdate((to) => {
   </div>
   <AlternativesProducts
     v-if="
-      (product.nutriscore && product.nutriscore !== 'a') ||
+      ((Array.isArray(route.params.id) ? route.params.id[0] : route.params.id) !== 'undefined' &&
+        product.nutriscore &&
+        product.nutriscore !== 'a') ||
       (product.novaGroup && product.novaGroup !== '1')
     "
     :showAlternatives="showSuggestedProducts"

@@ -9,7 +9,9 @@ export const useProductsStore = defineStore('products', {
     page: 1,
     pages: 1,
     ajrSelected: 'women',
-    launch: true
+    launch: true,
+    cameraPermission: false,
+    geminiPermission: false
   }),
   actions: {
     updateProducts(payload: any) {
@@ -35,6 +37,12 @@ export const useProductsStore = defineStore('products', {
     },
     setLaunchStatus(payload: boolean) {
       this.launch = payload
+    },
+    setCameraPermission(payload: boolean) {
+      this.cameraPermission = payload
+    },
+    setGeminiPermission(payload: boolean) {
+      this.geminiPermission = payload
     }
   },
   getters: {
@@ -61,6 +69,12 @@ export const useProductsStore = defineStore('products', {
     },
     getLaunchStatus(state) {
       return state.launch
+    },
+    getCameraPermission(state) {
+      return state.cameraPermission
+    },
+    getGeminiPermission(state) {
+      return state.geminiPermission
     }
   }
 })
