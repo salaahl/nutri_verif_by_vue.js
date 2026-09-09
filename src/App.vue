@@ -336,17 +336,17 @@ onMounted(() => {
 /* Couleurs par défaut */
 #background-blobs > g:nth-child(1),
 #background-blobs > g:nth-child(4) {
-  fill: hsla(160, 100%, 37%, 0.25);
+  fill: hsla(160, 100%, 37%, 1);
 }
 
 #background-blobs > g:nth-child(2),
 #background-blobs > g:nth-child(5) {
-  fill: hsla(160, 100%, 37%, 0.5);
+  display: none;
 }
 
 #background-blobs > g:nth-child(3),
 #background-blobs > g:nth-child(6) {
-  fill: hsla(160, 100%, 37%, 1);
+  display: none;
 }
 
 /* Couleurs personnalisées  */
@@ -490,6 +490,23 @@ footer > div,
 }
 
 @media (min-width: 768px) {
+  #background-blobs > g:nth-child(1),
+  #background-blobs > g:nth-child(4) {
+    fill: hsla(160, 100%, 37%, 0.25);
+  }
+
+  #background-blobs > g:nth-child(2),
+  #background-blobs > g:nth-child(5) {
+    display: unset;
+    fill: hsla(160, 100%, 37%, 0.5);
+  }
+
+  #background-blobs > g:nth-child(3),
+  #background-blobs > g:nth-child(6) {
+    display: unset;
+    fill: hsla(160, 100%, 37%, 1);
+  }
+
   #back-link:hover {
     transform: translateX(-10px);
   }
