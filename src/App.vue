@@ -380,11 +380,13 @@ onMounted(() => {
 .scanner-view > svg > #background-blobs > g:nth-child(6),
 .legal-notice-view > svg > #background-blobs > g:nth-child(6),
 .search-view > svg > #background-blobs > g:nth-child(6),
-.product-view > svg > #background-blobs > g {
+.product-view > svg > #background-blobs > g,
+.dish-view > svg > #background-blobs > g {
   fill: rgb(245, 245, 245);
 }
 
-.product-view > svg > .bg-base {
+.product-view > svg > .bg-base,
+.dish-view > svg > .bg-base {
   fill: whitesmoke;
 }
 
@@ -400,7 +402,9 @@ onMounted(() => {
 }
 
 .product-view > svg > .decorations > .plant-primary,
-.product-view > svg > .decorations > .plant-secondary {
+.product-view > svg > .decorations > .plant-secondary,
+.dish-view > svg > .decorations > .plant-primary,
+.dish-view > svg > .decorations > .plant-secondary {
   fill-opacity: 0.04;
 }
 

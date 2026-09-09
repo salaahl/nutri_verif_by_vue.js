@@ -466,10 +466,10 @@ export function useProducts() {
       Object.assign(product, transformProduct(data))
     } else {
       Object.assign(product, {
-        id: '',
+        id: 'dish_unknown',
         image: '',
-        brand: '',
-        name: '',
+        brand: 'Plat',
+        name: "Echec de l'analyse",
         categories: [],
         lastUpdate: '',
         nutriscore: 'unknown',
