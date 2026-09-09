@@ -34,7 +34,7 @@ interface Product {
   serving_size: string
   ingredients: string
   nutriments: { [key: string]: string }
-  nutrient_levels: string
+  nutrient_levels: { [key: string]: string }
   additives: string[]
   manufacturingPlace: string
   link: string
@@ -64,7 +64,7 @@ interface APIProduct {
   ingredients_text_with_allergens_fr?: string
   nutriments?: { [key: string]: string }
   additives_tags?: string[]
-  nutrient_levels?: string
+  nutrient_levels?: { [key: string]: string }
   manufacturing_places?: string
   link?: string
 }
@@ -181,6 +181,35 @@ async function fetchFromProxy(
   }
 }
 
+function transformProduct(product: APIProduct): Product {
+  return {
+    id: product.id ?? '',
+    image: product.image_front_url ?? '/logo.png',
+    brand: product.brands ?? '',
+    name: product.product_name_fr ?? '',
+    categories: product.categories_hierarchy ?? [],
+    lastUpdate: product.last_updated_t
+      ? new Date(product.last_updated_t * 1000).toLocaleDateString('fr-FR', {
+          year: 'numeric',
+          month: 'long',
+          day: 'numeric'
+        })
+      : '',
+    nutriscore: product.nutriscore_grade ?? 'unknown',
+    novaGroup: product.nova_group ?? 'unknown',
+    quantity: product.quantity ?? '',
+    serving_size: product.serving_size ?? '',
+    ingredients: product.ingredients_text_with_allergens_fr ?? '',
+    nutriments: product.nutriments ?? {},
+    nutrient_levels: product.nutrient_levels ?? {},
+    additives: product.additives_tags ?? [],
+    manufacturingPlace: product.manufacturing_places ?? '',
+    link: product.link ?? ''
+  }
+}
+
+const product = reactive<Product>(transformProduct({}))
+
 export function useProducts() {
   const productsStore = useProductsStore()
   const products = computed<Products[]>({
@@ -191,7 +220,6 @@ export function useProducts() {
     get: () => productsStore.getProductsLoadingState,
     set: (val) => productsStore.updateProductsLoadingState(val)
   })
-  const product = reactive<Product>(transformProduct({}))
   const productIsLoading = ref(false)
   const lastProducts = ref<Products[]>([])
   const lastProductsIsLoading = ref(false)
@@ -283,33 +311,6 @@ export function useProducts() {
       nova: product.nova_group ?? 'unknown',
       category:
         product.categories_tags?.find((category: string) => category.startsWith('fr:')) ?? ''
-    }
-  }
-
-  function transformProduct(product: APIProduct): Product {
-    return {
-      id: product.id ?? '',
-      image: product.image_front_url ?? '/logo.png',
-      brand: product.brands ?? '',
-      name: product.product_name_fr ?? '',
-      categories: product.categories_hierarchy ?? [],
-      lastUpdate: product.last_updated_t
-        ? new Date(product.last_updated_t * 1000).toLocaleDateString('fr-FR', {
-            year: 'numeric',
-            month: 'long',
-            day: 'numeric'
-          })
-        : '',
-      nutriscore: product.nutriscore_grade ?? 'unknown',
-      novaGroup: product.nova_group ?? 'unknown',
-      quantity: product.quantity ?? '',
-      serving_size: product.serving_size ?? '',
-      ingredients: product.ingredients_text_with_allergens_fr ?? '',
-      nutriments: product.nutriments ?? {},
-      nutrient_levels: product.nutrient_levels ?? '',
-      additives: product.additives_tags ?? [],
-      manufacturingPlace: product.manufacturing_places ?? '',
-      link: product.link ?? ''
     }
   }
 
