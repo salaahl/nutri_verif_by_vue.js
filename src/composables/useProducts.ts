@@ -465,7 +465,25 @@ export function useProducts() {
     if (data && data.id) {
       Object.assign(product, transformProduct(data))
     } else {
+      Object.assign(product, {
+        id: '',
+        image: '',
+        brand: '',
+        name: '',
+        categories: [],
+        lastUpdate: '',
+        nutriscore: 'unknown',
+        novaGroup: 'unknown',
+        quantity: '',
+        serving_size: '',
+        ingredients: '',
+        nutriments: {},
+        nutrient_levels: {},
+        manufacturingPlace: '',
+        link: ''
+      })
       error.value = "Impossible d'analyser les informations du plat."
+      console.error("Erreur lors de l'analyse du plat")
     }
 
     productIsLoading.value = false

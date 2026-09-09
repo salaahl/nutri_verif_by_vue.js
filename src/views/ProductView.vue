@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { onBeforeMount, ref, watch } from 'vue'
+import { computed, onBeforeMount, ref, watch } from 'vue'
 import { useRoute, useRouter, onBeforeRouteUpdate } from 'vue-router'
 import { useProducts } from '../composables/useProducts'
 import AlternativesProducts from '@/components/AlternativesProducts.vue'
@@ -57,6 +57,15 @@ const searchProductsByCategory: Function = async (category: string) => {
   router.push({ name: 'search' })
 }
 
+const showAlternativesButton = computed(() => {
+  if (!route.params.id) return false
+
+  const hasBadNutriscore = product.nutriscore && product.nutriscore !== 'a'
+  const hasBadNova = product.novaGroup && String(product.novaGroup) !== '1'
+
+  return Boolean(hasBadNutriscore || hasBadNova)
+})
+
 const searchAlternatives = () => {
   showSuggestedProducts.value = true
   fetchSuggestedProducts({
@@ -86,7 +95,7 @@ const resetProduct = () => {
     serving_size: '',
     ingredients: '',
     nutriments: {},
-    nutrient_levels: [],
+    nutrient_levels: {},
     manufacturingPlace: '',
     link: ''
   })
@@ -270,7 +279,8 @@ onBeforeRouteUpdate((to) => {
                 'nutrient mt-4 mr-2 py-2 px-3 rounded-full',
                 level === 'low' ? 'bg-[#00bd7e]' : '',
                 level === 'moderate' ? 'bg-yellow-500' : '',
-                level === 'high' ? 'bg-red-500' : ''
+                level === 'high' ? 'bg-red-500' : '',
+                level === 'unknown' ? 'bg-gray-500' : ''
               ]"
             >
               <span class="text-sm font-semibold text-white">
@@ -748,12 +758,7 @@ onBeforeRouteUpdate((to) => {
     </section>
   </div>
   <AlternativesProducts
-    v-if="
-      ((Array.isArray(route.params.id) ? route.params.id[0] : route.params.id) !== 'undefined' &&
-        product.nutriscore &&
-        product.nutriscore !== 'a') ||
-      (product.novaGroup && product.novaGroup !== '1')
-    "
+    v-if="showAlternativesButton"
     :showAlternatives="showSuggestedProducts"
     :from="'product'"
     :hasProduct="!!product.id"
