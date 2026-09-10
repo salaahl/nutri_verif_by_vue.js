@@ -10,7 +10,18 @@ import NotFound from '../views/NotFound.vue'
 
 const routes = [
   { path: '/', component: HomeView, name: 'home', meta: { transition: 'slide-fade' } },
-  { path: '/scanner', component: ScannerView, name: 'scanner', meta: { transition: 'slide-fade' } },
+  {
+    path: '/barcode-scanner',
+    component: ScannerView,
+    name: 'barcode-scanner',
+    meta: { transition: 'slide-fade' }
+  },
+  {
+    path: '/dish-scanner',
+    component: ScannerView,
+    name: 'dish-scanner',
+    meta: { transition: 'slide-fade' }
+  },
   {
     path: '/about',
     component: AboutView,

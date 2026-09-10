@@ -18,7 +18,7 @@ const geminiPermission = computed<boolean>({
   set: (val) => productsStore.setGeminiPermission(val)
 })
 
-const isBarcodeMode = ref<boolean>(true)
+const isBarcodeMode = route.path === '/barcode-scanner' ? ref(true) : ref(false)
 const scannedCode = ref<string | null>(null)
 let html5QrcodeScanner: Html5Qrcode | null = null
 const dishNotes = ref<string>('')
@@ -52,12 +52,18 @@ async function startScanner() {
         isBarcodeMode.value ? onScanFailure : () => {}
       )
 
-      cameraPermission.value = true
+      if (isBarcodeMode.value) {
+        cameraPermission.value = true
+      } else {
+        cameraPermission.value = true
+        geminiPermission.value = true
+      }
     } catch (err: any) {
       console.error("Impossible d'accéder à la caméra :", err)
       // Détection si l'erreur vient d'un refus de l'utilisateur
       if (err.toString().includes('NotAllowedError') || err.toString().includes('Permission')) {
         cameraPermission.value = false
+        geminiPermission.value = false
       }
     }
   }
@@ -88,17 +94,6 @@ async function onScanSuccess(decodedText: string, decodedResult: any) {
 
 function onScanFailure(error: any) {
   // S'exécute à chaque frame où aucun code n'est détecté.
-}
-
-async function searchByDishes() {
-  await stopScanner()
-  document.getElementById('scanner')?.classList.add('hidden')
-  isBarcodeMode.value = !isBarcodeMode.value
-
-  if (geminiPermission.value === true) {
-    await startScanner()
-    document.getElementById('scanner')?.classList.remove('hidden')
-  }
 }
 
 // Extraction de la frame courante
@@ -158,7 +153,12 @@ async function searchDish() {
 }
 
 onMounted(async () => {
-  await startScanner()
+  if (
+    (isBarcodeMode.value && cameraPermission.value) ||
+    (!isBarcodeMode.value && cameraPermission.value && geminiPermission.value)
+  ) {
+    await startScanner()
+  }
 })
 
 // Nettoyage de sécurité si l'utilisateur quitte la page sans avoir scanné
@@ -183,44 +183,41 @@ onBeforeUnmount(async () => {
       class="h-auto w-full mb-6 aspect-square border-4 border-white rounded-lg overflow-hidden bg-black relative"
     >
       <!-- Le flux vidéo de la caméra s'affichera ici -->
-    </div>
 
-    <!-- Fenêtres de consentement -->
-    <div
-      v-if="isBarcodeMode && !cameraPermission"
-      class="w-full mb-12 p-4 aspect-square border-4 border-red-500 rounded-lg bg-black flex flex-col justify-center items-center p-6 text-center"
-    >
-      <p class="text-red-400 font-bold mb-2">Accès caméra refusé</p>
-      <p class="text-sm text-gray-300">
-        Pour scanner un produit, veuillez autoriser l'accès à la caméra.
-      </p>
-      <button
-        class="mt-6 text-white bg-red-500 hover:bg-red-600 focus:ring-4 focus:outline-none focus:ring-red-300 font-medium rounded-full text-sm px-5 py-2.5 text-center inline-flex items-center"
-        @click="startScanner()"
+      <!-- Fenêtres de consentement -->
+      <div
+        v-if="isBarcodeMode && !cameraPermission"
+        class="w-full mb-12 p-4 aspect-square rounded-lg bg-black flex flex-col justify-center items-center p-6 text-center"
       >
-        Autoriser l'accès à la caméra
-      </button>
-    </div>
+        <p class="text-red-400 font-bold mb-2">Accès caméra</p>
+        <p class="text-sm text-gray-300">
+          Pour scanner un produit, veuillez autoriser l'accès à la caméra.
+        </p>
+        <button
+          class="text-white bg-red-500 hover:bg-red-600 focus:ring-4 focus:outline-none focus:ring-red-300 font-medium rounded-full text-sm px-5 py-2.5 text-center inline-flex items-center"
+          @click="startScanner()"
+        >
+          Autoriser l'accès à la caméra
+        </button>
+      </div>
 
-    <div
-      v-else-if="!isBarcodeMode && !geminiPermission"
-      class="w-full mb-12 p-4 aspect-square border-4 border-red-500 rounded-lg bg-black flex flex-col justify-center items-center p-6 text-center"
-    >
-      <p class="text-red-400 font-bold mb-2">Accès caméra refusé</p>
-      <p class="text-xs text-gray-300">
-        L'analyse de vos plats est réalisée par l'IA de Google (Gemini). Pour protéger votre vie
-        privée, cadrez uniquement vos aliments : veillez à ne laisser apparaître aucun visage,
-        document ni élément personnel.
-      </p>
-      <button
-        class="mt-6 text-white bg-red-500 hover:bg-red-600 focus:ring-4 focus:outline-none focus:ring-red-300 font-medium rounded-full text-sm px-5 py-2.5 text-center inline-flex items-center"
-        @click="
-          geminiPermission = true;
-          searchByDishes()
-        "
+      <div
+        v-else-if="!isBarcodeMode && !cameraPermission && !geminiPermission"
+        class="w-full p-4 aspect-square rounded-lg bg-black flex flex-col justify-center items-center p-6 text-center"
       >
-        Autoriser l'accès à la caméra
-      </button>
+        <p class="text-red-400 font-bold mb-2">Accès caméra</p>
+        <p class="text-xs text-gray-300">
+          L'analyse de vos plats est réalisée par l'IA de Google (Gemini). Pour protéger votre vie
+          privée, cadrez uniquement vos aliments : veillez à ne laisser apparaître aucun visage,
+          document ni élément personnel.
+        </p>
+        <button
+          class="mt-6 text-white bg-red-500 hover:bg-red-600 focus:ring-4 focus:outline-none focus:ring-red-300 font-medium rounded-full text-sm px-5 py-2.5 text-center inline-flex items-center"
+          @click="startScanner()"
+        >
+          Autoriser l'accès à la caméra
+        </button>
+      </div>
     </div>
 
     <!-- Spinner de chargement -->
@@ -232,13 +229,9 @@ onBeforeUnmount(async () => {
     </div>
 
     <!-- Contrôles sous la caméra -->
-    <div v-if="cameraPermission" v-show="!productIsLoading" class="w-full">
+    <div v-if="!isBarcodeMode && !productIsLoading" class="w-full">
       <!-- Bloc Plat -->
-      <div
-        v-if="!isBarcodeMode && geminiPermission"
-        key="mode-dish"
-        class="w-full flex flex-col items-center gap-4"
-      >
+      <div class="w-full flex flex-col items-center gap-4">
         <input
           v-model="dishNotes"
           type="text"
@@ -258,16 +251,6 @@ onBeforeUnmount(async () => {
               d="M213.1 128.8L202.7 160L128 160C92.7 160 64 188.7 64 224L64 480C64 515.3 92.7 544 128 544L512 544C547.3 544 576 515.3 576 480L576 224C576 188.7 547.3 160 512 160L437.3 160L426.9 128.8C420.4 109.2 402.1 96 381.4 96L258.6 96C237.9 96 219.6 109.2 213.1 128.8zM320 256C373 256 416 299 416 352C416 405 373 448 320 448C267 448 224 405 224 352C224 299 267 256 320 256z"
             />
           </svg>
-        </button>
-      </div>
-
-      <div v-if="isBarcodeMode" class="w-fit mx-auto my-6">
-        <button
-          type="button"
-          class="w-full flex items-center justify-center p-3 text-center text-white font-semibold bg-[#343a40] rounded-lg cursor-pointer"
-          @click="searchByDishes()"
-        >
-          Scanner un plat
         </button>
       </div>
     </div>

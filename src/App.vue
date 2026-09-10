@@ -351,42 +351,42 @@ onMounted(() => {
 
 /* Couleurs personnalisées  */
 .about-view > svg > #background-blobs > g:nth-child(1),
-.scanner-view > svg > #background-blobs > g:nth-child(1),
+.barcode-scanner-view > svg > #background-blobs > g:nth-child(1),
 .legal-notice-view > svg > #background-blobs > g:nth-child(1),
 .search-view > svg > #background-blobs > g:nth-child(1),
 .about-view > svg > #background-blobs > g:nth-child(4),
-.scanner-view > svg > #background-blobs > g:nth-child(4),
+.barcode-scanner-view > svg > #background-blobs > g:nth-child(4),
 .legal-notice-view > svg > #background-blobs > g:nth-child(4),
 .search-view > svg > #background-blobs > g:nth-child(4) {
   fill: rgb(245, 245, 245, 0.33);
 }
 
 .about-view > svg > #background-blobs > g:nth-child(2),
-.scanner-view > svg > #background-blobs > g:nth-child(2),
+.barcode-scanner-view > svg > #background-blobs > g:nth-child(2),
 .legal-notice-view > svg > #background-blobs > g:nth-child(2),
 .search-view > svg > #background-blobs > g:nth-child(2),
 .about-view > svg > #background-blobs > g:nth-child(5),
-.scanner-view > svg > #background-blobs > g:nth-child(5),
+.barcode-scanner-view > svg > #background-blobs > g:nth-child(5),
 .legal-notice-view > svg > #background-blobs > g:nth-child(5),
 .search-view > svg > #background-blobs > g:nth-child(5) {
   fill: rgb(245, 245, 245, 0.66);
 }
 
 .about-view > svg > #background-blobs > g:nth-child(3),
-.scanner-view > svg > #background-blobs > g:nth-child(3),
+.barcode-scanner-view > svg > #background-blobs > g:nth-child(3),
 .legal-notice-view > svg > #background-blobs > g:nth-child(3),
 .search-view > svg > #background-blobs > g:nth-child(3),
 .about-view > svg > #background-blobs > g:nth-child(6),
-.scanner-view > svg > #background-blobs > g:nth-child(6),
+.barcode-scanner-view > svg > #background-blobs > g:nth-child(6),
 .legal-notice-view > svg > #background-blobs > g:nth-child(6),
 .search-view > svg > #background-blobs > g:nth-child(6),
 .product-view > svg > #background-blobs > g,
-.dish-view > svg > #background-blobs > g {
+.dish-scanner-view > svg > #background-blobs > g {
   fill: rgb(245, 245, 245);
 }
 
 .product-view > svg > .bg-base,
-.dish-view > svg > .bg-base {
+.dish-scanner-view > svg > .bg-base {
   fill: whitesmoke;
 }
 
@@ -403,8 +403,8 @@ onMounted(() => {
 
 .product-view > svg > .decorations > .plant-primary,
 .product-view > svg > .decorations > .plant-secondary,
-.dish-view > svg > .decorations > .plant-primary,
-.dish-view > svg > .decorations > .plant-secondary {
+.dish-scanner-view > svg > .decorations > .plant-primary,
+.dish-scanner-view > svg > .decorations > .plant-secondary {
   fill-opacity: 0.04;
 }
 
