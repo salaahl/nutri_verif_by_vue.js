@@ -286,7 +286,7 @@ onBeforeRouteUpdate((to) => {
               <span class="text-sm font-semibold text-white">
                 {{
                   nutrient.toString() === 'fat'
-                    ? 'matieres grasses'
+                    ? 'matières grasses'
                     : nutrient.toString() === 'salt'
                       ? 'sel'
                       : nutrient.toString() === 'saturated-fat'
@@ -551,7 +551,7 @@ onBeforeRouteUpdate((to) => {
                       scope="row"
                       class="px-6 py-4 font-medium text-gray-900 whitespace-nowrap bg-gray-50"
                     >
-                      Energie
+                      Énergie
                     </th>
                     <td class="hidden lg:table-cell px-6 py-4">
                       {{ product.nutriments['energy-kcal_100g'] + ' kcal' }}
@@ -563,53 +563,6 @@ onBeforeRouteUpdate((to) => {
                       {{
                         (
                           (Number(product.nutriments['energy-kcal_serving']) / ajrValues.energy) *
-                          100
-                        ).toFixed(0) + '%'
-                      }}
-                    </td>
-                  </tr>
-                  <tr v-if="product.nutriments['fat_serving']" class="border-b border-gray-200">
-                    <th
-                      scope="row"
-                      class="px-6 py-4 font-medium text-gray-900 whitespace-nowrap bg-gray-50"
-                    >
-                      Matieres grasses
-                    </th>
-                    <td class="hidden lg:table-cell px-6 py-4">
-                      {{ product.nutriments['fat_100g'] + ' g' }}
-                    </td>
-                    <td class="px-6 py-4 bg-gray-50">
-                      {{ product.nutriments['fat_serving'] + ' g' }}
-                    </td>
-                    <td class="px-6 py-4">
-                      {{
-                        ((Number(product.nutriments['fat_serving']) / ajrValues.fat) * 100).toFixed(
-                          0
-                        ) + '%'
-                      }}
-                    </td>
-                  </tr>
-                  <tr
-                    v-if="product.nutriments['saturated-fat_serving']"
-                    class="border-b border-gray-200"
-                  >
-                    <th
-                      scope="row"
-                      class="px-6 py-4 font-medium text-gray-900 whitespace-nowrap bg-gray-50"
-                    >
-                      Graisses saturées
-                    </th>
-                    <td class="hidden lg:table-cell px-6 py-4">
-                      {{ product.nutriments['saturated-fat_100g'] + ' g' }}
-                    </td>
-                    <td class="px-6 py-4 bg-gray-50">
-                      {{ product.nutriments['saturated-fat_serving'] + ' g' }}
-                    </td>
-                    <td class="px-6 py-4">
-                      {{
-                        (
-                          (Number(product.nutriments['saturated-fat_serving']) /
-                            ajrValues.saturatedFat) *
                           100
                         ).toFixed(0) + '%'
                       }}
@@ -644,9 +597,9 @@ onBeforeRouteUpdate((to) => {
                   <tr v-if="product.nutriments['sugars_serving']" class="border-b border-gray-200">
                     <th
                       scope="row"
-                      class="px-6 py-4 font-medium text-gray-900 whitespace-nowrap bg-gray-50"
+                      class="px-6 py-4 font-medium text-gray-600 whitespace-nowrap bg-gray-50"
                     >
-                      Sucres
+                      ...dont sucres
                     </th>
                     <td class="hidden lg:table-cell px-6 py-4">
                       {{ product.nutriments['sugars_100g'] + ' g' }}
@@ -685,6 +638,53 @@ onBeforeRouteUpdate((to) => {
                       }}
                     </td>
                   </tr>
+                  <tr v-if="product.nutriments['fat_serving']" class="border-b border-gray-200">
+                    <th
+                      scope="row"
+                      class="px-6 py-4 font-medium text-gray-900 whitespace-nowrap bg-gray-50"
+                    >
+                      Matières grasses
+                    </th>
+                    <td class="hidden lg:table-cell px-6 py-4">
+                      {{ product.nutriments['fat_100g'] + ' g' }}
+                    </td>
+                    <td class="px-6 py-4 bg-gray-50">
+                      {{ product.nutriments['fat_serving'] + ' g' }}
+                    </td>
+                    <td class="px-6 py-4">
+                      {{
+                        ((Number(product.nutriments['fat_serving']) / ajrValues.fat) * 100).toFixed(
+                          0
+                        ) + '%'
+                      }}
+                    </td>
+                  </tr>
+                  <tr
+                    v-if="product.nutriments['saturated-fat_serving']"
+                    class="border-b border-gray-200"
+                  >
+                    <th
+                      scope="row"
+                      class="px-6 py-4 font-medium text-gray-600 whitespace-nowrap bg-gray-50"
+                    >
+                      ...dont acides gras saturés
+                    </th>
+                    <td class="hidden lg:table-cell px-6 py-4">
+                      {{ product.nutriments['saturated-fat_100g'] + ' g' }}
+                    </td>
+                    <td class="px-6 py-4 bg-gray-50">
+                      {{ product.nutriments['saturated-fat_serving'] + ' g' }}
+                    </td>
+                    <td class="px-6 py-4">
+                      {{
+                        (
+                          (Number(product.nutriments['saturated-fat_serving']) /
+                            ajrValues.saturatedFat) *
+                          100
+                        ).toFixed(0) + '%'
+                      }}
+                    </td>
+                  </tr>
                   <tr v-if="product.nutriments['fiber_serving']" class="border-b border-gray-200">
                     <th
                       scope="row"
@@ -715,7 +715,7 @@ onBeforeRouteUpdate((to) => {
                       scope="row"
                       class="px-6 py-4 font-medium text-gray-900 whitespace-nowrap bg-gray-50"
                     >
-                      Proteines
+                      Protéines
                     </th>
                     <td class="hidden lg:table-cell px-6 py-4">
                       {{ product.nutriments['proteins_100g'] + ' g' }}

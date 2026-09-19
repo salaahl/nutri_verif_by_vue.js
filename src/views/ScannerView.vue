@@ -179,10 +179,11 @@ onBeforeUnmount(async () => {
 
     <!-- Cadre Caméra -->
     <div
-      id="scanner"
       class="h-auto w-full mb-6 aspect-square border-4 border-white rounded-lg overflow-hidden bg-black relative"
     >
-      <!-- Le flux vidéo de la caméra s'affichera ici -->
+      <div id="scanner">
+        <!-- Le flux vidéo de la caméra s'affichera ici -->
+      </div>
 
       <!-- Fenêtres de consentement -->
       <div
@@ -229,7 +230,7 @@ onBeforeUnmount(async () => {
     </div>
 
     <!-- Contrôles sous la caméra -->
-    <div v-if="!isBarcodeMode && !productIsLoading" class="w-full">
+    <div v-else-if="!isBarcodeMode && geminiPermission" class="w-full">
       <!-- Bloc Plat -->
       <div class="w-full flex flex-col items-center gap-4">
         <input

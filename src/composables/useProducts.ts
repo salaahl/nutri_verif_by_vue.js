@@ -442,7 +442,8 @@ export function useProducts() {
 
     try {
       const formData = new FormData()
-      formData.append('image', image, 'dish.jpg')
+      const timestamp = Date.now().toString()
+      formData.append('image', image, `${timestamp}.dish.jpg`)
       formData.append('notes', notes)
 
       const response = await fetchFromProxy('https://jokes-api-platform.onrender.com/search-dish', {
