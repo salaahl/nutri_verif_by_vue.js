@@ -185,7 +185,7 @@ const selectSuggestion = (text: string) => {
               v-for="(item, index) in autocompletion"
               :key="index"
               @click="selectSuggestion(item.text)"
-              class="w-fit m-2 px-4 py-2 bg-gray-600 hover:bg-gray-200 rounded-xl text-white hover:text-black text-sm font-semibold transition-colors duration-300 ease-in-out"
+              class="w-fit m-2 px-4 py-2 bg-gray-300 hover:bg-[var(--color-green)] rounded-xl text-black hover:text-white text-sm font-semibold transition-colors duration-300 ease-in-out"
             >
               {{ item.text }}
             </li>
