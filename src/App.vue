@@ -44,7 +44,7 @@ onMounted(() => {
 </script>
 
 <template>
-  <div id="loader" class="z-50 fixed inset-0 flex items-center justify-center bg-zinc-950">
+  <div id="loader" class="z-100 fixed inset-0 flex items-center justify-center bg-zinc-950">
     <div class="wrapper">
       <span class="website-name text-6xl font-bold tracking-wide select-none text-white">
         <span class="animate-letter inline-block" style="animation-delay: 0s">N</span>

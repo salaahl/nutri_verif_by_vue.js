@@ -167,6 +167,7 @@ onUnmounted(() => {
 #search-results.show {
   opacity: 1;
   transform: translateY(0);
+  padding: 1rem;
   transition:
     opacity 0.25s ease-in,
     transform 0.25s ease-in,
@@ -212,12 +213,6 @@ onUnmounted(() => {
 Elle a été adaptée au fonctionnement de la productsView */
 .product.animated:hover {
   transform: translateY(-1%);
-}
-
-@media (min-width: 375px) {
-  #search-results.show {
-    padding: 1rem;
-  }
 }
 
 @media (min-width: 768px) and (max-width: 1023px) {
