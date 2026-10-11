@@ -84,7 +84,7 @@ type SearchMethod = 'complete' | 'more'
 // const API_BASE_URL = 'https://world.openfoodfacts.org/cgi/search.pl'
 // const API_BASE_URL_V2 = 'https://world.openfoodfacts.org/api/v2'
 const API_BASE_URL_V3 = 'https://world.openfoodfacts.org/api/v3'
-const API_BASE_URL_V4 = 'https://search.openfoodfacts.org/search'
+const API_BASE_URL_V4 = 'https://search.openfoodfacts.org'
 
 // Détection du mode localhost / développement
 const isLocalhost =
@@ -216,6 +216,7 @@ export function useProducts() {
     get: () => productsStore.getProducts,
     set: (val) => productsStore.updateProducts(val)
   })
+  const autocompletionIsLoading = ref(false)
   const productsIsLoading = computed<boolean>({
     get: () => productsStore.getProductsLoadingState,
     set: (val) => productsStore.updateProductsLoadingState(val)
@@ -314,6 +315,48 @@ export function useProducts() {
     }
   }
 
+  async function searchAutocompletion(userInput: string) {
+    if (!userInput) return
+
+    autocompletionIsLoading.value = true
+    error.value = null
+
+    const input = userInput.trim().toLowerCase()
+    let route = `${API_BASE_URL_V4}/autocomplete?q=${input}&taxonomy_names=category&lang=fr&size=3`
+
+    if (isLocalhost) {
+      return [
+        {
+          id: 'en:cooked-sweet-potatoes',
+          text: 'Patates douces cuites',
+          taxonomy_name: 'category'
+        },
+        {
+          id: 'fr:crozets',
+          text: 'Pate crozet',
+          taxonomy_name: 'category'
+        },
+        {
+          id: 'en:shortcrust-pastry',
+          text: 'Pâte brisée',
+          taxonomy_name: 'category'
+        }
+      ]
+    }
+
+    try {
+      const response = await fetchFromApi(route)
+      const data = await response.json()
+
+      return data.options
+    } catch (err: any) {
+      error.value = err.message || 'Une erreur est survenue'
+      return
+    } finally {
+      autocompletionIsLoading.value = false
+    }
+  }
+
   async function searchProducts(
     userInput: string | null,
     sortBy: string | null | undefined,
@@ -354,7 +397,7 @@ export function useProducts() {
         sort_by: filter.value || '-popularity_key'
       })
 
-      route = `${API_BASE_URL_V4}?${params.toString()}`
+      route = `${API_BASE_URL_V4}/search?${params.toString()}`
     }
 
     try {
@@ -510,7 +553,7 @@ export function useProducts() {
         page_size: '5'
       })
 
-      route = `${API_BASE_URL_V4}?${params.toString()}`
+      route = `${API_BASE_URL_V4}/search?${params.toString()}`
     }
 
     error.value = null
@@ -608,7 +651,7 @@ export function useProducts() {
         sort_by: 'nutriscore_score'
       })
 
-      route = `${API_BASE_URL_V4}?${params.toString()}`
+      route = `${API_BASE_URL_V4}/search?${params.toString()}`
     }
 
     try {
@@ -732,6 +775,8 @@ export function useProducts() {
   }
 
   return {
+    autocompletionIsLoading,
+    searchAutocompletion,
     products,
     productsIsLoading,
     product,

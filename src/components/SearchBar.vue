@@ -1,60 +1,79 @@
 <script setup lang="ts">
-import { computed } from 'vue'
-import { useRoute, useRouter } from 'vue-router'
+import { ref } from 'vue'
+import { useRouter } from 'vue-router'
 import { useProducts } from '../composables/useProducts'
+
+interface AutocompleteItem {
+  text: string
+}
 
 const props = withDefaults(
   defineProps<{
     toolbarIsVisible?: boolean
   }>(),
   {
-    toolbarIsVisible: false // Valeur par défaut
+    toolbarIsVisible: false
   }
 )
 
-const route = useRoute()
+const emit = defineEmits<{
+  (e: 'search-status', status: boolean): void
+}>()
+
 const router = useRouter()
+const {
+  filter,
+  input,
+  autocompletionIsLoading,
+  searchAutocompletion,
+  productsIsLoading,
+  searchProducts
+} = useProducts()
 
-const toolbarIsVisible = computed(() => props.toolbarIsVisible)
-const emit = defineEmits(['search-status'])
-const { filter, input, searchProducts } = useProducts()
+const autocompletion = ref<AutocompleteItem[]>([])
+const selectedFilter = ref<string>(filter.value || '-popularity_key')
 
-// Gestion du formulaire de recherche
-const onSubmit = async (event: Event) => {
-  event.preventDefault()
+let timer: ReturnType<typeof setTimeout> | undefined
 
-  const searchInput = document.querySelector('#search-form #search-input') as HTMLInputElement
-  if (!searchInput) return
-  emit('search-status', false)
-
-  const regex = /^[0-9]{8,13}$/
-  if (regex.test(searchInput.value)) {
-    router.push({ name: 'product', params: { id: searchInput.value } })
-  } else {
-    let searchFilter: any = null
-
-    if (toolbarIsVisible.value) {
-      const checkedInput = document.querySelector(
-        '#search-form input[name="sort_by"]:checked'
-      ) as HTMLInputElement
-
-      if (checkedInput?.value) {
-        searchFilter = checkedInput.value
-      }
+const onInput = () => {
+  clearTimeout(timer)
+  timer = setTimeout(async () => {
+    const query = input.value.trim()
+    if (!query) {
+      autocompletion.value = []
+      return
     }
-
-    window.scrollTo({ top: 0, behavior: 'smooth' })
-    await searchProducts(searchInput.value, searchFilter, 'complete')
-    emit('search-status', true)
-  }
+    autocompletion.value = await searchAutocompletion(query)
+  }, 350)
 }
 
-// Gestion du filtre de recherche
-const onFilterChange = (e: Event) => {
-  const allCheckboxes = document.querySelectorAll<HTMLInputElement>('input[type="radio"][checked]')
-  allCheckboxes.forEach((checkbox) => checkbox.removeAttribute('checked'))
+const triggerSearch = async (searchTerm: string) => {
+  const query = searchTerm.trim()
+  if (!query) return
 
-  const target = (e.target as HTMLElement).previousElementSibling?.setAttribute('checked', '')
+  autocompletion.value = []
+  emit('search-status', false)
+
+  // Redirection directe s'il s'agit d'un code-barres
+  if (/^[0-9]{8,13}$/.test(query)) {
+    router.push({ name: 'product', params: { id: query } })
+    return
+  }
+
+  const activeSort = props.toolbarIsVisible ? selectedFilter.value : null
+  window.scrollTo({ top: 0, behavior: 'smooth' })
+  await searchProducts(query, activeSort, 'complete')
+  emit('search-status', true)
+}
+
+const onSubmit = (event: Event) => {
+  event.preventDefault()
+  triggerSearch(input.value)
+}
+
+const selectSuggestion = (text: string) => {
+  input.value = text
+  triggerSearch(text)
 }
 </script>
 
@@ -62,10 +81,12 @@ const onFilterChange = (e: Event) => {
   <section id="search-bar" class="relative mb-8 lg:mb-12">
     <form @submit="onSubmit" id="search-form" class="relative">
       <div class="w-full flex items-center justify-between">
-        <label for="search-input" class="sr-only">Search</label>
+        <label for="search-input" class="sr-only">Rechercher</label>
+
         <div class="relative w-full">
+          <!-- Scanner de plat -->
           <RouterLink
-            :to="'/dish-scanner'"
+            to="/dish-scanner"
             class="open-scanner lg:hidden absolute inset-y-0 start-0 flex items-center ps-6"
           >
             <svg id="search-bar-icon" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 448 512">
@@ -74,9 +95,10 @@ const onFilterChange = (e: Event) => {
               />
             </svg>
           </RouterLink>
-          <!-- Bouton d'accès au scanner désactivé sur les ordinateurs (> 1024px) -->
+
+          <!-- Scanner code-barres. Bouton désactivé sur les ordinateurs (> 1024px) -->
           <RouterLink
-            :to="'/barcode-scanner'"
+            to="/barcode-scanner"
             class="open-scanner lg:hidden absolute inset-y-0 end-0 flex items-center pe-6"
           >
             <svg class="search-bar-icon" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 640 640">
@@ -85,15 +107,19 @@ const onFilterChange = (e: Event) => {
               />
             </svg>
           </RouterLink>
+
           <input
+            v-model="input"
+            @input="onInput"
             type="text"
+            autocomplete="off"
             id="search-input"
             class="block w-full px-12 p-2.5 text-ellipsis bg-gray-50 border-4 border-[#e5e7eb] text-gray-900 text-sm rounded-full outline-0 focus:ring-gray-400 focus:border-gray-400"
-            :value="input"
             placeholder="Entrez un nom de produit, un code-barres, une marque ou un type d'aliment"
             required
           />
         </div>
+
         <button
           type="submit"
           class="p-2.5 ms-2 text-sm font-medium text-white bg-blue-700 rounded-full border border-blue-700 hover:bg-blue-800 focus:ring-4 focus:outline-none focus:ring-blue-300"
@@ -113,83 +139,76 @@ const onFilterChange = (e: Event) => {
               d="m19 19-4-4m0-7A7 7 0 1 1 1 8a7 7 0 0 1 14 0Z"
             />
           </svg>
-          <div class="lds-hourglass hidden"></div>
-          <span class="sr-only">Search</span>
+          <span class="sr-only">Rechercher</span>
         </button>
       </div>
+
+      <!-- Barre de filtres -->
       <div
         v-if="toolbarIsVisible"
         class="radio-toolbar w-full flex flex-wrap items-center mt-2 md:mt-6 text-sm text-gray-700"
       >
-        <input
-          type="radio"
-          name="sort_by"
-          id="popularity_key"
-          value="-popularity_key"
-          :checked="filter === '-popularity_key' || !filter"
-        />
-        <label
-          @click="onFilterChange"
-          class="radio_label mt-2 md:mt-0 mr-4 text-sm font-semibold bg-gray-300 rounded-full"
-          for="popularity_key"
-          >Popularité</label
+        <template
+          v-for="option in [
+            { id: 'popularity_key', value: '-popularity_key', label: 'Popularité' },
+            { id: 'completeness', value: '-completeness', label: 'Complétude' },
+            { id: 'created_t', value: '-created_t', label: 'Date d\'ajout' },
+            { id: 'nutriscore_score', value: 'nutriscore_score', label: 'Nutriscore' },
+            { id: 'nova_group', value: 'nova_group', label: 'Groupe Nova' }
+          ]"
+          :key="option.id"
         >
+          <input
+            type="radio"
+            name="sort_by"
+            :id="option.id"
+            :value="option.value"
+            v-model="selectedFilter"
+          />
+          <label
+            :for="option.id"
+            class="radio_label mt-2 md:mt-0 mr-4 text-sm font-semibold bg-gray-300 rounded-full cursor-pointer"
+          >
+            {{ option.label }}
+          </label>
+        </template>
+      </div>
 
-        <input
-          type="radio"
-          name="sort_by"
-          id="completeness"
-          value="-completeness"
-          :checked="filter === 'completeness'"
-        />
-        <label
-          @click="onFilterChange"
-          class="radio_label mt-2 md:mt-0 mr-4 text-sm font-semibold bg-gray-300 rounded-full"
-          for="completeness"
-          >Complétude</label
+      <!-- Suggestions d'autocomplétion cliquables -->
+      <div class="autocompletion absolute w-full flex">
+        <div
+          v-if="autocompletion.length > 0"
+          class="w-full bg-white border border-4 border-dashed border-gray-300 rounded-xl mt-1 z-20"
         >
-
-        <input
-          type="radio"
-          name="sort_by"
-          id="created_t"
-          value="-created_t"
-          :checked="filter === 'created_t'"
-        />
-        <label
-          @click="onFilterChange"
-          class="radio_label mt-2 md:mt-0 mr-4 text-sm font-semibold bg-gray-300 rounded-full"
-          for="created_t"
-          >Date d'ajout</label
-        >
-
-        <input
-          type="radio"
-          name="sort_by"
-          id="nutriscore_score"
-          value="nutriscore_score"
-          :checked="filter === 'nutriscore_score'"
-        />
-        <label
-          @click="onFilterChange"
-          class="radio_label mt-2 md:mt-0 mr-4 text-sm font-semibold bg-gray-300 rounded-full"
-          for="nutriscore_score"
-          >Nutriscore</label
-        >
-
-        <input
-          type="radio"
-          name="sort_by"
-          id="nova_group"
-          value="nova_group"
-          :checked="filter === 'nova_group'"
-        />
-        <label
-          @click="onFilterChange"
-          class="radio_label mt-2 md:mt-0 mr-4 text-sm font-semibold bg-gray-300 rounded-full"
-          for="nova_group"
-          >Groupe Nova</label
-        >
+          <ul>
+            <li
+              v-for="(item, index) in autocompletion"
+              :key="index"
+              @click="selectSuggestion(item.text)"
+              class="w-fit m-2 px-4 py-2 bg-gray-600 hover:bg-gray-200 rounded-xl text-white hover:text-black text-sm font-semibold transition-colors duration-300 ease-in-out"
+            >
+              {{ item.text }}
+            </li>
+          </ul>
+        </div>
+        <!-- Placeholder ayant pour but d'aligner les suggestions sur la barre de recherche -->
+        <div class="opacity-0 pointer-events-none p-2.5 ms-2">
+          <svg
+            class="w-4 h-4"
+            aria-hidden="true"
+            xmlns="http://www.w3.org/2000/svg"
+            fill="none"
+            viewBox="0 0 20 20"
+          >
+            <path
+              stroke="currentColor"
+              stroke-linecap="round"
+              stroke-linejoin="round"
+              stroke-width="2"
+              d="m19 19-4-4m0-7A7 7 0 1 1 1 8a7 7 0 0 1 14 0Z"
+            />
+          </svg>
+        </div>
       </div>
     </form>
   </section>
@@ -229,6 +248,13 @@ const onFilterChange = (e: Event) => {
   margin: 0;
   border: 0.5rem solid #fff;
   border-color: hsla(160, 100%, 37%, 0.6) transparent var(--color-green) transparent;
+}
+
+.autocompletion {
+  box-shadow:
+    rgba(255, 255, 255, 0.01) 0px 1px 1px 0px inset,
+    rgba(50, 50, 93, 0.025) 0px 50px 100px -20px,
+    rgba(0, 0, 0, 0.03) 0px 30px 60px -30px;
 }
 
 @media (min-width: 1024px) {
