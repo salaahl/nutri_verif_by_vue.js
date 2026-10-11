@@ -175,9 +175,11 @@ const selectSuggestion = (text: string) => {
       </div>
 
       <!-- Suggestions d'autocomplétion cliquables. Visible uniquement sur la page d'accueil -->
-      <div v-if="!toolbarIsVisible" class="autocompletion absolute w-full flex">
+      <div
+        v-if="!toolbarIsVisible && !autocompletionIsLoading && autocompletion.length > 0"
+        class="autocompletion absolute w-full flex"
+      >
         <div
-          v-if="autocompletion.length > 0"
           class="w-full bg-white border border-4 border-dashed border-gray-300 rounded-xl mt-1 z-20"
         >
           <ul>
