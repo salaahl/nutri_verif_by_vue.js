@@ -118,7 +118,7 @@ onUnmounted(() => {
   <section
     id="search-results"
     :class="
-      'mb-8 xs:bg-gray-200/50 xs:rounded-[10px] transition-[transform,opacity] duration-[1500ms] ease-in-out' +
+      'mb-8 bg-gray-200/50 rounded-[10px] transition-[transform,opacity] duration-[1500ms] ease-in-out' +
       (products.length === 0 ? '' : ' show')
     "
   >
