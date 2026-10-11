@@ -322,7 +322,6 @@ export function useProducts() {
     error.value = null
 
     const input = userInput.trim().toLowerCase()
-    let route = `${API_BASE_URL_V4}/autocomplete?q=${input}&taxonomy_names=category&lang=fr&size=3`
 
     if (isLocalhost) {
       return [
@@ -344,8 +343,22 @@ export function useProducts() {
       ]
     }
 
+    let fetchOptions: RequestInit & { timeout?: number } = {
+      method: 'GET',
+      timeout: 15000
+    }
+
+    const params = new URLSearchParams({
+      q: input,
+      taxonomy_names: 'category',
+      lang: 'fr',
+      size: '3'
+    })
+
+    let route = `${API_BASE_URL_V4}/autocomplete?${params.toString()}`
+
     try {
-      const response = await fetchFromApi(route)
+      const response = await fetchFromProxy(route, fetchOptions)
       const data = await response.json()
 
       return data.options

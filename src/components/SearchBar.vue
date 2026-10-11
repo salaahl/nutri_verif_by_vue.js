@@ -112,7 +112,7 @@ const selectSuggestion = (text: string) => {
             v-model="input"
             @input="onInput"
             type="text"
-            autocomplete="off"
+            :autocomplete="toolbarIsVisible ? 'on' : 'off'"
             id="search-input"
             class="block w-full px-12 p-2.5 text-ellipsis bg-gray-50 border-4 border-[#e5e7eb] text-gray-900 text-sm rounded-full outline-0 focus:ring-gray-400 focus:border-gray-400"
             placeholder="Entrez un nom de produit, un code-barres, une marque ou un type d'aliment"
@@ -174,8 +174,8 @@ const selectSuggestion = (text: string) => {
         </template>
       </div>
 
-      <!-- Suggestions d'autocomplétion cliquables -->
-      <div class="autocompletion absolute w-full flex">
+      <!-- Suggestions d'autocomplétion cliquables. Visible uniquement sur la page d'accueil -->
+      <div v-if="!toolbarIsVisible" class="autocompletion absolute w-full flex">
         <div
           v-if="autocompletion.length > 0"
           class="w-full bg-white border border-4 border-dashed border-gray-300 rounded-xl mt-1 z-20"
