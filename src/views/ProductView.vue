@@ -103,16 +103,14 @@ const resetProduct = () => {
 
 // Chargement du produit et des suggestions
 const updateProduct = async (productId: string) => {
-  if (window.location.hostname.includes('product')) {
-    resetProduct()
-    showSuggestedProducts.value = false
-    suggestedProducts.value = []
+  resetProduct()
+  showSuggestedProducts.value = false
+  suggestedProducts.value = []
 
-    await fetchProduct(productId)
-    categoriesIsLoading.value = true
-    product.categories = await getTranslatedCategories(product.categories)
-    categoriesIsLoading.value = false
-  }
+  await fetchProduct(productId)
+  categoriesIsLoading.value = true
+  product.categories = await getTranslatedCategories(product.categories)
+  categoriesIsLoading.value = false
 }
 
 const formatAdditiveCode = (additiveStr: string): string => {
