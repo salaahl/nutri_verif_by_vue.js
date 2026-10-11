@@ -174,6 +174,7 @@ watch(
 onBeforeMount(async () => {
   const rawId = Array.isArray(route.params.id) ? route.params.id[0] : route.params.id
   const hasId = Boolean(rawId && rawId !== 'undefined')
+  resetProduct()
 
   if (hasId) {
     await fetchProduct(rawId as string)
