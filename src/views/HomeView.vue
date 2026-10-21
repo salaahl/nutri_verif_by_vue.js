@@ -178,7 +178,7 @@ onUnmounted(() => {
   }
 
   const mainWidth = document.querySelector('main') as HTMLElement
-  if (mainWidth && isMobile.value) {
+  if (mainWidth && (isMobile.value || isTablet.value)) {
     mainWidth.style.maxWidth = '600px'
   }
 
