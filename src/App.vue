@@ -447,6 +447,10 @@ main {
   width: 100%;
 }
 
+main {
+  max-width: 600px;
+}
+
 h1::first-letter {
   font-weight: bold;
 }
@@ -515,6 +519,10 @@ footer > div,
 
   #back-link:hover {
     transform: translateX(-10px);
+  }
+
+  main {
+    max-width: unset;
   }
 
   main.home-view {

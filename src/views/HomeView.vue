@@ -36,7 +36,8 @@ const {
   lastProducts
 } = useProducts()
 
-const screenWidth = window.innerWidth
+const isMobile = ref(window.innerWidth < 600)
+const isTablet = ref(window.innerWidth >= 600 && window.innerWidth < 1024)
 
 const categories = [
   'yaourts',
@@ -79,7 +80,7 @@ const handleInput = (event: Event) => {
 onMounted(async () => {
   // Gestion de la largeur de l'app
   const app = document.getElementById('app')
-  if (app && screenWidth >= 1440) {
+  if (app && window.innerWidth >= 1440) {
     app.classList.add('max-w-[1380px]')
   }
 
@@ -87,7 +88,7 @@ onMounted(async () => {
   if (isFirstLaunch.value) {
     document.querySelectorAll('main > div > section').forEach((section) => {
       gsap.from(section, {
-        y: screenWidth < 768 ? '100' : '250',
+        y: isMobile.value ? '100' : '250',
         opacity: 0,
         duration: 0.4,
         willChange: 'transform, opacity', // Prépare le GPU à l'animation
@@ -111,6 +112,10 @@ onMounted(async () => {
     })
 
     isFirstLaunch.value = false
+  }
+  const mainWidth = document.querySelector('main') as HTMLElement
+  if (mainWidth && (isMobile.value || isTablet.value)) {
+    mainWidth.style.maxWidth = 'unset'
   }
 
   const websiteName = document.querySelector('header .website-name') as HTMLElement
@@ -168,8 +173,13 @@ onMounted(async () => {
 onUnmounted(() => {
   // Gestion de la largeur de l'app
   const app = document.getElementById('app')
-  if (app && screenWidth >= 1440) {
+  if (app && window.innerWidth >= 1440) {
     app.classList.remove('max-w-[1380px]')
+  }
+
+  const mainWidth = document.querySelector('main') as HTMLElement
+  if (mainWidth && isMobile.value) {
+    mainWidth.style.maxWidth = '600px'
   }
 
   const websiteName = document.querySelector('header .website-name') as HTMLElement
@@ -230,7 +240,7 @@ onUnmounted(() => {
         </div>
         <ProductCard
           v-else
-          v-for="product in products.slice(0, 4)"
+          v-for="product in isTablet ? products.slice(0, 3) : products.slice(0, 4)"
           :key="product.id"
           :id="product.id"
           :image="product.image"
@@ -241,8 +251,8 @@ onUnmounted(() => {
           :category="product.category"
         />
         <article
-          v-if="products.length > 4"
-          class="md:product w-full md:w-[18.6%] flex items-center justify-center mt-[2.5%] md:mt-0"
+          v-if="isTablet ? products.length > 3 : products.length > 4"
+          class="md:product w-full lg:w-[18.6%] flex items-center justify-center mt-[2.5%] lg:mt-0"
         >
           <RouterLink
             :key="'Plus de résultats'"
@@ -255,7 +265,7 @@ onUnmounted(() => {
       </div>
     </div>
     <h3 id="total-products" class="text-2xl lg:text-3xl text-center">
-      + de 1 234 100 produits référencés
+      + de 1 275 763 produits référencés
     </h3>
   </section>
   <section id="about" class="mb-24">
@@ -350,7 +360,7 @@ onUnmounted(() => {
     <h2 class="title mb-12 text-2xl lg:text-3xl font-thin text-center">
       Découvrez des <span class="text-[#00bd7e]">alternatives</span> plus saines
     </h2>
-    <span class="inline-block mb-8">
+    <span class="block mb-8">
       <span class="text-highlighted">Vous méritez le meilleur pour votre alimentation </span>
       <span>. Si un produit a un Nutri-Score jugé trop faible :</span>
     </span>
@@ -471,7 +481,7 @@ onUnmounted(() => {
         </div>
       </section>
     </div>
-    <span class="inline-block my-8">
+    <span class="block my-8">
       notre fonctionnalité intelligente vous propose des alternatives
       <span class="text-highlighted">mieux notées et tout aussi savoureuses</span> :
     </span>
@@ -494,7 +504,7 @@ onUnmounted(() => {
       Produits <span class="text-[indianred]">récemment</span> ajoutés
     </h2>
     <div
-      v-if="!showLastProducts && screenWidth < 768"
+      v-if="!showLastProducts && isMobile"
       class="relative flex flex-wrap justify-between md:justify-start p-4 rounded-lg"
     >
       <ProductCard v-for="i in [0, 1, 2, 3]" :key="i" />
@@ -509,7 +519,13 @@ onUnmounted(() => {
       </article>
     </div>
     <div
-      v-else-if="!showLastProducts && screenWidth >= 768"
+      v-else-if="!showLastProducts && isTablet"
+      class="relative flex flex-wrap justify-between md:justify-start p-4 rounded-lg"
+    >
+      <ProductCard v-for="i in [0, 1, 2]" :key="i" @click="searchLastProducts()" />
+    </div>
+    <div
+      v-else-if="!showLastProducts"
       class="relative flex flex-wrap justify-between md:justify-start p-4 rounded-lg"
     >
       <ProductCard v-for="i in [0, 1, 2, 3, 4]" :key="i" @click="searchLastProducts()" />
@@ -523,7 +539,7 @@ onUnmounted(() => {
       </div>
       <ProductCard
         v-else-if="!lastProductsIsLoading && lastProducts.length > 0"
-        v-for="product in lastProducts"
+        v-for="product in isTablet ? lastProducts.slice(0, 3) : lastProducts"
         :key="product.id"
         :product="product"
         :id="product.id"
@@ -549,6 +565,24 @@ onUnmounted(() => {
 </template>
 
 <style scoped>
+main > div > section {
+  width: 100%;
+  max-width: 600px;
+  margin-left: auto;
+  margin-right: auto;
+}
+
+#alternatives-functionality {
+  max-width: unset;
+}
+
+#alternatives-functionality > * {
+  width: 100%;
+  max-width: 600px;
+  margin-left: auto;
+  margin-right: auto;
+}
+
 h1 {
   font-family: 'Grand Hotel', cursive;
 }
@@ -629,6 +663,7 @@ h2::first-letter {
 
 #alternatives-functionality {
   position: relative;
+  width: unset;
   margin-left: calc(var(--app-padding-x) * -1);
   margin-right: calc(var(--app-padding-x) * -1);
   padding: 2rem var(--app-padding-x) 0 var(--app-padding-x);
@@ -640,28 +675,45 @@ h2::first-letter {
   margin-bottom: 0;
 }
 
-@media (min-width: 768px) {
+@media (min-width: 600px) {
   .product {
-    width: 19%;
-    aspect-ratio: auto;
-    margin-bottom: 0;
+    margin-bottom: unset;
   }
+}
 
+@media (min-width: 600px) and (max-width: 1023px) {
   .product:nth-of-type(odd) {
     margin-right: unset;
   }
 
-  #search-results .product:nth-of-type(even),
-  #last-products .product:nth-of-type(even) {
-    margin-left: 1.25%;
-    margin-right: 1.25%;
+  .product {
+    width: 32%;
+  }
+
+  .product:nth-of-type(2) {
+    margin-left: 2%;
+    margin-right: 2%;
+  }
+}
+
+@media (min-width: 768px) {
+  main > div > section,
+  #alternatives-functionality > * {
+    max-width: unset;
   }
 
   #alternatives-functionality {
+    max-width: unset;
     margin-left: 0;
     margin-right: 0;
     background: radial-gradient(circle, rgba(0, 0, 0, 0) 0%, rgba(255, 255, 255, 0.5) 50%);
     border-radius: 0.5rem;
+  }
+
+  #alternatives-functionality > * {
+    max-width: unset;
+    margin-left: unset;
+    margin-right: unset;
   }
 
   #alternatives-functionality::before,
@@ -717,7 +769,19 @@ h2::first-letter {
   }
 
   .product {
+    width: 19%;
     aspect-ratio: 2/3;
+  }
+
+  .product:nth-of-type(2),
+  .product:nth-of-type(odd) {
+    margin-right: unset;
+  }
+
+  #search-results .product:nth-of-type(even),
+  #last-products .product:nth-of-type(even) {
+    margin-left: 1.25%;
+    margin-right: 1.25%;
   }
 }
 </style>

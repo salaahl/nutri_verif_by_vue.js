@@ -1,4 +1,5 @@
 <script setup lang="ts">
+import { ref } from 'vue'
 import ProductCard from './ProductCard.vue'
 
 interface Products {
@@ -35,6 +36,8 @@ const emit = defineEmits<{
 function searchAlternatives() {
   emit('trigger-search')
 }
+
+const isTablet = ref(window.innerWidth >= 600 && window.innerWidth < 1024)
 </script>
 
 <template>
@@ -54,7 +57,11 @@ function searchAlternatives() {
         v-if="!showAlternatives && !isLoading"
         class="relative w-full lg:w-3/4 flex flex-wrap md:flex-nowrap lg:justify-end"
       >
-        <ProductCard v-for="i in [0, 1, 2, 3]" :key="i" @click="searchAlternatives()" />
+        <ProductCard
+          v-for="i in isTablet ? [0, 1, 2] : [0, 1, 2, 3]"
+          :key="i"
+          @click="searchAlternatives()"
+        />
         <article class="md:hidden w-full flex items-center justify-center mt-[2.5%]">
           <button
             id="alternatives-products-button"
@@ -78,7 +85,7 @@ function searchAlternatives() {
         class="relative w-full lg:w-3/4 flex flex-wrap md:flex-nowrap lg:justify-end"
       >
         <ProductCard
-          v-for="product in props.products"
+          v-for="product in isTablet ? props.products.slice(0, 3) : props.products"
           :key="product.id"
           :id="product.id"
           :image="product.image"
@@ -124,27 +131,6 @@ function searchAlternatives() {
     font-size: xxx-large;
   }
 
-  .product {
-    width: 23.75%;
-    aspect-ratio: auto;
-    margin-bottom: 0;
-  }
-
-  .product:nth-child(1),
-  .product:nth-child(4) {
-    margin-left: unset;
-    margin-right: unset;
-  }
-
-  .product:nth-child(2) {
-    margin-left: 1.75%;
-  }
-
-  .product:nth-child(3) {
-    margin-left: 1.75%;
-    margin-right: 1.75%;
-  }
-
   .product.placeholder::after {
     content: 'Afficher les alternatives';
     position: absolute;
@@ -166,6 +152,45 @@ function searchAlternatives() {
 
   .product.placeholder:hover::after {
     opacity: 1;
+  }
+}
+
+@media (min-width: 600px) and (max-width: 1023px) {
+  .product:nth-of-type(odd) {
+    margin-right: unset;
+  }
+
+  .product {
+    width: 32%;
+  }
+
+  .product:nth-of-type(2) {
+    margin-left: 2%;
+    margin-right: 2%;
+  }
+}
+
+@media (min-width: 1024px) {
+  .product {
+    width: 23.75%;
+    aspect-ratio: auto;
+    margin-bottom: 0;
+  }
+
+  .product:nth-child(1),
+  .product:nth-child(4) {
+    margin-left: unset;
+    margin-right: unset;
+  }
+
+  .product:nth-child(2) {
+    margin-left: 1.75%;
+    margin-right: unset;
+  }
+
+  .product:nth-child(3) {
+    margin-left: 1.75%;
+    margin-right: 1.75%;
   }
 }
 

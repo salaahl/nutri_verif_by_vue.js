@@ -15,6 +15,9 @@ const searchCompleted = ref(false)
 let prevScrollpos = 0
 let refresh: boolean = true
 
+const isMobile = ref(window.innerWidth < 600)
+const isTablet = ref(window.innerWidth >= 600 && window.innerWidth < 1024)
+
 const onScroll = async () => {
   const h = document.documentElement,
     b = document.body,
@@ -27,7 +30,9 @@ const onScroll = async () => {
   const searchBarHeight = searchBar.offsetHeight
 
   if (prevScrollpos > currentScrollPos) {
-    window.innerWidth > 768 ? (searchBar.style.top = '25px') : (searchBar.style.top = '0')
+    !isMobile.value || !isTablet.value
+      ? (searchBar.style.top = '25px')
+      : (searchBar.style.top = '0')
     searchBar.classList.add('blur-bg')
   } else {
     searchBar.style.top = '-' + (searchBarHeight + 4) + 'px'
@@ -60,8 +65,7 @@ const animateNewProducts = () => {
   if (newProducts.length === 0) return
 
   newProducts.forEach((product, index) => {
-    const isMobile = window.innerWidth < 768
-    const gridColumns = isMobile ? 2 : 5
+    const gridColumns = isMobile.value ? 2 : isTablet.value ? 3 : 5
 
     // On calcule le délai en JS et on l'injecte en variable CSS personnalisée (--delay)
     const localIndex = index % gridColumns
@@ -218,6 +222,7 @@ Elle a été adaptée au fonctionnement de la productsView */
 @media (min-width: 768px) and (max-width: 1023px) {
   .product {
     width: 32%;
+    margin-right: unset;
   }
 
   .product:nth-of-type(3n + 2) {
@@ -226,16 +231,11 @@ Elle a été adaptée au fonctionnement de la productsView */
   }
 }
 
-@media (min-width: 768px) {
-  .product {
-    margin-left: unset;
-    margin-right: unset;
-  }
-}
-
 @media (min-width: 1024px) {
   .product {
     width: 18.8%;
+    margin-left: unset;
+    margin-right: unset;
   }
 
   .product:nth-of-type(5n + 2) {
